@@ -1,0 +1,104 @@
+<div ng-app="ramesApp" ng-controller="NewreportCtrl">
+  <form novalidate>
+    <div class="just-sec">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+            <div class="form-group">
+              <label>Report <Name></Name>:</label>
+              <input ng-model="reportName.Name" class="form-control" type="text" ng-init="reportName.Name = ''" />
+            </div>
+            <div>
+            <a class="a-collapse" ng-click="showDiv = !showDiv">
+                <div class="panel panel-default" ng-repeat="category in categories">
+                        <div class="panel-heading">
+                            <div class="bold-collapse"> {{category.category}} </div>
+                </a>
+                <div collapse="!showDiv">
+                    <div ng-show="showDiv" class="panel-body ">
+                        <div ng-repeat="info in ramesinfo">
+                            <div ng-if="info.CategoryID == category.ID">
+                                <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-info" aria-hidden="true"></i></a>
+                                <label>{{info.Name}}</label>
+                                <div class="questionSuggestion" ng-show="showInfo">
+                                    <div ng-repeat="question in questions">
+                                        <ul ng-if="question.RamesInfoID == info.ID "> {{question.Suggestion}} </ul>
+                                    </div>
+                                </div>
+                                <div ng-repeat="question in questions">
+                                    <ul ng-if="question.RamesInfoID == info.ID">
+                                        <label>{{question.QuestionNr}}. {{question.Question}}</label>
+                                        <ul ng-if="question.Type == 'num'">
+                                            <div class="form-group">
+                                                <input ng-model="reportInfo['Answer'][question.ID]" type="number" class="form-control" ng-init="reportInfo.Answer[question.ID] = ''">
+                                            </div>
+                                        </ul>
+                                        <ul ng-if="question.Type == 'text'">
+                                            <div class="form-group">
+                                                <textarea ng-model="reportInfo.Answer[question.ID]" class="form-control" rows="5" ng-init="reportInfo.Answer[question.ID] = ''"></textarea>
+                                            </div>
+                                        </ul>
+                                        <ul ng-if="question.Type == 'yesno'">
+                                            <input ng-model="reportInfo.Answer[question.ID]" type="radio" value='y' ng-init="reportInfo.Answer[question.ID] = ''"> Yes
+                                            <input ng-model="reportInfo.Answer[question.ID]" type="radio" value='n'> No
+                                        </ul>
+                                        <ul ng-if="question.Type == 'radio'">
+                                            <div ng-repeat="ch in radioChoices">
+                                                <div ng-if="ch.QuestionID == question.ID">
+                                                    <input name="reportInfo.Answer[question.ID]" type="radio" 
+                                                        value="{{ch.Choice}}" ng-init="reportInfo.Answer[question.ID] = ''" 
+                                                        ng-model="reportInfo.Answer[question.ID]" >  {{ch.Choice}}
+                                                </div>
+                                            </div>
+                                        </ul>
+                                        <div ng-if="question.Type == 'checkbox'">
+                                            <div ng-repeat="ch in checkboxChoices">
+                                                <ul ng-if="ch.QuestionID == question.ID">
+                                                    <div ng-if="ch.Textbox == 'n'">
+                                                        <input ng-model="reportInfo.Answer[question.ID][$index]" type="checkbox" ng-true-value="'{{ch.Choice}}'" ng-false-value="''">  {{ch.Choice}}
+                                                    </div>
+                                                    <div ng-if="ch.Textbox == 'y'">
+                                                        <input ng-model="reportInfo.Answer[question.ID][$index]" type="checkbox" ng-true-value="'{{ch.Choice}}'" ng-false-value="''">  {{ch.Choice}}
+                                                        <textarea style="width:100% !important;" ng-model="reportInfo.Answer[question.ID]['Text'][$index]" class="form-control" rows="5" columns="10" ng-init="reportInfo.Answer[question.ID]['Text'][$index] = ''"></textarea>                                
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div ng-if="question.Type == 'dropdown'">
+                                            <select ng-model="reportInfo.Answer[question.ID][$index]" ng-init="reportInfo.Answer[question.ID] = ''">
+                                                <option value=""> --- Choose --- </option>
+                                                <option ng-show="ch.QuestionID == question.ID" ng-repeat="ch in dropdownChoices"> {{ch.Choice}} </option>
+                                            </select>
+                                            <textarea style="width:100% !important;" ng-model="reportInfo.Answer[question.ID]['Textbox'][$index]" class="form-control" 
+                                                rows="5" columns="10" ng-init="reportInfo.Answer[question.ID]['Textbox'][$index] = ''"></textarea>
+                                        </div>
+                                        <ul ng-if="question.Type == 'conditionalyesnotext'">
+                                            <input ng-model="reportInfo.Answer[question.ID][$index]" type="radio" value='y' ng-init="reportInfo.Answer[question.ID][$index] = ''"> Yes
+                                            <input ng-model="reportInfo.Answer[question.ID][$index]" type="radio" value='n' ng-click="resetValue(question.ID)"> No
+                                            <select ng-show="reportInfo.Answer[question.ID][$index] == 'y'" ng-model="reportInfo.Answer[question.ID]['Text'][$index]" 
+                                                ng-init="reportInfo.Answer[question.ID]['Text'][$index] = ''">
+                                                <option value=""> --- Choose --- </option>
+                                                <option ng-show="ch.QuestionID == question.ID" ng-repeat="ch in dropdownChoices"> {{ch.Choice}} </option>
+                                            </select>
+                                            <textarea ng-show="reportInfo.Answer[question.ID][$index] == 'y'" style="width:100% !important;" ng-model="reportInfo.Answer[question.ID]['Textbox'][$index]" 
+                                                class="form-control" rows="5" columns="10" ng-init="reportInfo.Answer[question.ID]['Textbox'][$index] = ''"></textarea>
+                                        </ul>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-2">
+            <a class="btn btn-info btn-lg" ng-click="saveInfo(reportInfo, reportName)">Save</a><br>
+            <a class="btn btn-info btn-lg" href="/#">Cancel</a><br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

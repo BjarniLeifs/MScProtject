@@ -1,0 +1,144 @@
+<!doctype html>
+<html ng-app="ramesApp">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+
+  <!-- BOOTSTRAP CORE STYLE  -->
+  <link href="styles/assets/css/bootstrap.css" rel="stylesheet" />
+  <!-- FONT AWESOME STYLE  -->
+  <link href="styles/assets/css/font-awesome.css" rel="stylesheet" />
+  <!-- ANIMATE STYLE  -->
+  <link href="styles/assets/css/animate.css" rel="stylesheet" />
+  <!-- FLEXSLIDER STYLE  -->
+  <link href="styles/assets/css/flexslider.css" rel="stylesheet" />
+  <!-- CUSTOM STYLE  -->
+  <link href="styles/assets/css/style.css" rel="stylesheet" />
+  <!-- GOOGLE FONTS  -->
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />
+
+  <base href="/">
+
+  <!-- endbuild -->
+</head>
+
+<body>
+
+
+  <div class="navbar-inverse set-radius-zero">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+      </div>
+    </div>
+  </div>
+  <!-- LOGO HEADER END-->
+  <section class="menu-section">
+    <div class="container">
+      <div class="row ">
+        <div class="col-md-12">
+          <div class="navbar-collapse collapse ">
+            <ul id="menu-top" class="nav navbar-nav navbar-left"> <li><a href="#/">UXinn</a></li> </ul>
+            <ul id="menu-top" class="nav navbar-nav navbar-right">
+              <li><a href="#/">My reports</a></li>
+              <li><a href="#/about">About RAMES</a></li>
+              <li><a href="#/aboutCreator">About the creator</a></li>
+              <li><a href="#/contact">Contact us</a></li>
+              <li><a href="#/settings">Settings</a></li>
+              <li><a href="#">Log out</a></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- MENU SECTION END-->
+
+  <div class="container" id="reports">
+
+    <div ng-view></div>
+  </div>
+
+  <div class="footer">
+    <div class="container">
+    </div>
+  </div>
+
+
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+  <script>
+    !function (A, n, g, u, l, a, r) {
+      A.GoogleAnalyticsObject = l, A[l] = A[l] || function () {
+        (A[l].q = A[l].q || []).push(arguments)
+      }, A[l].l = +new Date, a = n.createElement(g),
+        r = n.getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a, r)
+    }(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-XXXXX-X');
+    ga('send', 'pageview');
+  </script>
+
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="bower_components/angular-touch/angular-touch.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!--jQuery -->
+  <!--<script src="styles/bootstrap/vendor/jquery/jquery.min.js"></script>-->
+
+  <!-- Bootstrap Core JavaScript -->
+  <!--<script src="styles/bootstrap/vendor/bootstrap/js/bootstrap.min.js"></script>-->
+
+  <!-- Metis Menu Plugin JavaScript -->
+  <!--<script src="styles/bootstrap/vendor/metisMenu/metisMenu.min.js"></script>-->
+
+  <!-- Morris Charts JavaScript -->
+  <!--<script src="styles/bootstrap/vendor/raphael/raphael.min.js"></script>-->
+
+  <!-- Custom Theme JavaScript -->
+  <!--<script src="styles/bootstrap/dist/js/sb-admin-2.js"></script>-->
+
+  <!-- build:js({.tmp,app}) scripts/scripts.js -->
+  <script src="scripts/app.js"></script>
+  <script src="scripts/controllers/main.js"></script>
+  <script src="scripts/controllers/about.js"></script>
+  <script src="scripts/controllers/aboutcreator.js"></script>
+  <script src="scripts/controllers/contact.js"></script>
+  <script src="scripts/controllers/settings.js"></script>
+  <script src="scripts/controllers/report.js"></script>
+  <script src="scripts/controllers/newreport.js"></script>
+  <script src="scripts/controllers/pdfReportMaker.js"></script>
+<!-- ============================= -->
+  <script src="scripts/pdfmake/pdfmake.js"></script>
+  <script src="scripts/pdfmake/vfs_fonts.js"></script>
+  <!--<script src="scripts/angularjs/angular.js"></script>-->
+  <script src="scripts/angularjs/angular-ui-router.js"></script>
+  <script src="scripts/angularjs/moment.js"></script>
+
+<!-- ============================= -->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.debug.js"></script>-->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.0/jspdf.plugin.autotable.js"></script>  -->
+  <!-- endbuild -->
+</body>
+
+</html>

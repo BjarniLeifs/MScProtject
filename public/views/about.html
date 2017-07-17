@@ -1,0 +1,23 @@
+<div class="container ">
+  <div class="row">
+    <div class="just-txt-div text-center">
+      <h3><img src="/images/rames2.png"></h3>
+    </div>
+  </div>
+  <div>
+    <a class="a-collapse" ng-click="showDiv = !showDiv">
+      <div class="panel panel-default" ng-repeat="category in categories">
+        <div class="panel-heading">
+          <div class="bold-collapse"> {{category.category}} </div></a>
+          <div collapse="!showDiv"><div ng-show="showDiv" class="panel-body ">
+            <div ng-repeat="info in ramesinfo">
+              <ul ng-if="info.CategoryID == category.ID">
+                <div class="bold-collapse"> {{info.Name}} </div> <div> {{info.Info}} </div> </br>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
