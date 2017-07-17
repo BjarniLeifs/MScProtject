@@ -11,7 +11,7 @@ angular.module('ramesApp')
   .controller('ContactCtrl', function ($scope, $http) {
     $scope.reportID = 1;
 
-    var baseUrl = "http://localhost:8000";
+    var baseUrl = "http://localhost:3000";
 
     var reporttypeID = 1;
 

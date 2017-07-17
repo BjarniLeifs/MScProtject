@@ -32,15 +32,15 @@ const app = express();
 /* View engine setup */
   /* Make engine html use ejs render. */
   
-  // app.engine('html', require('ejs').renderFile);
+app.engine('html', require('ejs').renderFile);
 
   /* set path to views */
 
-  // app.set('views', path.join(__dirname, 'public/views'));
-  // app.set('view engine', 'html');
+app.set('views', path.join(__dirname, 'public/views'));
+app.set('view engine', 'html');
 
-  /* uncomment after placing your favicon in /public */
-  /* app.use(favicon(path.join(__dirname, 'public', 'favicon.ico'))); */
+/* uncomment after placing your favicon in /public */ 
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico'))); 
 
 /* Loggin in dev mode */
 app.use(logger('dev'));
@@ -52,7 +52,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // front end enable by uncomment. 
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 /* 
   Defining that all API calls need to be authanticated.
@@ -98,6 +98,7 @@ app.use('/api/reporttype',require('./routes/report_types'));
 app.use('/api/reports',require('./routes/reports'));
 app.use('/api/reportsinfo',require('./routes/reports_info'));
 app.use('/api/user',require('./routes/users'));
+app.use('/', require('./routes/index'));
 
 /* Exports the app. */
 

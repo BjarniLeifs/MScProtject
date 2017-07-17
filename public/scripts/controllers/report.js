@@ -12,7 +12,7 @@ angular.module('ramesApp')
 
     $scope.reportID = $routeParams.reportID;
 
-    var baseUrl = "http://localhost:8000";
+    var baseUrl = "http://localhost:3000";
 
     var reporttypeID = 1;
 

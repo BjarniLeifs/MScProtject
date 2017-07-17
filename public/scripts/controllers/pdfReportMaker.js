@@ -13,7 +13,7 @@ angular.module('ramesApp')
 
         $scope.reportID = 72;
     
-        var baseUrl = "http://localhost:8000";
+        var baseUrl = "http://localhost:3000";
 
         $http.get(baseUrl + "/api/ramescategory/ordered/sequenceNumber")
         .then(function (response) {

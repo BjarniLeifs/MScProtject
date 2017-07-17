@@ -10,7 +10,7 @@
 angular.module('ramesApp')
   .controller('AboutCtrl',  function ($scope, $location, $http, $routeParams) {
     
-    var baseUrl = "http://localhost:8000";
+    var baseUrl = "http://localhost:3000";
 
     $http.get(baseUrl + "/api/ramescategory/ordered/sequenceNumber")
       .then(function (response) {
