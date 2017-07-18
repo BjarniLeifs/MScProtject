@@ -1,9 +1,11 @@
 node_modules/
+~/node_modules
+apidoc/
+~/apidoc
 public/main/myApp.js
 public/main/myApp.css
 public/main/myApp.min.css
 public/main/myApp.min.js
-~/node_modules
 .DS_Store
 testResults.txt
 bower_components/
