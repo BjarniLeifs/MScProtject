@@ -15,7 +15,7 @@ angular.module('ramesApp')
     var userID = 2;
     var reporttypeID = 1;
 
-    var baseUrl = "http://localhost:3000";
+    var baseUrl = "http://localhost:3001";
 
     $http.get(baseUrl + "/api/reports/user/" + userID + "/")
       .then(function (response) {
