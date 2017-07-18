@@ -28,7 +28,21 @@ module.exports = function(grunt) {
       site: {
         src: ['public/main/myApp.css'],
         dest: 'public/main/myApp.min.css'
-     }
+      }
+    },
+    less: {
+      development: {
+        options: {
+          paths: ['public/stylesheets/css/less'],
+          yuicompress: true,
+          optimization: 2,
+          banner: '/*! Made on <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+        },
+        files: {
+          // target.css file: source.less file
+          'public/main/testLess.css': 'public/stylesheets/less/myApp.less'
+        }
+      }
     },
     uglify: {
       options: {
@@ -69,19 +83,19 @@ module.exports = function(grunt) {
     },
     watch: {
       js: {
-        files: [''],
+        files: ['public/javascripts/**/*.js'],
         tasks: ['concat:basic'],
         options: {
           livereload: true,
         }
       },
-      //css: {
-        //files: ['public/stylesheets/less/**/*.less', 'public/stylesheets/css/**/*.css'],
-        //tasks: ['less', 'concat_css'],
-        //options: {
-        //  nospawn: true
-        //}
-      //}
+      css: {
+        files: ['public/stylesheets/less/**/*.less', 'public/stylesheets/css/**/*.css'],
+        tasks: ['less', 'concat_css'],
+        options: {
+          nospawn: true
+        }
+      }
     },
     nodemon: {
       dev: {
@@ -103,7 +117,7 @@ module.exports = function(grunt) {
     },
     concurrent: {
       dev: {
-        tasks: [/*'concat_css','cssmin',*/'jshint', /*'concat',*/ /*'uglify',*/  'nodemon', /*'watch'*/],
+        tasks: ['concat_css','cssmin','jshint', 'concat', 'uglify', 'nodemon', 'watch'],
         options: {
           logConcurrentOutput: true
         }
@@ -123,10 +137,10 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.loadNpmTasks('grunt-mocha-test');
+  //grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-concurrent');
-  //grunt.loadNpmTasks('grunt-concat-css');
-  //grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-concat-css');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -138,13 +152,13 @@ module.exports = function(grunt) {
     var taskList = [
       'apidoc',
       'concurrent',
-      //'concat_css',
-      //'cssmin',
+      'concat_css',
+      'cssmin',
       'jshint', 
-      //'concat', 
-      //'uglify', 
+      'concat', 
+      'uglify', 
       'nodemon',
-      //'watch', 
+      'watch', 
       //'mochaTest',
 
     ];
