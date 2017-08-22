@@ -1,16 +1,35 @@
 
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
+const ramesinfo = require('./../DTO/rames_info');
 // READY BUT NEEDS TO TEST BETTER
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(ramesinfo.DTO(data[i].id, data[i].name, data[i].info,
+                  data[i].questionexplanation, data[i].languageid, 
+                  data[i].categoryid));
+
+    return object;
+
+}
 
 function RamesInfo() {
+
+
 
   this.get = (callback) => {
     "use strict";
     let table  = 'rames_info';
     let string = 'SELECT * FROM ' + table;
+
     dbService.queryString(string, 
       (err, result) => {
+
         if (err)
           callback(err, 
             { 
@@ -28,7 +47,7 @@ function RamesInfo() {
               status  : 200,
               Type    : 'Getting All the rames information.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the rames information.'
             });
       }
@@ -61,7 +80,7 @@ function RamesInfo() {
               status  : 200,
               Type    : 'Getting the rames information by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned the rames information by id.'
             });
       }
@@ -94,7 +113,7 @@ function RamesInfo() {
               status  : 200,
               Type    : 'Getting the rames information by category id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned the rames information by category id.'
             });
       }
@@ -127,7 +146,7 @@ function RamesInfo() {
               status  : 200,
               Type    : 'Getting the rames information by language id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned the rames information by language id.'
             });
       }
@@ -160,7 +179,7 @@ function RamesInfo() {
               status  : 200,
               Type    : 'Create new Rames information.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames information creation failed created successfully.'
             });
       }
@@ -190,7 +209,7 @@ function RamesInfo() {
               status  : 200,
               Type    : 'Update Rames information update.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames information updated successfully.'
             });
       }
@@ -223,13 +242,22 @@ function RamesInfo() {
               status  : 200,
               Type    : 'Delete rames information.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted rames information successfully.'
             });
       }
     );
   };
 
+
   
 }
-module.exports = new RamesInfo();
+
+
+
+
+const myself = module.exports = new RamesInfo();
+
+
+
+

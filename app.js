@@ -59,7 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')));
   This is token security to ensure permission in the app 
   when someone calls for /api/.... 
  */
-app.use('/asda',jwtCheck({
+app.use('/asdsssa',jwtCheck({
   secret: config.secret,
   userProperty: config.payload
 }));

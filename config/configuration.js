@@ -31,9 +31,15 @@ function config () {
 	switch(process.env.NODE_ENV) {
 		case 'development':
 			return {
-				'secret' 		: secret_key,
-				'payload' 		: payload,
-				'connectionUrl' : '' + db_local_link + db_local_username + ':' + db_local_password + '@' + db_local_host + ':' + db_local_port + '/' + db_local_name,
+				secret 			: secret_key,
+				payload 		: payload,
+				database		: db_local_name,
+				port			: db_local_port,
+				host			: db_local_host,
+				user			: db_local_username,
+				username 		: db_local_username,
+				pass			: db_local_password,
+				connectionUrl 	: '' + db_local_link + db_local_username + ':' + db_local_password + '@' + db_local_host + ':' + db_local_port + '/' + db_local_name,
 			};
 
 		case 'production':

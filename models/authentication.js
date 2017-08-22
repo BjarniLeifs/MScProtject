@@ -77,7 +77,7 @@ function Authentication() {
 									found   : true,
 									valid   : true,
 									status  : 200,
-									data	  : result,
+									data	: result,
 									message : 'Correct password.'
 								});
 							else 

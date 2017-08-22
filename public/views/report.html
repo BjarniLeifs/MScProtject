@@ -11,7 +11,7 @@
                     </div>
                     <div class="form-group">
                         <label>Report <Name></Name>:</label>
-                        <input ng-model="reportName[0]['Name']" class="form-control" type="text" ng-init="reportName.Name = ''" />
+                        <input ng-model="reportName[0]['name']" class="form-control" type="text" ng-init="reportName.name = ''" />
                     </div>
                     <div>
                     <a class="a-collapse" ng-click="showDiv = !showDiv">
@@ -22,46 +22,46 @@
                         <div collapse="!showDiv">
                             <div ng-show="showDiv" class="panel-body ">
                                 <div ng-repeat="info in ramesinfo">
-                                    <div ng-if="info.CategoryID == category.ID">
+                                    <div ng-if="info.categoryid == category.id">
                                         <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-info" aria-hidden="true"></i></a>
-                                        <label>{{info.Name}}</label>
+                                        <label>{{info.name}}</label>
                                         <div class="questionSuggestion" ng-show="showInfo">
                                             <div ng-repeat="question in questions">
-                                            <ul ng-if="question.RamesInfoID == info.ID "> {{question.Suggestion}} </ul>
+                                            <ul ng-if="question.ramesinfoid == info.id "> {{question.suggestion}} </ul>
                                             </div>
                                         </div>
                                         <div ng-repeat="question in questions">
-                                            <ul ng-if="question.RamesInfoID == info.ID">
-                                            <label>{{question.QuestionNr}}. {{question.Question}}</label>
+                                            <ul ng-if="question.ramesinfoid == info.id">
+                                            <label>{{question.questionnr}}. {{question.question}}</label>
                                             <div ng-repeat="ri in reportInfo">
-                                                <div ng-if="ri.QuestionID  == question.ID">
-                                                <div ng-if="question.Type == 'num'">
+                                                <div ng-if="ri.questionid  == question.id">
+                                                <div ng-if="question.type == 'num'">
                                                     <div class="form-group">
-                                                    <input ng-model="ri.Answer" type="number" class="form-control">
+                                                    <input ng-model="ri.answer" type="number" class="form-control">
                                                     </div>
                                                 </div>
                                                 <div ng-if="question.Type == 'text'">
                                                     <div class="form-group">
-                                                        <textarea ng-model="ri.Answer" class="form-control" rows="5"></textarea>
+                                                        <textarea ng-model="ri.answer" class="form-control" rows="5"></textarea>
                                                     </div>
                                                 </div>
-                                                <ul ng-if="question.Type == 'yesno'">
-                                                    <input ng-model="ri.Answer" type="radio" value='y'> Yes
-                                                    <input ng-model="ri.Answer" type="radio" value='n'> No
+                                                <ul ng-if="question.type == 'yesno'">
+                                                    <input ng-model="ri.answer" type="radio" value='y'> Yes
+                                                    <input ng-model="ri.answer" type="radio" value='n'> No
                                                 </ul>
-                                                <div ng-if="question.Type == 'radio'">
+                                                <div ng-if="question.type == 'radio'">
                                                     <div ng-repeat="(key, value) in radioChoices">
-                                                        <ul ng-if="value.QuestionID == question.ID">
-                                                            <input type="radio" value="{{value.Choice}}" ng-model="ri.Answer" > {{value.Choice}}
+                                                        <ul ng-if="value.questionid == question.id">
+                                                            <input type="radio" value="{{value.choice}}" ng-model="ri.answer" > {{value.choice}}
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div ng-if="question.Type == 'dropdown'">
-                                                    <div ng-repeat="(key, value) in ri.Answer">
+                                                <div ng-if="question.type == 'dropdown'">
+                                                    <div ng-repeat="(key, value) in ri.answer">
                                                         <ul ng-if="key != 'Textbox'">
-                                                            <select ng-model="ri.Answer[key]" ng-init="ri.Answer[key]">
+                                                            <select ng-model="ri.answer[key]" ng-init="ri.answer[key]">
                                                                 <option value=""> --- Choose --- </option>
-                                                                <option ng-show="ch.QuestionID == question.ID" ng-repeat="ch in dropdownChoices"> {{ch.Choice}} </option>
+                                                                <option ng-show="ch.questionid == question.id" ng-repeat="ch in dropdownChoices"> {{ch.choice}} </option>
                                                             </select>
                                                         </ul>
                                                         <ul ng-if="key == 'Textbox'">
@@ -71,31 +71,31 @@
                                                         </ul>                              
                                                     </div>
                                                 </div>
-                                                <div ng-if="question.Type == 'checkbox'">
-                                                    <div ng-repeat="(key, value) in checkboxChoices">
-                                                        <ul ng-if="value.QuestionID == question.ID">
-                                                            <div ng-if="value.Textbox == 'n'">
-                                                                <input ng-model="ri.Answer[key]" type="checkbox" ng-true-value="'{{value.Choice}}'" ng-false-value="' '"> {{value.Choice}}
+                                                <div ng-if="question.type == 'checkbox'">
+                                                    <div ng-repeat="(key, value) in checkboxhoices">
+                                                        <ul ng-if="value.Questionid == question.id">
+                                                            <div ng-if="value.textbox == 'n'">
+                                                                <input ng-model="ri.answer[key]" type="checkbox" ng-true-value="'{{value.choice}}'" ng-false-value="' '"> {{value.choice}}
                                                             </div>
                                                             <div ng-if="value.Textbox == 'y'">
-                                                                <input ng-model="ri.Answer[key]" type="checkbox" ng-true-value="'{{value.Choice}}'" ng-false-value="''"> {{value.Choice}}
+                                                                <input ng-model="ri.answer[key]" type="checkbox" ng-true-value="'{{value.choice}}'" ng-false-value="''"> {{value.choice}}
                                                                 <textarea style="width:100% !important;" ng-model="ri.Answer['Text'][key]" class="form-control" rows="5" columns="10"></textarea>                                
                                                             </div>
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div ng-if="question.Type == 'conditionalyesnotext'">
-                                                    <div ng-repeat="(key, value) in ri.Answer">
+                                                <div ng-if="question.type == 'conditionalyesnotext'">
+                                                    <div ng-repeat="(key, value) in ri.answer">
                                                         <div ng-if="value == 'y' || value == 'n' || ri.Answer[key] == ''"> 
-                                                            <input ng-model="ri.Answer[key]" type="radio" value='y'> Yes
-                                                            <input ng-model="ri.Answer[key]" type="radio" value='n' ng-click="resetValue(question.ID)"> No
+                                                            <input ng-model="ri.answer[key]" type="radio" value='y'> Yes
+                                                            <input ng-model="ri.answer[key]" type="radio" value='n' ng-click="resetValue(question.id)"> No
                                                         </div>
                                                         <div>
-                                                            <select ng-show="value == 'y'" ng-model="ri.Answer['Text'][key]">
+                                                            <select ng-show="value == 'y'" ng-model="ri.answer['Text'][key]">
                                                                 <option value=""> --- Choose --- </option>
-                                                                <option ng-show="ch.QuestionID == question.ID" ng-repeat="ch in dropdownChoices"> {{ch.Choice}} </option>
+                                                                <option ng-show="ch.questionid == question.id" ng-repeat="ch in dropdownChoices"> {{ch.choice}} </option>
                                                             </select>
-                                                            <textarea ng-show="value == 'y'" style="width:100% !important;" ng-model="ri.Answer['Textbox'][key]" class="form-control" rows="5" columns="10"></textarea>
+                                                            <textarea ng-show="value == 'y'" style="width:100% !important;" ng-model="ri.answer['Textbox'][key]" class="form-control" rows="5" columns="10"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>

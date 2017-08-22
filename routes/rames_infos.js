@@ -34,6 +34,7 @@ router.get('/', (req, res) => {
   "user strict";
   riService.get(
     (err, result) => {
+      console.log(err);
       if (err)
         return res.status(result.status)
             .json({ message: result.message });
@@ -43,6 +44,8 @@ router.get('/', (req, res) => {
       }
     );
 });
+
+
 /**
  * @api {get} /api/ramesinfo/:id Get rames category by id.
  * @apiVersion 1.0.0

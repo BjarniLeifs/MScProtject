@@ -32,10 +32,10 @@ CREATE TABLE question_radio_choices (
 
 CREATE TABLE rames_category (
   ID SERIAL,
-  category varchar(255) NOT NULL,
-  info text NOT NULL,
-  languageID int NOT NULL,
-  sequenceNumber int NOT NULL,
+  Category varchar(255) NOT NULL,
+  Info text NOT NULL,
+  LanguageID int NOT NULL,
+  SequenceNumber int NOT NULL,
   PRIMARY KEY(ID)
 );
 

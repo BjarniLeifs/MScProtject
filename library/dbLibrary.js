@@ -3,7 +3,12 @@ const pg = require('pg');
 /* Definging configuration of database config */
 const config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-const connectionString = config.connectionUrl;
+const connectionStringMain = config.connectionUrl;
+/* New way of connecting to pg. Since version 6.0.0 */
+
+const pool = new pg.Pool({
+	connectionString : connectionStringMain
+});
 
 module.exports = {
 	/* Query to get all */
@@ -11,7 +16,7 @@ module.exports = {
 		"use strict";
 		let results = [];	
 
-		pg.connect(connectionString, (err, client, done) => {
+		pool.connect((err, client, done) => {
 			if (err) {
 				done(err);
 				return cb(err, null);
@@ -42,13 +47,14 @@ module.exports = {
 				}
 			});
 		});
+	
 	},
 	/* Query to get all with an value */
 	queryStringValue: (string, value, cb) => {
 		"use strict";
 		let results = [];	
 
-		pg.connect(connectionString, (err, client, done) => {
+		pool.connect((err, client, done) => {
 			if (err) {
 				done(err);
 				return cb(err, null);
@@ -79,6 +85,7 @@ module.exports = {
 				}
 			});
 		});
+
 	}
 // exports ends
 };

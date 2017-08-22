@@ -30,6 +30,7 @@ angular.module('ramesApp')
 
     $http.get(baseUrl + "/api/ramesinfo")
       .then(function (response) {
+        console.log(response.data);
         $scope.ramesinfo = response.data;
       });
 
@@ -192,7 +193,7 @@ angular.module('ramesApp')
                     }
                 });
             });
-            var rName = $scope.reportName[0]['Name'];
+            var rName = $scope.reportName[0]['name'];
             return [
                 { text: rName, fontSize: 20, bold: false, alignment: 'center', style: ['lineSpacing', 'headingColor'] },
                 // Line beneath name of report
