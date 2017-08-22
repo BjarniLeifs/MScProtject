@@ -1,0 +1,43 @@
+
+
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-4">  
+             <h1>Umhverfi</h1>
+        </div>
+    </div>
+</div>
+<div ng-show="error" class="alert alert-danger row">
+    <span>{{ error.message }}</span>
+</div>
+
+
+<div class="container"> 
+    <div  class="row">
+        <form class="form-horizontal" ng-submit="updateSurroundings()">   
+            <div class="white-bg">
+                <div class="row "> 
+                    <div class="col-md-12">      
+                        <div class="col-md-4"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName" class="col-sm-3 control-label">Umhverfi</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="f-surroundings" ng-model="updates.surroundings"  value="{{updates.surroundings}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <button type="submit"  class="btn btn-default pull-right">Vista</button>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

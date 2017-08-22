@@ -1,0 +1,89 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-10">  
+             <h1>Skráð landslag í kringum stöðvar</h1>
+        </div>
+        <div class="col-md-2 pull-right">  
+            <button ng-click="sub=!sub" ng-show="isAdmin"type="button" class="btn btn-default pull-right">Bæta við landslagi</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="container"> 
+    <div ng-show="sub" class="row">
+        <form class="form-horizontal" ng-submit="addLandscape()">
+            <div class="white-bg">
+                <div class="row "> 
+                    <div class="col-md-12">  
+                        <div class="col-md-10"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName" class="col-sm-3 control-label">Nafn á landslagi</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="area" placeholder="Name" ng-model="landscape">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-sm-3 control-label">Lýsing</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" id="description" placeholder="description" ng-model="descriptionLandscape" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group pull-right">
+                                <div class="col-sm-10 pull-right">
+                                    <button type="submit" ng-model="sub" ng-click="sub=!sub" class="btn btn-default pull-right">Skrá landslag</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container white-bg1">
+    <div class="row pad-top ">
+        <div class="col-md-12">
+            <div class="form-group has-feedback">
+                <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                <input type="text"  ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table>
+                <tbody>
+                    <tr>
+                        <!--<th>#</th>-->
+                        <th><i class="glyphicon glyphicon-tree-deciduous"></i> Landslag</th>
+                        <th><i class="glyphicon glyphicon-info-sign"></i> Frekari lýsing</th>
+                        <th ng-show="isAdmin"><i class="glyphicon glyphicon-cog"></i> Aðgerðir</th>
+                    </tr>
+                    <tr data-ng-repeat="landscape in Alllandscape | orderBy:'landscape' |  filter:searchText">
+                        <!--<td>{{ landscape.id }}</td>-->
+                        <td>{{ landscape.landscape }}</td>  
+                        <td>{{ landscape.description }}</td> 
+                        <td ng-show="isAdmin">
+                            <div class="btn-group pull-right">
+                                 <button type="button"ui-sref="home.editlandscape({landscape :landscape.landscape})" class="btn-small"><i class="glyphicon glyphicon-edit"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <img src="/image/web/landslag.jpg" width="80%">
+        </div>  
+    </div>
+</div>
+
+       
+
+
+

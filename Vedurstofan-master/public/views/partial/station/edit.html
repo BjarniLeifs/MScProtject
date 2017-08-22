@@ -1,0 +1,191 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-4">  
+            <h1> Uppfæra stöð</h1>
+        </div>
+        <div ng-show="error" class="alert alert-danger row">
+            <span>{{ error.message }}</span>
+        </div>
+    </div>
+</div>
+
+
+
+<form class="form-horizontal" role="form">   
+    <div class="container">
+        <div class="row">
+            <div class="col-md-11 white-bg3 top-7px">
+                <div class="col-lg-7">                               
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Nafn</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="f-name" ng-model="stationUpdateName.name" value="{{stationUpdateName.name}}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">VMO innanhús</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="f-marker" ng-model="stationUpdateName.marker" value="{{stationUpdateName.marker}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">VMO</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="f-marker" ng-model="stationUpdateName.permanent_marker" value="{{stationUpdateName.permanent_marker}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Breiddargráða </label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="f-marker" ng-model="stationUpdateName.lat" value="{{stationUpdateName.lat}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Lengdargráða</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="f-marker" ng-model="stationUpdateName.lon" value="{{stationUpdateName.lon}}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Hæð</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="f-marker" ng-model="stationUpdateName.altitude" value="{{stationUpdateName.altitude}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Tekin í notkun</label>
+                        <div class="col-lg-6">
+                            <input type="date" class="form-control" id="l-name" value="{{stationUpdateName.date_from | date: 'medium'}}" ng-model="stationUpdateName.date_from" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Tekin niður"</label>
+                        <div class="col-lg-6">
+                            <input type="date" class="form-control" id="l-name" ng-model="stationUpdateName.date_to" value="{{stationUpdateName.date_to}}" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Lýsing</label>
+                        <div class="col-lg-6">
+                            <textarea name="" id="" class="form-control" cols="30" ng-model="stationUpdateName.description" rows="5">{{stationUpdateName.description}}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Athugasemd</label>
+                        <div class="col-lg-6">
+                            <textarea name="" id="" class="form-control" cols="30" ng-model="stationUpdateName.comment" rows="5">{{stationUpdateName.comment}}</textarea>
+                        </div>
+                    </div>
+                </div>
+              <div class="col-sm-4">    
+
+                <div class="form-group">
+                    <label for="mySelect">Net:</label>
+                    <ui-select ng-model="networks.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="networks in networkAvailable | filter: $select.search track by networks.id">
+                      <span ng-bind-html="networks.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+                <div class="form-group">
+                    <label for="mySelect">Landslag:</label>
+                    <ui-select ng-model="landscapes.selected">
+                    <ui-select-match>{{$select.selected.landscape}}</ui-select-match>
+                    <ui-select-choices repeat="item in landscapeAvailable | filter: $select.search track by item.id">
+                      <span ng-bind-html="item.landscape | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Staðsetning:</label>
+                    <ui-select ng-model="zones.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="zones in zoneAvailable | filter: $select.search track by zones.id">
+                      <span ng-bind-html="zones.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Tegund stöðvar:</label>
+                    <ui-select ng-model="types.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="types in typeAvailable | filter: $select.search track by types.id">
+                      <span ng-bind-html="types.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Tengiliður:</label>
+                    <ui-select ng-model="conascon.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="conascon in contactAvailable | filter: $select.search track by conascon.id">
+                      <span ng-bind-html="conascon.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Eigandi gagna:</label>
+                    <ui-select ng-model="condata.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="condata in contactDataAvailable | filter: $select.search track by condata.id">
+                      <span ng-bind-html="condata.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Aflgjafi:</label>
+                    <ui-select ng-model="powers.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="powers in powerAvailable | filter: $select.search track by powers.id">
+                      <span ng-bind-html="powers.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Umhverfi:</label>
+                    <ui-select ng-model="surr.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="surr in surroundingAvailable | filter: $select.search track by surr.id">
+                      <span ng-bind-html="surr.surroundings | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Spásvæði:</label>
+                    <ui-select ng-model="ar.selected">
+                    <ui-select-match>{{$select.selected.area}}</ui-select-match>
+                    <ui-select-choices repeat="ar in areaAvailable | filter: $select.search track by ar.id">
+                      <span ng-bind-html="ar.area | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Eigandi stöðvar:</label>
+                    <ui-select ng-model="conowner.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="conowner in contactOwnerAvailable | filter: $select.search track by conowner.id">
+                      <span ng-bind-html="conowner.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                <div class="form-group">
+                    <label for="mySelect">Umsjónaraðili:</label>
+                    <ui-select ng-model="concare.selected">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="concare in contactCareAvailable | filter: $select.search track by concare.id">
+                      <span ng-bind-html="concare.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <button type="submit" ui-sref="home.profile({name :stationUpdateName.name})" ng-click="updateStation()" class="btn btn-primary">Vista</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+  

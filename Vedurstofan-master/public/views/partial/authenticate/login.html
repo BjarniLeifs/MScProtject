@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="col-md-12 vcenter">
+    <img id="login-img" src="/image/logo_web_white.png" />
+</div>
+    <div class="col-md-4 col-sm-4 vcenter">
+        <div class="col-lg-4">
+                <div ng-show="error" class="alert alert-danger row">
+                     <span>{{ error.message }}</span>
+                </div> 
+        </div>  
+        <form ng-submit="logIn()" class="login-form">        
+            <div class="login-wrap white-bg">
+                <h1 class="padBottom">Innskráning</h1>
+                <p class="login-img"><i class="icon_lock_alt"></i></p>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="icon_profile"></i></span>
+                    <input type="text" class="form-control" placeholder="Username" ng-model="user.username" autofocus>
+                </div>
+                <div class="input-group topmargin"><i class="icon_key_alt"></i>
+                    <span class="input-group-addon"></span>
+                    <input type="password" class="form-control" placeholder="Password" ng-model="user.password">
+                </div>
+
+                <label class="checkbox margin-l4">
+                    <span class="pull-right"> <a ui-sref="forgot">Endursetja lykilorð</a></span>
+                </label>
+                <button class="btn btn-default  btn-block" type="submit">Innskrá</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">&nbsp;</div>
+    </div>
+</div>
+
+
+

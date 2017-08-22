@@ -1,0 +1,101 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-10">  
+               <h1>Skráð network innan kerfis</h1>
+        </div>
+         <div class="col-md-2 pull-right">  
+            <button ng-show="isAdmin"  ng-model="sub" ng-click="sub=!sub"  type="button" class="btn btn-default pull-right">Bæta við tengingu</button>
+        </div>
+    </div>
+</div>
+<div ng-show="error" class="alert alert-danger row">
+    <span>{{ error.message }}</span>
+</div>
+
+
+<!-- Add network starts -->
+<div class="container"> 
+    <div ng-show="sub" class="row">
+        <form ng-show="sub" class="form-horizontal" ng-submit="addNetwork()"> 
+            <div class="white-bg">
+                <div class="row">
+                    <div class="col-md-12">      
+                        <div class="col-md-10"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputName" class="col-sm-3 control-label">Nafn</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="name" placeholder="Nafn á networki" ng-model="networkName.name">
+                                </div>
+                            </div>               
+                            <div class="form-group">
+                                <label for="mySelect" class="col-sm-3 control-label">Tengiliður</label>
+                                <div class="col-sm-9">
+                                    <select name="mySelect" id="mySelect" ng-options="option.name for option in data.contactAvailable track by option.id" ng-model="data.contactSelected"></select>
+                                    <hr>
+                                </div>
+                                <!--<tt>option = {{data.contactSelected}}</tt><br/>-->
+                               
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10 pull-right">
+                                
+                                   <button type="submit"  ng-click="sub=!sub"  class="btn btn-default pull-right">Vista</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container white-bg1">
+        <div class="row">
+            <div ng-show="error" class="alert alert-danger row">
+                <span>{{ error.message }}</span>
+            </div>
+        </div>
+        <div class="row pad-top">
+            <div class="col-md-12">
+                <div class="form-group has-feedback">
+                    <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                    <input type="text"  ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                </div>
+            </div>
+        </div>
+  
+
+    <div class="row">
+        <div class="col-md-6">
+            <table>
+                <tbody>
+                    <tr>
+                        <!-- <th>#</th>-->
+                        <th><i class="fa fa-desktop"></i>Tegund tengingar</th>
+                        <th><i class="glyphicon glyphicon-user"></i> Tengiliður</th>
+                        <th ng-show="isAdmin"><i class="glyphicon glyphicon-cog"></i> Aðgerðir</th>
+                    </tr>
+                    <tr data-ng-repeat="work in AllNetworks | orderBy:'name' |  filter:searchText">
+                        <!--<td>{{ work.id }}</td> -->
+                        <td>{{ work.name }}</td>  
+                        <td>{{ work.cname }}</td>
+                        <td ng-show="isAdmin">
+                            <div class="btn-group pull-right">
+                                <button type="button" ui-sref="home.editNetwork({name : work.name})" class="btn-small pull-right"><i class="glyphicon glyphicon-edit"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <img src="/image/web/wifi.jpg" width="90%">
+        </div>
+    </div>
+</div> 

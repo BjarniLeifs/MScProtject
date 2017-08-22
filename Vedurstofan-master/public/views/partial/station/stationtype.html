@@ -1,0 +1,88 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-10">  
+            <h1>Tegund af stöðvum</h1>
+        </div> 
+        <div class="col-md-2 pull-right">  
+             <button ng-show="isAdmin"  ng-model="sub" ng-click="sub=!sub" type="button" class="btn btn-default pull-right">Bæta við tegund af stöðvum</button>
+        </div>
+    </div>
+</div>
+<!-- Add station type starts -->
+<div class="container"> 
+    <div ng-show="sub" class="row">
+        <form class="form-horizontal" ng-submit="addType()">
+            <div class="white-bg">
+                <div class="row "> 
+                    <div class="col-md-12">  
+                        <div class="col-md-10"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="col-sm-3 control-label">Tegund</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="name" placeholder="Name" ng-model="typeName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="type" class="col-sm-3 control-label">Týpa</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="type" placeholder="tegund" ng-model="typet">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10 pull-right">
+                                    <button type="submit" ng-click="sub=!sub" class="btn btn-default pull-right">Vista</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container white-bg1">
+    <div class="row pad-top">
+        <div class="col-md-12">
+            <div class="form-group has-feedback">
+                <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                <input type="text"  ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table>
+                <tbody>
+                    <tr>
+                        <!--<th>#</th>  -->       
+                        <th><i class="glyphicon glyphicon-pawn"></i> Tegund stöðva</th>
+                        <th><i class="glyphicon glyphicon-bookmark"></i> Týpa</th>
+                        <th ng-show="isAdmin"><i class="glyphicon glyphicon-cog"></i> Aðgerðir</th>
+                    </tr>
+                    <tr dir-paginate="type in allStationType | orderBy:'name' |  filter:searchText | itemsPerPage:10">
+                        <!--<td>{{ type.id }}</td> -->
+                        <td>{{ type.name }}</td>  
+                        <td>{{ type.type }}</td>   
+                        <td ng-show="isAdmin">
+                            <div class="btn-group pull-right">
+                                <button type="button" ui-sref="home.editStationtype({id :type.id})" class="btn-small "><i class="glyphicon glyphicon-edit"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> 
+            <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" > </dir-pagination-controls>
+        </div>
+        <div class="col-md-6">
+            <img src="/image/web/tegundstodvar.jpg" width="90%">
+        </div>
+    </div>
+</div>
+
+

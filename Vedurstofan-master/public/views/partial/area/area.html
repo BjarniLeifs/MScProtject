@@ -1,0 +1,87 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-10">  
+            <h1>Spásvæði</h1>
+        </div> 
+        <div class="col-md-2 pull-right">  
+            <button ng-show="isAdmin" ng-model="sub" ng-click="sub=!sub" type="button" class="btn btn-default pull-right">Bæta við spásvæði</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="container"> 
+    <div ng-show="sub" class="row">
+        <form class="form-horizontal" ng-submit="addArea()">   
+            <div class="white-bg">
+                <div class="row "> 
+                    <div class="col-md-12">      
+                        <div class="col-md-10"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="area" class="col-sm-3 control-label">Nafn á svæði</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="area" placeholder="Name" ng-model="area">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-sm-3 control-label">Lýsing</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" id="description" placeholder="description" ng-model="descriptionArea" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10 pull-right">
+                                    <button ng-click="sub=!sub" type="submit" class="btn btn-default pull-right">Vista</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container white-bg1">
+    <div class="row pad-top">
+        <div class="col-md-12">
+            <div class="form-group has-feedback">
+                <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                <input type="text" ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table >
+                <tbody>
+                    <tr>
+                        <!--<th>ID</th>-->  
+                        <th><i class="glyphicon glyphicon-globe"></i></i>  Landshluti</th>
+                        <th><i class="glyphicon glyphicon-comment"></i>  Lýsing</th>
+                        <th ng-show="isAdmin "><i class="glyphicon glyphicon-cog"></i>  Aðgerðir</th>
+                    </tr>
+                        <tr data-ng-repeat="area in Allarea | orderBy:'name' | filter:searchText">
+                            <!--<td>{{ area.id }}</td>--> 
+                        <td>{{ area.area }}</td>  
+                        <td>{{ area.description }}</td>
+                        <td ng-show="isAdmin">
+                            <div class="btn-group ">
+                                <button type="button" ui-sref="home.updateArea({area : area.area})" class="btn-small"><i class="glyphicon glyphicon-edit"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> 
+        <div class="col-md-6">
+            <img src="/image/web/area2.gif" width="90%">
+        </div>      
+    </div>
+</div>
+
+
+

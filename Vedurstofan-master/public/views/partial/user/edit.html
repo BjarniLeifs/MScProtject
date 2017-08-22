@@ -1,0 +1,69 @@
+<!-- edit-profile -->
+
+
+
+
+<div id="edit-profile" class="tab-pane">
+    <section class="panel">                                          
+        <div class="panel-body bio-graph-info">
+            <h1> Breyta upplýsingum</h1>
+            <form class="form-horizontal" role="form"> 
+                <div class="container">                                                 
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Notandanafn</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="f-name" placeholder=" " ng-model="user.username" value="{{user.username}}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Nafn</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="l-name" value="{{user.name}}"  ng-model="user.name" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Réttindi</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="l-name" ng-model="user.roles" value="{{user.roles}}" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Deild</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="c-name" ng-model="user.company" value="{{user.company}}" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Sími</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="b-day" ng-model="user.phone" value="{{user.phone}}" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Netfang</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="occupation" ng-model="user.email" value="{{user.email}}" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Heimilisfang</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="email" ng-model="user.address" value="{{user.address}}" placeholder=" ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Athugasemdir</label>
+                        <div class="col-lg-6">
+                            <textarea name="" id="" class="form-control" cols="30" ng-model="user.comments" rows="5">{{user.comments}}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-6">
+                            <button type="submit" ng-click="update()" class="btn btn-default pull-right">Vista</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>

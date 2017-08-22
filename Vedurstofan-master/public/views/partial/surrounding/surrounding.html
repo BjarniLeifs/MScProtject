@@ -1,0 +1,77 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-10">  
+             <h1>Skráð umhverfi</h1>
+        </div>
+        <div class="col-md-2 pull-right">  
+             <button ng-show="isAdmin" ng-model="sub" ng-click="sub=!sub" type="button" class="btn btn-default pull-right">Bæta við umhverfi</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="container"> 
+    <div ng-show="sub" class="row">
+        <form class="form-horizontal" ng-submit="addSurrounding()">   
+            <div class="white-bg">
+                <div class="row "> 
+                    <div class="col-md-12">      
+                        <div class="col-md-10"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName" class="col-sm-3 control-label">Umhverfi</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputName" placeholder="Name" ng-model="surroundingName">
+                                </div>
+                            </div>
+                            <div class="form-group pull-right">
+                                <div class="col-sm-10">
+                                    <button type="submit" ng-click="sub=!sub" class="btn btn-default pull-right">Vista svæði</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container white-bg1">
+    <div class="row pad-top">
+        <div class="col-md-12">
+            <div class="form-group has-feedback">
+                <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                <input type="text" ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">  
+            <table>
+                <tbody>
+                    <tr>
+                        <!--<th>#</th>-->
+                        <th><i class="glyphicon glyphicon-tree-deciduous"></i> Umhverfi</th>
+                        <th ng-show="isAdmin"><i class="glyphicon glyphicon-cog"></i> Aðgerðir</th>
+                    </tr>
+                    <tr dir-paginate="surr in AllSurroundings | orderBy:'name' |  filter:searchText | itemsPerPage:10">
+                        <!--<td>{{ surr.id }}</td> -->
+                        <td>{{ surr.surroundings  }}</td>  
+                        <td ng-show="isAdmin">
+                            <button type="button"  ui-sref="home.editSurrounding({ surroundings :surr.surroundings})" class="btn-small"><i class="glyphicon glyphicon-edit"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" > </dir-pagination-controls>
+        </div>
+        <div class="col-md-6">
+            <img src="/image/web/surrounding.jpeg" width="80%">
+        </div>      
+    </div>
+</div>
+
+

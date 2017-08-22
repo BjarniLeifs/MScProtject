@@ -1,0 +1,364 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-7">  
+            <h1>{{stationUpdateName.name}}</h1>
+        </div>
+        <div class="col-md-5" ng-show="isAdmin">  
+            <button type="button" ng-model="sub1" ng-click="sub1=!sub1; sub=sub2=false" class="btn btn-default pull-right margin-l1 topmargin">Breyta upplýsingum</button>
+            <button type="submit" ng-click="sub2=!sub2; sub=sub1=false" class="btn btn-default pull-right margin-l1 topmargin">Bæta við athugasemdir</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<div class="container"> 
+  <div  class="row">
+    <form name="myForm" class="form-horizontal" ng-submit="updateStation()">
+      <div class="white-bg">
+        <div class="row">
+          <div class="col-md-12"> 
+            <!--  Add user start --> 
+            <div ng-show="sub1"  > 
+              <div class="col-md-4"> 
+                <div ng-show="error" class="alert alert-danger row">
+                    <span>{{ error.message }}</span>
+                </div>
+                <div class="form-group">
+                  <label for="f-marker" class="col-sm-3 control-label">VMO Innanhúss</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="f-marker" placeholder="{{stationUpdateName.permanent_marker}}" ng-model="stationUpdateName.marker">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="pMarker" class="col-sm-3 control-label">VMO</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="pMarker" placeholder="{stationUpdateName.permanent_marker}}" ng-model="stationUpdateName.permanent_marker">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="lat" class="col-sm-3 control-label">Breiddargráða</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="lat" placeholder="{{stationUpdateName.lat}}" ng-model="stationUpdateName.lat">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="lon" class="col-sm-3 control-label">Lengdargráða</label>
+                  <div class="col-sm-9">
+                    <input type="phone" class="form-control" id="lon" placeholder="{{stationUpdateName.lon}}" ng-model="stationUpdateName.lon">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="lon" class="col-sm-3 control-label">Hæð</label>
+                  <div class="col-sm-9">
+                    <input type="phone" class="form-control" id="lon" placeholder="{{stationUpdateName.altitude}}" ng-model="stationUpdateName.altitude">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="Network" class="col-sm-3 control-label">Net</label>
+                  <div class="col-sm-9">
+                    <input type="phone" class="form-control" id="Network" placeholder="{{stationUpdateName.network_name}}" ng-model="stationUpdateName.network_name">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="dest" class="col-sm-3 control-label">Staðsetning</label>
+                  <div class="col-sm-9">
+                    <input type="phone" class="form-control" id="dest" placeholder="{{stationUpdateName.zone_name}}" ng-model="stationUpdateName.zone_name">
+                  </div>
+                </div> 
+                <div class="form-group">
+                  <label for="type" class="col-sm-3 control-label">Tegund</label>
+                  <div class="col-sm-9">
+                    <input type="phone" class="form-control" id="type" placeholder="{{stationUpdateName.stype_name}}" ng-model="stationUpdateName.stype_name">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Tengiliður:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.ccontact_name" value="{{stationUpdateName.ccontact_name}}" placeholder=" ">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Eigandi gagna:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.cdata_name" value="{{stationUpdateName.cdata_name}}" placeholder=" ">
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Aflgjafi:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.pgt_name" value="{{stationUpdateName.pgt_name}}" placeholder=" ">
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Spásvæði:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.area_name" value="{{stationUpdateName.area_name}}" placeholder=" ">
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Umhverfi:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.surround" value="{{stationUpdateName.surround}}" placeholder=" ">
+                    </div>
+                </div>
+                
+                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Eigandi stöðvar:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.cowner_name" value="{{stationUpdateName.cowner_name}}" placeholder=" ">
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label for="tekNot" class="col-sm-3 control-label">Tekin í notkun</label>
+                  <div class="col-sm-9">
+                    <input type="phone" class="form-control" id="tekNot" placeholder="{{stationUpdateName.date_from}}" ng-model="stationUpdateName.date_from">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="tekNid" class="col-sm-3 control-label">Tekin niður</label>
+                  <div class="col-sm-9">
+                    <input type="date" class="form-control" id="tekNid" placeholder="{{stationUpdateName.date_to}}" ng-model="stationUpdateName.date_to">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="des" class="col-sm-3 control-label">Lýsing</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="des" placeholder="{{stationUpdateName.description}}" ng-model="stationUpdateName.description">
+                  </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Landshluti:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.landscape" value="{{stationUpdateName.landscape}}" placeholder=" ">
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Umsjónaraðili:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="l-name" ng-model="stationUpdateName.caretaker" value="{{stationUpdateName.caretaker}}" placeholder=" ">
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputComment" class="col-sm-3 control-label">Athugasemdir</label>
+                  <div class="col-sm-9">
+                    <textarea class="form-control" id="inputComment" placeholder="{{stationUpdateName.comment}}" ng-model="stationUpdateName.comment" rows="2"></textarea>
+                    </div>
+                </div>           
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <img ng-show="!myForm.file.$valid" src="/image/users/undefined.png" height="100" width="100" >
+                  <label for="file" class="col-sm-3 control-label">Mynd</label>
+                  <div class="col-sm-9">
+                    <input type="file" ngf-select ngf-change="uploadUserPic(picFile)"  ng-model="picFile" name="file" accept="image/*" ngf-max-size="2MB">
+                  </div>
+                  <i ng-show="myForm.file.$error.maxSize">File too large {{picFile.size / 1000000|number:1}}MB: max 2M</i>
+                  <div class="form-group">
+                    <div class="col-md-9 topmargin">
+                      <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb pull-right"> 
+                    </div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-12 pull-right margin-b3">
+                <div class="form-group">
+                  <button type="submit" ng-click="sub1=!sub1; sub=!sub1 ; sin2=false" class="btn btn-default pull-right">Vista</button>
+                </div>
+              </div>
+            </div>
+            <!--  Add user ends -->
+            <!--  User profile starts -->  
+            <div ng-show="sub=!sub1">
+              <div class="col-md-2">
+                <div class="form-group">
+
+                  <img id="profile-img" ng-src=".{{stationUpdateName.imageurl}}" >
+                </div>
+              </div>
+              <div class="col-md-4"> 
+                  <div class="p-table">
+                    <i class="glyphicon glyphicon-envelope"></i>
+                     {{stationUpdateName.marker}}
+                  </div>
+                  <div class="p-table">
+                    <i class="glyphicon glyphicon-phone"></i> 
+                      {{stationUpdateName.permanent_marker}}
+                  </div>
+                  <div class="p-table">
+                    <i class="glyphicon glyphicon-education"></i>     
+                      {{stationUpdateName.lat}}
+                  </div>
+              
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-home"></i> 
+                    {{stationUpdateName.lon}}
+                </div>
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-map-marker"></i> 
+                    {{stationUpdateName.altitude}}
+                </div>    
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.date_from}}
+                </div>
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.date_to}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.description}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.comment}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.network_name}}
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.zone_name}}
+                </div>
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.stype_name}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.ccontact_name}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.cdata_name}}
+                </div>
+ 
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.cowner_name}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.pgt_name}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.area_name}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.surround}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.landscape}}
+                </div>
+
+                <div class="p-table">
+                  <i class="glyphicon glyphicon-info-sign"></i> 
+                    {{stationUpdateName.caretaker}}
+                </div>
+              </div>
+
+
+
+            </div>
+            <!--  User profile ends --> 
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="container"> 
+    <div ng-show="sub2" class="row">
+        <form class="form-horizontal" ng-submit="addStationComments()">
+            <div class="white-bg">
+                <div class="row "> 
+                    <div class="col-md-12">  
+                        <div class="col-md-12"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment" class="col-sm-2 control-label">Athugasemd</label>
+                                <div class="col-sm-6">
+                                    <textarea class="form-control" id="description" placeholder="Athugasemd" ng-model="comment" rows="4"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-6">
+                                    <button type="submit" ng-click="sub2=!sub2; sub=sub1=false" class="btn btn-default pull-right">Skrá Athugasemd</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container white-bg1">
+    <div class="row pad-top">
+        <div class="col-md-12">
+            <div class="form-group has-feedback margin-top">
+                <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                <input type="text"  ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div ng-show="error" class="alert alert-danger row">
+        <span>{{ error.message }}</span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">  
+            <table>
+                <tbody>
+                    <tr>
+                        <th><i class="icon_profile"></i> Athugasemd</th>
+                        <th><i class="icon_pin_alt"></i> Notandi</th>   
+                        <th><i class="icon_pin_alt"></i> Dagsetning</th>         
+                    </tr>
+                    <tr dir-paginate="item in stationComment | filter:searchText | itemsPerPage:10">
+                    <!--<tr data-ng-repeat="item in stationComment | itemsPerPage:10" > -->
+                        <td>{{ item.comment }}</a> </td>
+                        <td>{{ item.user }}</td>
+                        <td>{{ item.date | date:'medium' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" > </dir-pagination-controls>
+        </div>        
+    </div>
+</div>
+
+
+

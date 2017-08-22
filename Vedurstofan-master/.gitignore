@@ -1,0 +1,10 @@
+node_modules/
+public/main/myApp.js
+public/main/myApp.css
+public/main/myApp.min.css
+public/main/myApp.min.js
+~/node_modules
+.DS_Store
+testResults.txt
+server/config/
+bower_components/

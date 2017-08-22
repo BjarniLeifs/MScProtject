@@ -1,0 +1,69 @@
+<div class="container"> 
+  <div class="row">
+    <form class="form-horizontal">   
+      <div class="white-bg">
+        <div class="row "> 
+          <div class="col-md-12">      
+            <div class="col-md-6"> 
+              <div ng-show="error" class="alert alert-danger row">
+                  <span>{{ error.message }}</span>
+              </div>
+              <div class="form-group">
+                  <label for="mySelect" class="col-sm-3 control-label">Týpa:</label>
+                  <ui-select ng-model="itemtype.selected" class="col-sm-9">
+                  <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                  <ui-select-choices repeat="itemtype in itemTypeOptions | filter: $select.search track by itemtype.id">
+                    <span ng-bind-html="itemtype.name | highlight: $select.search"></span>
+                  </ui-select-choices>
+              </div>
+
+              <div class="form-group">
+                  <label for="mySelect" class="col-sm-3 control-label">Producer:</label>
+                  <ui-select ng-model="producer.selected" class="col-sm-9">
+                  <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                  <ui-select-choices repeat="itemtype in producerAvailable | filter: $select.search track by itemtype.id">
+                    <span ng-bind-html="itemtype.name | highlight: $select.search"></span>
+                  </ui-select-choices>
+              </div>
+
+              <div class="form-group">
+                  <label for="mySelect" class="col-sm-3 control-label">Eigandi:</label>
+                  <ui-select ng-model="owner.selected" class="col-sm-9">
+                  <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                  <ui-select-choices repeat="itemtype in ownerAvailable | filter: $select.search track by itemtype.id">
+                    <span ng-bind-html="itemtype.name | highlight: $select.search"></span>
+                  </ui-select-choices>
+              </div>
+
+              <div class="form-group">
+                  <label for="mySelect" class="col-sm-3 control-label">Staða:</label>
+                  <ui-select ng-model="status.selected" class="col-sm-9">
+                  <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                  <ui-select-choices repeat="itemtype in statusAvailable | filter: $select.search track by itemtype.id">
+                    <span ng-bind-html="itemtype.name | highlight: $select.search"></span>
+                  </ui-select-choices>
+              </div>
+
+              <div class="form-group">
+                  <label for="mySelect" class="col-sm-3 control-label">Stöð:</label>
+                  <ui-select ng-model="station.selected" class="col-sm-9">
+                  <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                  <ui-select-choices repeat="itemtype in stationAvailable | filter: $select.search track by itemtype.id">
+                    <span ng-bind-html="itemtype.name | highlight: $select.search"></span>
+                  </ui-select-choices>
+              </div>
+              <div class="form-group">
+                  <div class="col-sm-3">
+                      <button type="submit" ng-click="updateitem()" class="btn btn-default pull-rigth">Vista</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+

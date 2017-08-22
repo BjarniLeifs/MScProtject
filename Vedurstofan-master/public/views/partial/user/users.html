@@ -1,0 +1,229 @@
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-7">  
+            <h1>Starfsmenn</h1>
+        </div>
+        <div class="col-md-5" ng-show="isAdmin">  
+            <button type="button" ng-model="sub1" ng-click="sub1=!sub1; sub=false"class="btn btn-default pull-right margin-l1 topmargin">Skrá  starfsmann</button>
+            <button ng-model="sub" ng-click="sub=!sub; sub1=false" type="button" class="btn btn-default topmargin pull-right">Endursetja lykilorð</button>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div ng-show="sub" ng-controller="AdminCtrl" class="row">
+        <form ng-submit="changeUserPassword()" class="form-horizontal">
+            <div class="white-bg">
+                <div class="row"> 
+                     <div class="col-md-12">
+                        <div class="col-md-4"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="username" class="col-sm-3 control-label">Notendanafn</label>
+                                 <div class="col-sm-9">
+                                    <input type="username" class="form-control" placeholder="Notendanafn" ng-model="username"></input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="col-sm-3 control-label">Lykilorð</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" placeholder="Lykilorð" ng-model="password"></input>
+                                </div>
+                            </div>
+                           
+                            <div class="col-sm-offset-2 col-sm-9">
+                                <div class="form-group">
+                                    <button ng-click="sub=!sub; sub1=false" type="submit" class="btn btn-default pull-right">Breyta lykilorði</button>
+                                </div>
+                            </div>                                                  
+                        </div>            
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--  Add user start --> 
+<div class="container"> 
+    <div ng-show="sub1" ng-controller="AuthCtrl" class="row">
+        <form name="myForm" class="form-horizontal" ng-submit="newUser()">
+            <div class="white-bg">
+                 <div class="row">
+                     <div class="col-md-12">      
+                        <div class="col-md-4"> 
+                            <div ng-show="error" class="alert alert-danger row">
+                                <span>{{ error.message }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName" class="col-sm-3 control-label">Notendanafn</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputName" placeholder="Notendanafn" ng-model="adduser.username">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTitle" class="col-sm-3 control-label">Nafn</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputTitle" placeholder="Nafn" ng-model="adduser.name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputCompany" class="col-sm-3 control-label">Lykilorð</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputCompany" placeholder="Lykilorð" ng-model="adduser.password">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="inputPhone" class="col-sm-3 control-label">Company</label>
+                                <div class="col-sm-9">
+                                    <input type="phone" class="form-control" id="inputPhone" placeholder="Company" ng-model="adduser.company">
+                                </div>
+                            </div>
+            
+                            <div class="form-group">
+                                <label for="roles" class="col-sm-3 control-label">Réttindi</label>
+                                <div class="col-sm-9" id="roles">
+
+                                </div>
+                          
+                
+                                <label class="checkbox-inline col-sm-3 control-label">
+                                    <input type="checkbox" name="isreader" ng-model="adduser.isreader"> Skoða <br/>
+                                    </label>
+                
+                                <label class="checkbox-inline col-sm-3 control-label">
+                                    <input type="checkbox" name="iswriter" ng-model="adduser.iswriter"> Skrifa
+                                </label>
+                
+                                <label class="checkbox-inline col-sm-3 control-label">
+                                    <input type="checkbox" name="ismoderator" ng-model="adduser.ismoderator"> Breyta<br/>
+                                    </label>
+
+
+                                <label class="checkbox-inline col-sm-3 control-label">
+                                    <input type="checkbox" name="isadmin" ng-model="adduser.isadmin">Stjórnandi<br/>
+                                </label>
+  
+                            </div>
+                           </div> 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="inputGsm" class="col-sm-3 control-label">Sími</label>
+                                <div class="col-sm-9">
+                                    <input type="phone" class="form-control" id="inputGsm" placeholder="Sími" ng-model="adduser.phone">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputwww" class="col-sm-3 control-label">Netfang</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputwww" placeholder="Netfang" ng-model="adduser.email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputwww1" class="col-sm-3 control-label">Address</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputwww1" placeholder="Address" ng-model="adduser.address">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputComment" class="col-sm-3 control-label">Comment</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" id="inputComment" placeholder="Comments" ng-model="adduser.comments" rows="3"></textarea>
+                                </div>
+                            </div> 
+                               
+                            <div class="form-group">
+                                <label for="active" class="col-sm-3 control-label">Réttindi</label>
+                                <div class="col-sm-9" id="active">
+
+                                </div>
+                                <label class="checkbox-inline col-sm-4 control-label">
+                                    <input type="checkbox" name="ismoderator" ng-model="adduser.isactive"> Notandi virkur<br/>
+                                </label>
+
+  
+                            </div>       
+                        
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                                <label for="file" class="col-sm-3 control-label">Mynd</label>
+                                <div class="col-sm-9">
+                                <input type="file" ngf-select ngf-change="uploadUserPic(picFile)"  ng-model="picFile" name="file" accept="image/*" ngf-max-size="2MB">
+                            </div>
+                    
+                                <i ng-show="myForm.file.$error.maxSize">File too large {{picFile.size / 1000000|number:1}}MB: max 2M</i>
+                                
+                                <div class="form-group">
+                                <div class="col-md-9 topmargin">
+                                <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb pull-right"> 
+                                </div>
+                               </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 pull-right margin-b3">
+                            <div class="form-group">
+                                <button type="submit" ng-click="sub1=!sub1; sub=false" class="btn btn-default pull-right">Bæta við notanda</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container white-bg1">
+    <div class="row pad-top">
+        <div class="col-md-12">
+            <div class="form-group has-feedback margin-top">
+                <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                <input type="text"  ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="error" class="alert alert-danger row">
+        <span>{{ error.message }}</span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">  
+            <table>
+                <tbody>
+                    <tr>
+                        <th><i class="glyphicon glyphicon-user"></i> Notandanafn</th>
+                        <th><i class="glyphicon glyphicon-user"></i> Nafn</th>
+                        <th><i class="glyphicon glyphicon-envelope"></i> Netfang</th>
+                        <th><i class="fa fa-desktop"></i> Deild</th>
+                        <th><i class="glyphicon glyphicon-phone"></i> Símanúmer</th>
+                        <th><i class="glyphicon glyphicon-map-marker"></i> Staðsetning</th>
+                        <!--<th ng-show="isAdmin()"><i class="icon_cogs"></i> Aðgerðir</th>-->
+                    </tr>
+                    <tr dir-paginate="user in users | orderBy:'name' | filter: searchText | itemsPerPage:3">
+                        <td>{{ user.username }}</td>
+                        <td><a ui-sref="home.name({name :user.name})">{{ user.name }}</a></td>
+                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                        <td>{{ user.company }}</td> 
+                        <td><a href="tel:{{ user.phone }}">{{ user.phone }}</a></td> 
+                        <td>{{ user.address }}</td>
+                        <!--<td ng-show="isAdmin()">
+                            <div class="btn-group">
+                                <a class="btn btn-primary"><i class="icon_plus_alt2"></i></a>
+                                <a class="btn btn-success"><i class="icon_check_alt2"></i></a>
+                                <a class="btn btn-danger"><i class="icon_close_alt2"></i></a>
+                            </div>
+                        </td>-->
+                    </tr>
+                </tbody>
+
+            </table>
+            <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" > </dir-pagination-controls>
+        </div>        
+    </div>
+</div>

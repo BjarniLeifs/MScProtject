@@ -1,0 +1,65 @@
+
+<div class="container">
+    <div class="row topmargin">
+        <div class="col-md-10">  
+             <h1>Eftirlit</h1>
+        </div>
+        <div class="col-lg-4">
+            <div ng-show="error" class="alert alert-danger row">
+                <span>{{ error.message }}</span>
+            </div> 
+        </div>  
+    </div>
+</div>
+
+
+
+<div class="container white-bg1">
+    <div class="row pad-top">
+        <div class="col-md-12">
+            <div class="form-group has-feedback">
+                <label for="search" class="sr-only">Sláðu inn leitarorð</label>
+                <input type="text" ng-model="searchText" class="form-control" name="search" id="search" placeholder="Sláðu inn leitarorð">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table>
+                <tbody>
+                    <tr>
+                        <th><i class="glyphicon glyphicon-home"></i> Stöð</th>
+                        <!--<th ng-show="isAdmin"><i class="icon_cogs"></i> Aðgerðir</th>-->
+                    </tr>
+                    <tr dir-paginate="station in AllStationVisits | filter:searchText | itemsPerPage:10"> 
+
+                    	<td><a ui-sref="home.visitname({id :station.sid})">{{ station.sname | date:'medium'}}</a></td>
+
+
+                        <!--<td ng-show="isAdmin">
+                            <div class="btn-group">
+                                <a class="btn btn-primary" ><i class="icon_plus_alt2"></i></a>
+                                <a class="btn btn-success" ><i class="icon_check_alt2"></i></a>
+                                <a class="btn btn-danger" ><i class="icon_close_alt2"></i></a>
+                            </div>
+                        </td>-->
+                    </tr>
+                </tbody>
+            </table>
+            <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" > </dir-pagination-controls>
+        </div>
+         <div class="col-md-6">
+            <img class="img-station" src="/image/web/stationVisit.jpg" width="90%">
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

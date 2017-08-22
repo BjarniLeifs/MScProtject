@@ -1,0 +1,109 @@
+
+<nav class="navbar-default fixed-top">
+  <div class="container-fluid">
+  <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <!--logo start-->
+      <a class="logo"><img id="logo" src="/image/gfx/logo_trausti.png"></a>
+      <!--logo end-->
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li >
+          <a role="button" ui-sref="home.welcome" ng-model="sub0" ng-click="sub0=!sub0; sub1=sub2=sub3=sub4=sub5=false">
+            <span>Forsíða</span>
+          </a>
+        </li>
+        <li ng-hide="!isLoggedIn()">
+          <a role="button" ui-sref="home.users" ng-model="sub1" ng-click ="getAllUsers(); sub0=!sub0; sub1=sub2=sub3=sub4=sub5=false" >
+            <span>Starfsmenn</span>
+          </a>
+        </li>
+        <li >
+          <a role="button" ng-model="sub2" ng-click="sub2=!sub2; sub0=sub1=sub3=sub4=sub5=false" >
+            <span>Stöðvar</span>
+          </a>
+        </li>
+        <li class="dropdown">
+          <a role="button" ng-model="sub3" ng-click="sub3=!sub3; sub0=sub1=sub2=sub4=sub5=false">
+            <span>Tækjabúnaður</span>
+          </a>
+        </li>
+        <li >
+          <a role="button"  ng-model="sub4" ng-click="sub4=!sub4; sub0=sub1=sub2=sub3=sub5=false">   
+            <span>Eftirlit</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a role="button" ng-model="sub5" ng-click="sub5=!sub5; sub0=sub1=sub2=sub3=sub4=false" >
+            <span class="username" ng-controller="NavCtrl">{{ currentUser }}</span>
+          </a>
+        </li>
+      </ul>
+    </div><!-- /.container-fluid -->
+  </div>
+</nav>
+<div ng-show="sub2" class="container-fluid subMenuBg">
+  <div >
+    <ul class="nav nav-pills">
+      <li><a ui-sref="home.station">Allar stöðvar</a></li>                          
+      <li><a ui-sref="home.area">Spásvæði</a></li>
+      <li><a ui-sref="home.landscape">Landslag</a></li>
+      <li><a ui-sref="home.surrounding">Umhverfi</a></li>
+      <li><a ui-sref="home.stationtype">Tegund stöðva</a></li>
+      <li><a ui-sref="home.antenna">Loftnet</a></li>
+      <li><a ui-sref="home.network">Net</a></li>
+      <li><a ui-sref="home.zone">Staðsetningar</a></li>
+      <li><a ui-sref="home.pgt">Aflgjafi</a></li>
+      <li ng-hide="!isLoggedIn()"><a ui-sref="home.contacts" >Tengiliðir</a></li>
+    </ul>
+  </div>
+</div>
+<div ng-show="sub3" class="container-fluid subMenuBg">
+  <ul class="nav nav-pills">
+    <li><a ui-sref="home.alldevices">Öll tæki</a></li>
+    <li><a ui-sref="home.itemstatus">Tæki staða</a></li>
+    <li><a ui-sref="home.addnewattribute">Bæta við Eiginleikum</a></li>
+    <li><a ui-sref="home.addItemType">Bæta við tegund tækis</a></li>
+  </ul>
+</div>
+<div ng-show="sub4" class="container-fluid subMenuBg">
+  <ul class="nav nav-pills">
+    <li><a ui-sref="home.stationVisit">Öll eftirlit</a></li>
+    <li><a ui-sref="home.addStationVisit">Bæta við eftirliti</a></li>
+  
+  </ul>
+</div>
+
+<div ng-show="sub5" class="container-fluid subMenuBg">
+  <ul class="nav nav-pills pull-right">
+    <li >
+      <a ui-sref="home.name({name : user.name})"><i class="icon_profile"></i>Aðgangurinn minn</a>
+    </li>
+    <li ng-controller="MainCtrl"> 
+      <a ng-click="logOut()"><i class="icon_key_alt"></i>Útskrá</a>
+    </li>
+  </ul>
+</div>
+  
+
+
+
+<!--main content start-->
+<section ng-style="myStyle" >
+<div ui-view></div>
+</section>
+<!--main content end-->
+
+
