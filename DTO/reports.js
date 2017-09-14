@@ -1,10 +1,12 @@
 module.exports = {
-	DTO : (id, uId, name, rTypeId) => { 
+	DTO : (id, uId, name, rTypeId, ctime, utime) => { 
 		return {
 			ID 	 		 : id,
 			UserID 		 : uId,
 			Name 		 : name,
-			ReportTypeID : rTypeId
+			ReportTypeID : rTypeId,
+			CreatedAt    : ctime,
+		  	LastUpdate   : utime 
 		};
 	}
 /* exports ends */

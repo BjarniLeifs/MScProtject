@@ -34,7 +34,6 @@ router.get('/', (req, res) => {
   "user strict";
   riService.get(
     (err, result) => {
-      console.log(err);
       if (err)
         return res.status(result.status)
             .json({ message: result.message });

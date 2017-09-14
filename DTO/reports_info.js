@@ -1,8 +1,9 @@
 module.exports = {
-	DTO : (id, rId, qId, ans) => { 
+	DTO : (id, rId, cId, qId, ans) => { 
 		return {
 			ID 	 		: id,
-			ReportID	: rId
+			ReportID	: rId,
+			CategoryID  : cId,
 			QuestionID	: qId,
 			Answer 		: ans
 		};

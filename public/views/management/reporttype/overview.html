@@ -1,0 +1,46 @@
+<div class="container">
+  
+</div>
+
+<div class="container">
+    <div class="row centered-form">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Report Types
+                        <button class="btn btn-success btn-xs pull-right" ui-sref="main.management.newreportype">
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                        </button>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped pad-top-100">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Info</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="type in reporttypes">
+								<td class="col-md-1">{{type.ID}}</td> 
+								<td class="col-md-3">{{type.Name}}</td>     
+								<td class="col-md-5">{{type.Info}}</td>
+								<td class="col-md-2">
+									<button class="btn btn-warning btn-xs" ui-sref="main.management.editreporttype({id: type.ID})">
+										<span class="glyphicon glyphicon-pencil"></span>
+									</button>
+									<button class="btn btn-danger btn-xs"  ui-sref="main.management.deletereporttype({id: type.ID})" >
+										<span class="glyphicon glyphicon-trash"></span>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

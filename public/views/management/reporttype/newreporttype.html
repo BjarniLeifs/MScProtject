@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row centered-form">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Make new report type</h3>
+                </div>
+                <div class="panel-body">
+                    <form role="form" ng-submit="makeNewType()">
+                        <div class="form-group">
+                            <input type="text" name="text" id="email" class="form-control input-sm" placeholder="Name of report type" ng-model="type.name">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" id="message" class="form-control" rows="9" cols="25" placeholder="Write information on the type here." ng-model="type.info"></textarea>
+                        </div>
+                        <div class="col-md-2">
+                        	<button type="submit" class="btn btn-default btn-block">Add type	</button>	
+                        </div>
+                                                    
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

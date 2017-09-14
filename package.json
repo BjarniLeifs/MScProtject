@@ -55,6 +55,6 @@
   },
   "apidoc": {
     "title": "Custom apiDoc browser title",
-    "url" : "http://localhost:3001"
+    "url": "http://localhost:3001"
   }
 }

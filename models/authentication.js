@@ -56,8 +56,9 @@ function Authentication() {
 		let table = 'users';
 		let string ='SELECT * FROM '+ table + ' WHERE UPPER(username) = UPPER($1)';
 		/* Looking for the user and checking if he is registered */
-		userSerivce.getFullInfoByUsername(req.body.username,
+		userSerivce.getAuthenticationByUsername(req.body.username,
 			(err, result) => {
+				
 				if (err) 
 					callback(err, {
 						found   : null,
@@ -66,11 +67,10 @@ function Authentication() {
 						data    : null,
 						message : null
 					});
-			
-				/* If the result comes back not undefined the user was found */
-				if (result[0] !== undefined) {
 
-					authLibrary.validPassword(req.body.password, result[0].hash, 
+				/* If the result comes back not undefined the user was found */
+				if (result.data.length > 0) {
+					authLibrary.validPassword(req.body.password, result.data[0].Hash, 
 						(valid) => {
 							if (valid) 
 								callback(err, {
@@ -85,7 +85,7 @@ function Authentication() {
 									found   : true,
 									valid   : false,
 									status  : 422,
-									data    : null,
+									data    : result,
 									message : "Incorrect password."
 								});
 

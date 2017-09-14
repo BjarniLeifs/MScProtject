@@ -1,19 +1,21 @@
 
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
+const languages = require('./../DTO/languages');
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(languages.DTO(data[i].id, data[i].name));
 
+    return object;
+
+}
 function Language(){
 	"use strict";
-  /* 
-    This allowes me to call myself with :
-
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-	this.myself = this;
 
 	this.get = (callback) => {
 		"use strict";
@@ -39,7 +41,7 @@ function Language(){
 							status  : 200,
 							Type    : 'Getting All languages.',
 							err     : err,
-							data    : result,
+							data    : DTO(result),
 							Message : 'Returned all languages.'
  						});
 			}
@@ -71,7 +73,7 @@ function Language(){
 							status  : 200,
 							Type    : 'Getting language by id.',
 							err     : err,
-							data    : result,
+							data    : DTO(result),
 							Message : 'Returned language by id.'
  						});
 			}
@@ -103,7 +105,7 @@ function Language(){
 							status  : 200,
 							Type    : 'Getting language by name.',
 							err     : err,
-							data    : result,
+							data    : DTO(result),
 							Message : 'Returned language by name.'
  						});
 			}
@@ -135,7 +137,7 @@ function Language(){
 							status  : 200,
 							Type    : 'Create new language.',
 							err     : err,
-							data    : result,
+							data    : DTO(result),
 							Message : 'Language created successfully.'
  						});
 			}
@@ -164,7 +166,7 @@ function Language(){
 							status  : 200,
 							Type    : 'Update language.',
 							err     : err,
-							data    : result,
+							data    : DTO(result),
 							Message : 'Language updated successfully.'
  						});
 
@@ -198,7 +200,7 @@ function Language(){
 							status  : 200,
 							Type    : 'Delete language.',
 							err     : err,
-							data    : result,
+							data    : DTO(result),
 							Message : 'Deleted successfully.'
  						});
 			}

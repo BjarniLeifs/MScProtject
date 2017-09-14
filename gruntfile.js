@@ -8,7 +8,7 @@ module.exports = function(grunt) {
       },
       basic: {
         src: ['public/javascripts/**/*.js'],
-        dest: 'public/main/myApp.js',
+        dest: 'public/main/js/myApp.js',
       }
     },
     concat_css: {
@@ -16,8 +16,8 @@ module.exports = function(grunt) {
         banner: '/*! Made on <%= grunt.template.today("dd-mm-yyyy") %> */\n'
       },
       all: {
-        src: ['public/stylesheets/css/**/*.css'],
-        dest: 'public/main/myApp.css',
+        src: ['public/stylesheets/**/**/*.css'],
+        dest: 'public/main/css/myApp.css',
       }
     },
     cssmin: {
@@ -26,8 +26,8 @@ module.exports = function(grunt) {
         banner: '/*! Made on <%= grunt.template.today("dd-mm-yyyy") %> */\n'
       },
       site: {
-        src: ['public/main/myApp.css'],
-        dest: 'public/main/myApp.min.css'
+        src: ['public/main/**/myApp.css'],
+        dest: 'public/main/css/myApp.min.css'
       }
     },
     less: {
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
         },
         files: {
           // target.css file: source.less file
-          'public/main/testLess.css': 'public/stylesheets/less/myApp.less'
+          'public/main/css/testLess.css': 'public/stylesheets/less/myApp.less'
         }
       }
     },
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
       },
       basic: {
         files: {
-          'public/main/myApp.min.js': ['<%= concat.basic.dest %>']
+          'public/main/js/myApp.min.js': ['<%= concat.basic.dest %>']
         }
       }
     },

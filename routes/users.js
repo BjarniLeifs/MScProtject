@@ -40,7 +40,7 @@ const uService = require('./../models/users');
 
 // Returns a list of all users
 router.get('/', (req, res) => {
-  "user strict";
+  "use strict";
   uService.get(
     (err, result) => {
       if (err)
@@ -55,7 +55,7 @@ router.get('/', (req, res) => {
 
 // Returns the info of a user with the given id
 router.get('/:id/', (req, res) => {
-  "user strict";
+  "use strict";
   uService.getUserByID(req.params.id,
     (err, result) => {
       if (err)
@@ -70,7 +70,7 @@ router.get('/:id/', (req, res) => {
 
 // Updates the user
 router.put('/', (req, res) => {
-  "user strict";
+  "use strict";
   uService.update(req.body,
     (err, result) => {
       if (err)
@@ -85,7 +85,7 @@ router.put('/', (req, res) => {
 
 // Deletes the user with the given id
 router.delete('/:id/', (req, res) => {
-  "user strict";
+  "use strict";
   uService.delete(req.params.id,
     (err, result) => {
       if (err)
@@ -100,7 +100,7 @@ router.delete('/:id/', (req, res) => {
 
 // Returns the user with the given token
 router.get('/token/:token/', (req, res) => {
-  "user strict";
+  "use strict";
   uService.getUserByToken(req.params.token,
     (err, result) => {
       if (err)

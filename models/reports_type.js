@@ -1,23 +1,26 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const reportsType = require('./../DTO/reports_type');
+
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(reportsType.DTO(data[i].id, data[i].name, data[i].info));
+
+    return object;
+
+}
 
 
 function ReportType() {
-  /* 
-    This allowes me to call myself with :
-
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-  this.myself = this;
 
   this.get = (callback) => {
     "use strict";
-    let table  = 'report_type';
+    let table  = 'reports_type';
     let string = 'SELECT * FROM ' + table;
 
     dbService.queryString(string, 
@@ -39,7 +42,7 @@ function ReportType() {
               status  : 200,
               Type    : 'Getting All the reports type.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the reports type.'
             });
       }
@@ -48,7 +51,7 @@ function ReportType() {
 
   this.getReportTypeByID = (id, callback) =>  {
     "use strict";
-    let table  = 'report_type';
+    let table  = 'reports_type';
     let string = 'SELECT * FROM '+ table + ' WHERE id = $1';
     let value  = [id]
 
@@ -71,7 +74,7 @@ function ReportType() {
               status  : 200,
               Type    : 'Getting the report by type id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned report by type id.'
             });
       }
@@ -80,7 +83,7 @@ function ReportType() {
 
   this.getReportTypeByName = (name, callback) =>  {
     "use strict";
-    let table  = 'report_type';
+    let table  = 'reports_type';
     let string = 'SELECT * FROM '+ table + ' WHERE name = $1';
     let value  = [name]
 
@@ -103,7 +106,7 @@ function ReportType() {
               status  : 200,
               Type    : 'Getting the report by type name.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned report by type name.'
             });
       }
@@ -112,9 +115,9 @@ function ReportType() {
 
   this.create = (data, callback) =>  {
     "use strict";
-    let table  = 'reports';
-    let string = 'INSERT INTO '+ table + '(Name, Info, Answer) VALUES($1, $2, $3)';
-    let value = [data.ReportID, data.QuestionID, data.Answer];
+    let table  = 'reports_type';
+    let string = 'INSERT INTO '+ table + '(Name, Info) VALUES($1, $2)';
+    let value = [data.Name, data.Info];
 
     dbService.queryStringValue(string, value, 
       (err, result) => {
@@ -135,7 +138,7 @@ function ReportType() {
               status  : 200,
               Type    : 'Create new report type.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Report type created successfully.'
             });
       }
@@ -144,37 +147,65 @@ function ReportType() {
 
   this.update = (report_type, callback) =>  {
     "use strict";
-    let update = stringBuilder.update("report_type", "id" , report_type);
-    dbService.queryStringValue(update.string, update.value, 
-      (err, result) => {
-        if (err)
-          callback(err, 
-            { 
-              valid   : false,
-              status  : 412,
-              Type    : 'Update Report type.',
-              err     : err,
-              data    : null,
-              Message : 'Report type update failed.'
-            });
-        else
-          callback(err,
-            { 
-              valid   : true,
-              status  : 200,
-              Type    : 'Update Report type.',
-              err     : err,
-              data    : result,
-              Message : 'Report type updated successfully.'
-            });
+/* Expected object to be:
+  {
+      data: the data,
+      updateTable: name of the table to work with.
+      where : the column to find that is updated..
+      whereValue: The value of the where column is.
+  }
+*/
 
+    let update = {
+      data: report_type,
+      updateTable: "reports_type",
+      where: "id",
+      whereValue: report_type.ID
+    };
+
+    stringBuilder.update(update, 
+      (error, queryObject) => {
+        if(error)
+          callback(error, {
+            valid   : false,
+            status  : 412,
+            Type    : 'Update Report type.',
+            err     : err,
+            data    : null,
+            Message : 'Report type update failed, precondiction.'
+          });
+        else
+          dbService.queryStringValue(queryObject.string, queryObject.value, 
+            (err, result) => {
+              
+              if (err)
+                callback(err, { 
+                  valid   : false,
+                  status  : 412,
+                  Type    : 'Update Report type.',
+                  err     : err,
+                  data    : null,
+                  Message : 'Report type update failed.'
+                });
+              else
+              callback(err, { 
+                valid   : true,
+                status  : 200,
+                Type    : 'Update Report type.',
+                err     : err,
+                data    : DTO(result),
+                Message : 'Report type updated successfully.' 
+              });
+            }
+        );     
       }
+
     );
   };
 
   this.delete = (id, callback) =>  {
     "use strict";
-    let table  = 'report_type';
+    let table  = 'reports_type';
     let string = 'DELETE FROM '+ table + ' WHERE id = $1';
     let value  = [id];   
     
@@ -197,7 +228,7 @@ function ReportType() {
               status  : 200,
               Type    : 'Delete report type.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted report type successfully.'
             });
       }

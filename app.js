@@ -59,7 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')));
   This is token security to ensure permission in the app 
   when someone calls for /api/.... 
  */
-app.use('/asdsssa',jwtCheck({
+app.use('/api/closed',jwtCheck({
   secret: config.secret,
   userProperty: config.payload
 }));
@@ -94,10 +94,11 @@ app.use('/api/ramescategory',require('./routes/rames_categories'));
 app.use('/api/ramesinfo',require('./routes/rames_infos'));
 app.use('/api/ramespicture',require('./routes/rames_pictures'));
 app.use('/api/ramesquestion',require('./routes/rames_questions'));
-app.use('/api/reporttype',require('./routes/report_types'));
+app.use('/api/reporttype',require('./routes/reports_types'));
 app.use('/api/reports',require('./routes/reports'));
 app.use('/api/reportsinfo',require('./routes/reports_info'));
 app.use('/api/user',require('./routes/users'));
+app.use('/api/project', require('./routes/project'));
 app.use('/', require('./routes/index'));
 
 /* Exports the app. */

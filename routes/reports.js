@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rService = require('./../models/reports');
+const jwttoken = require('./../library/authentication');
 /**
  * @api {post} /auth/register Register user.
  * @apiVersion 1.0.0
@@ -39,14 +40,23 @@ const rService = require('./../models/reports');
 // Returns a list of all reports
 router.get('/', (req, res) => {
   "user strict";
-  rService.get(
+ 
+  let token = jwttoken.decodeJWT(req);
+
+  rService.get(token.userid,
     (err, result) => {
       if (err)
         return res.status(result.status)
             .json({ message: result.message });
-      else 
+      
+
+
+      if (result.data.length > 0)
         return res.status(result.status)
             .json( result.data );
+      else 
+        return res.status(404)
+            .json({message: 'No report found'});
       }
     );
 });
@@ -103,7 +113,9 @@ router.get('/user/:userID/type/:reportTypeID/', (req, res) => {
 // Adds a new report to the database
 router.post('/', (req, res) => {
   "user strict";
-  rService.create(req.body,
+
+  let token = jwttoken.decodeJWT(req);
+  rService.create(req.body, token.userid,
     (err, result) => {
       if (err)
         return res.status(result.status)

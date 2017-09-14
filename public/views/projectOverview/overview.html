@@ -1,0 +1,40 @@
+<div class="container">
+  <table class="table table-striped pad-top-100">
+    <caption class="text-left"><h1-table>Plans</h1-table></caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Created</th>
+        <th>Last update</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="report in reports">
+        <td class="col-md-2">{{report.Name}}</td> 
+        <td class="col-md-2">
+          <div ng-repeat="type in reportypes" ng-if="report.ReportTypeID == type.ID">{{type.Name}}</div>
+        </td>     
+        <td class="col-md-3">{{report.CreatedAt | date:'d.MM.yyyy  HH:mm'}}</td>
+        <td class="col-md-3">{{report.LastUpdate | date:'d.MM.yyyy  HH:mm'}}</td>
+        <td class="col-md-2">
+          <button class="btn btn-success btn-xs" ui-sref="">
+            <span class="glyphicon glyphicon-eye-open"></span>
+          </button>
+          <button class="btn btn-warning btn-xs" ui-sref="">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </button>
+          <button class="btn btn-danger btn-xs"  ui-sref="main.project.deleteplan({planid: report.ID})" >
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        
+        </td>
+
+           
+    
+      </tr>
+      
+    </tbody>
+  </table>
+</div>

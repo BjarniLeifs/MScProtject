@@ -1,6 +1,19 @@
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const dbService = require('./../library/dbLibrary');
+const qDropChoies = require('./../DTO/question_dropdown_choices');
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(qDropChoies.DTO(data[i].id, data[i].questionid, 
+                  data[i].choice, data[i].cond, data[i].textbox));
 
+    return object;
+
+}
 function DropdownChoice() {
 
 
@@ -28,7 +41,7 @@ function DropdownChoice() {
               status  : 200,
               Type    : 'Getting All question dropdown choices.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all question dropdown choices.'
             });
       }
@@ -60,7 +73,7 @@ function DropdownChoice() {
               status  : 200,
               Type    : 'Getting question dropdown choices by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned question dropdown choices by id.'
             });
       }
@@ -93,7 +106,7 @@ function DropdownChoice() {
               status  : 200,
               Type    : 'Create new Question dropdown choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Question dropdown choice created successfully.'
             });
       }
@@ -123,7 +136,7 @@ function DropdownChoice() {
               status  : 200,
               Type    : 'Update question dropdown choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Question dropdown choice updated successfully.'
             });
 
@@ -156,7 +169,7 @@ function DropdownChoice() {
               status  : 200,
               Type    : 'Delete question dropdown choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted question dropdown choice successfully.'
             });
       }

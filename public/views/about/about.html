@@ -1,0 +1,40 @@
+
+
+<div id="wrapper">
+  <div id="sidebar-wrapper" class="col-md-2">
+    <div id="sidebar">
+
+
+        <ul class="nav list-group">
+        <li>
+          <a class="list-group-item" ui-sref="main.about.picture"><i class="icon-home icon-1x"></i>See picture</a>
+        </li>
+        <li>
+          <a class="list-group-item" ui-sref="main.about.roles"><i class="icon-home icon-1x"></i>(R)oles</a>
+        </li>
+        <li>
+          <a class="list-group-item" ui-sref="main.about.activites"><i class="icon-home icon-1x"></i>(A)ctivites</a>
+        </li>
+        <li>
+          <a class="list-group-item" ui-sref="main.about.material"><i class="icon-home icon-1x"></i>(M)aterials</a>
+        </li>
+        <li>
+          <a class="list-group-item" ui-sref="main.about.environment"><i class="icon-home icon-1x"></i>(E)nvironment</a>
+        </li>
+        <li>
+          <a class="list-group-item" ui-sref="main.about.software"><i class="icon-home icon-1x"></i>(S)oftware</a>
+        </li>
+      </ul>
+
+
+    </div>
+  </div>
+  <div id="main-wrapper" class="col-md-10">
+    <div id="main">
+      <div class="container ">
+<!-- Injecting to this view here !! -->
+        <div ui-view></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -117,7 +117,7 @@ router.get('/report/:reportID/question/:questionID', (req, res) => {
 // Adds a new report information to the database
 router.post('/', (req, res) => {
   "user strict";
-  riService.create(req.body,
+  riService.create(req.body.ProjectID,
     (err, result) => {
       if (err)
         return res.status(result.status)

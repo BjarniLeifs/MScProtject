@@ -67,17 +67,16 @@ router.post('/register', (req, res, next) => {
 		return res.status(401).json({
 			message: 'Please provide an e-mail.'
 		});
-
 	//Calling for that user if exist it prompt the result else insert into database. 
 	userSerivce.getFullInfoByUsername(req.body.username, 
 		(err, result) => {
-			if (err)
+			if (err) 
 				return res.status(400)
 						.json({ message: 'Error running query.' });
-
-			if (result.length < 1) {
+			if (result.data.length < 1) {
 				authService.register(req, 
 					(err, results) => {
+						
 						if(err)
 							return res.status(400)
 									.json({ message: 'Error running query.' });
@@ -134,6 +133,7 @@ router.post('/register', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
 	"use strict";
+	
 	if (!req.body.username || !req.body.password)
 		return res.status(400)
 				.json({ message: 'Please provide username and password.' });
@@ -143,17 +143,16 @@ router.post('/login', (req, res, next) => {
 			if (err)
 				return res.status(400)
 						.json({ message: 'Error running query.' });
-
 			if (result.found) {
 				if(result.valid)
 					/* If callback true then generate token since everything is okay*/
 					return res.status(200)
-							.json( { token : authLibrary.generateJWT(result.data[0]) });
+							.json( { token : authLibrary.generateJWT(result.data.data[0]) });
 				else
 					return res.status(422)
 							.json({ message: 'Incorrect password' });				
 			} else {
-				return res.status(400).json({
+				return res.status(404).json({
 					message: 'No such username'
 				});	
 			}

@@ -2,7 +2,7 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
 const ramesinfo = require('./../DTO/rames_info');
-// READY BUT NEEDS TO TEST BETTER
+
 function DTO(data) {
     /* 
     * Populating array with object by calling data transfer object 
@@ -19,8 +19,6 @@ function DTO(data) {
 }
 
 function RamesInfo() {
-
-
 
   this.get = (callback) => {
     "use strict";

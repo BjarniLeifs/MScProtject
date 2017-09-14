@@ -1,0 +1,40 @@
+<div class="container">
+  <table class="table table-striped pad-top-100">
+    <caption class="text-left"><h1-table>Projects</h1-table></caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Created</th>
+        <th>Last update</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="project in projects">
+        <td class="col-md-2">{{project.Name}}</td> 
+        <td class="col-md-4">{{project.Description}}</td>     
+        <td class="col-md-2">{{project.CreatedAt | date:'d.MM.yyyy  HH:mm'}}</td>
+        <td class="col-md-2">{{project.LastUpdate | date:'d.MM.yyyy  HH:mm'}}</td>
+         
+
+        <td class="col-md-2">
+          <button class="btn btn-success btn-xs" ui-sref="main.project.overview({id: project.ID})">
+            <span class="glyphicon glyphicon-eye-open"></span>
+          </button>
+          <button class="btn btn-warning btn-xs" ui-sref="main.dashboard.edit({id: project.ID})">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </button>
+          <button class="btn btn-danger btn-xs"  ui-sref="main.dashboard.delete({id: project.ID})" >
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        
+        </td>
+
+           
+    
+      </tr>
+      
+    </tbody>
+  </table>
+</div>

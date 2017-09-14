@@ -1,19 +1,22 @@
 
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const qRadioChoies = require('./../DTO/question_dropdown_choices');
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(qRadioChoies.DTO(data[i].id, data[i].questionid, 
+                  data[i].choice, data[i].textbox));
+
+    return object;
+
+}
 
 function RadioChoice() {
-  /* 
-    This allowes me to call myself with :
-
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-  this.myself = this;
 
   this.get = (callback) => {
     "use strict";
@@ -39,7 +42,7 @@ function RadioChoice() {
               status  : 200,
               Type    : 'Getting All question radio choices.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all question radio choices.'
             });
       }
@@ -71,7 +74,7 @@ function RadioChoice() {
               status  : 200,
               Type    : 'Getting question radio choices by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned question radio choices by id.'
             });
       }
@@ -103,7 +106,7 @@ function RadioChoice() {
               status  : 200,
               Type    : 'Create new Question radio choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Question radio choice created successfully.'
             });
       }
@@ -132,7 +135,7 @@ function RadioChoice() {
               status  : 200,
               Type    : 'Update question radio choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Question radio choice updated successfully.'
             });
       }
@@ -164,7 +167,7 @@ function RadioChoice() {
               status  : 200,
               Type    : 'Delete question radio choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted question radio choice successfully.'
             });
       }

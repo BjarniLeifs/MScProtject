@@ -1,25 +1,29 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const reports = require('./../DTO/reports');
+
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(reports.DTO(data[i].id, data[i].userid, data[i].name,
+                  data[i].reporttypeid, data[i].createdat, data[i].lastupdate));
+
+    return object;
+
+}
 
 function Report() {
-  /* 
-    This allowes me to call myself with :
 
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-  this.myself = this;
-
-  this.get = (callback) => {
+  this.get = (uid, callback) => {
     "use strict";
     let table  = 'reports';
-    let string = 'SELECT * FROM ' + table;
-
-    dbService.queryString(string, 
+    let string = 'SELECT * FROM '+ table + ' WHERE userid = $1';
+    let value  = [uid]
+    dbService.queryStringValue(string, value,
       (err, result) => {
         if (err)
           callback(err, 
@@ -38,7 +42,7 @@ function Report() {
               status  : 200,
               Type    : 'Getting All the reports.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the reports.'
             });
       }
@@ -71,7 +75,7 @@ function Report() {
               status  : 200,
               Type    : 'Getting the report by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned reports by id.'
             });
       }
@@ -104,7 +108,7 @@ function Report() {
               status  : 200,
               Type    : 'Getting the report by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned reports by id.'
             });
       }
@@ -137,18 +141,19 @@ function Report() {
               status  : 200,
               Type    : 'Getting report by user id and report type id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned report by user id and report type id.'
             });
       }
     );
   };
 
-  this.create = (data, callback) => {
+  this.create = (data, uid, callback) => {
     "use strict";
+    let date = new Date();
     let table  = 'reports';
-    let string = 'INSERT INTO '+ table + '(UserID, Name, ReportTypeID) VALUES($1, $2, $3)';
-    let value = [data.UserID, data.Name, data.ReportTypeID];
+    let string = 'INSERT INTO '+ table + '(UserID, Name, ReportTypeID, ProjectID, CreatedAt, LastUpdate) VALUES($1, $2, $3, $4, $5, $6) returning *';
+    let value = [uid, data.Name, data.ReportTypeID, data.ProjectID, date, date];
 
     dbService.queryStringValue(string, value, 
       (err, result) => {
@@ -169,7 +174,7 @@ function Report() {
               status  : 200,
               Type    : 'Create new report.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Report created successfully.'
             });
       }
@@ -198,7 +203,7 @@ function Report() {
               status  : 200,
               Type    : 'Update Report.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Report updated successfully.'
             });
 
@@ -231,7 +236,7 @@ function Report() {
               status  : 200,
               Type    : 'Delete report.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted report successfully.'
             });
       }

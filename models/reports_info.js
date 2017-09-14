@@ -1,18 +1,22 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const reportsInfo = require('./../DTO/reports_info');
+
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(reportsInfo.DTO(data[i].id, data[i].reportid, data[i].categoryid, data[i].questionid,
+                  data[i].answer));
+
+    return object;
+
+}
 
 function ReportsInfo() {
-  /* 
-    This allowes me to call myself with :
-
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-  this.myself = this;
 
   this.get = (callback) => {
     "use strict";
@@ -38,7 +42,7 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Getting All the reports information.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the reports information.'
             });
       }
@@ -71,7 +75,7 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Getting the report by information id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned report by information id.'
             });
       }
@@ -82,7 +86,7 @@ function ReportsInfo() {
   this.getReportsInfoByReportID = (reportID, callback) => {
     "use strict";
     let table  = 'reports_info';
-    let string = 'SELECT * FROM '+ table + ' WHERE reportID = $1';
+    let string = 'SELECT * FROM '+ table + ' WHERE reportid = $1';
     let value  = [reportID]
 
     dbService.queryStringValue(string, value, 
@@ -104,7 +108,7 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Getting the report information by report id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned report information by report id.'
             });
       }
@@ -137,7 +141,7 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Getting the report information by question id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned report information by question id.'
             });
       }
@@ -170,21 +174,28 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Getting the report information by report id and question id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned report information by report id and question id.'
             });
       }
     );
   };
 
-  // Add report information
-  this.create = (data, callback) => {
-    "use strict";
-    let table  = 'reports';
-    let string = 'INSERT INTO '+ table + '(ReportID, QuestionID, Answer) VALUES($1, $2, $3)';
-    let value = [data.ReportID, data.QuestionID, data.Answer];
 
-    dbService.queryStringValue(string, value, 
+
+  // Add report information
+  this.create = (reportID, callback) => {
+    "use strict";
+    let value = [];
+    let prepareTable  = 'rames_questions';
+    let prepareString = 'SELECT * FROM ' + prepareTable;
+    let i;
+    let rid = parseInt(reportID, 10);
+    let error;
+    /* 
+      Getting all the rames question to make rames info for them all. 
+    */
+    dbService.queryString(prepareString, 
       (err, result) => {
         if (err)
           callback(err, 
@@ -194,20 +205,52 @@ function ReportsInfo() {
               Type    : 'Create new report information.',
               err     : err,
               data    : null,
-              Message : 'report information creation failed.'
+              Message : 'Populating rames questions for project failed.'
             });
-        else
-          callback(err,
-            { 
-              valid   : true,
-              status  : 200,
-              Type    : 'Create new report information.',
-              err     : err,
-              data    : result,
-              Message : 'Report information created successfully.'
-            });
+       
+        else {
+          for (i = 0; i < result.length; i++) {   
+            /* 
+              After getting all the information for each question I populate it to database in mass
+              Such as it can be updated afterwards to simplafy coding in frontent.
+            */
+            let table  = 'reports_info';
+            let string = 'INSERT INTO '+ table + '(reportid, questionid, categoryid, answer) VALUES ($1, $2, $3, $4) ';
+            dbService.queryStringValue(string, 
+              [rid, result[i].id, result[i].categoryid, 'null'], 
+              (err, result) => {
+                if (err) {
+                  error = err;
+                  i = result.length;
+                }
+              }
+            );
+          }
+        }
       }
     );  
+  if (error)
+      callback(error, 
+        { 
+          valid   : false,
+          status  : 412,
+          Type    : 'Create new report information.',
+          err     : error,
+          data    : null,
+          Message : 'report information creation failed.'
+        });
+  else  {
+
+      callback(error, 
+        { 
+          valid   : true,
+          status  : 200,
+          Type    : 'Create new report information.',
+          err     : error,
+          data    : null,
+          Message : 'Returned report by information id.'
+        });
+   }         
   };
 
   // Update specific report information
@@ -233,7 +276,7 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Update Report information.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Report information updated successfully.'
             });
 
@@ -267,7 +310,7 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Delete report information.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted report information successfully.'
             });
       }
@@ -299,12 +342,13 @@ function ReportsInfo() {
               status  : 200,
               Type    : 'Delete report information.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted report information successfully.'
             });
       }
     );
   };
+
 
   
 }

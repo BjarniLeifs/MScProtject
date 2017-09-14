@@ -1,0 +1,49 @@
+<div id="wrapper">
+  <div id="sidebar-wrapper" class="col-md-2">
+    <div id="sidebar">
+        <ul class="nav list-group">
+        	<li>
+          		<a class="list-group-item" ui-sref="main.project.overview({id: projectId})">
+          			<i class="icon-home icon-1x"></i>
+          			Overview
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="main.project.newplan">
+          			<i class="icon-home icon-1x"></i>
+          			New Plan
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="">
+          			<i class="icon-home icon-1x"></i>
+          			New Wizard of oz
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="">
+          			<i class="icon-home icon-1x"></i>
+          			New Heuristic
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="">
+          			<i class="icon-home icon-1x"></i>
+          			New Persona
+          		</a>
+        	</li>
+      	</ul>
+
+
+
+    </div>
+  </div>
+  <div id="main-wrapper" class="col-md-10">
+    <div id="main">
+      <div class="container ">
+<!-- Injecting to this view here !! -->
+        <div ui-view></div>
+      </div>
+    </div>
+  </div>
+</div>

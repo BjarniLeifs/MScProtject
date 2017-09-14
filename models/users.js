@@ -1,14 +1,35 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-"use strict";
-// READY BUT NEEDS TO TEST BETTER
+const users = require('./../DTO/users');
+function DTO (data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(users.DTO(data[i].id, data[i].name, data[i].email, data[i].username));
+
+    return object;
+
+}
+function authDTO (data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(users.AdminDTO(data[i].id, data[i].resettoken, data[i].tokenexpired, data[i].name, 
+        data[i].email, data[i].username, data[i].hash));
+
+    return object;
+
+}
 
 function User() {
-  "use strict"; 
-  /* This allows me to call itself, myself.get() and so on. */
-  let myself = this; 
 
-  this.get = (res) => {
+  this.get = (callback) => {
     "use strict";
     let table  = 'users';
     let string = 'SELECT * FROM ' + table;
@@ -32,7 +53,7 @@ function User() {
               status  : 200,
               Type    : 'Getting All the users.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the users.'
             });
       }
@@ -40,7 +61,7 @@ function User() {
   };
 
 
-  this.getUserByID = function(id, res) {
+  this.getUserByID = (id, callback) => {
     "use strict";
     let table  = 'users';
     let string = 'SELECT * FROM '+ table + ' WHERE id = $1';
@@ -65,7 +86,7 @@ function User() {
               status  : 200,
               Type    : 'Getting the users by type id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned users by type id.'
             });
       }
@@ -73,7 +94,7 @@ function User() {
   };
 
 
-  this.update = function(user, res) {
+  this.update = (user, callback) => {
     "use strict";
     let update = stringBuilder.update("users", "id" , user);
     dbService.queryStringValue(update.string, update.value, 
@@ -95,14 +116,14 @@ function User() {
               status  : 200,
               Type    : 'Update User.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'User updated successfully.'
             });
       }
     );
   };
 
-  this.delete = function(id, res) {
+  this.delete = (id, callback) => {
     "use strict";
     let table  = 'users';
     let string = 'DELETE FROM '+ table + ' WHERE id = $1';
@@ -127,7 +148,7 @@ function User() {
               status  : 200,
               Type    : 'Delete users.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted users successfully.'
             });
       }
@@ -162,7 +183,7 @@ function User() {
               status  : 200,
               Type    : 'Get full user info.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Got full user info successfully by id.'
             });
       }
@@ -196,12 +217,13 @@ function User() {
               status  : 200,
               Type    : 'Get full user info by username.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Got full user info successfully by username.'
             });
       }
     );
   };  
+
   /* This function is only thought to be used by the system itself! This gives out hash 
    * and all information stored in the database, so do not open this to other purpose 
    */ 
@@ -230,12 +252,44 @@ function User() {
               status  : 200,
               Type    : 'Get full user info by email.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Got full user info successfully by email.'
             });
       }
     );
-  };      
+  };     
+    this.getAuthenticationByUsername = (username, callback) => {
+    "use strict";
+
+    let table  = 'Users';
+    let string = 'SELECT * FROM '+ table + ' WHERE UPPER(username) = UPPER($1)';
+    let value  = [username];
+
+    dbService.queryStringValue(string, value, 
+      (err, result) => {
+        if (err)
+          callback(err, 
+            { 
+              valid   : false,
+              status  : 404,
+              Type    : 'Get full user info by username.',
+              err     : err,
+              data    : null,
+              Message : 'Failed to get full users info by username.'
+            });
+        else
+          callback(err,
+            { 
+              valid   : true,
+              status  : 200,
+              Type    : 'Get full user info by username.',
+              err     : err,
+              data    : authDTO(result),
+              Message : 'Got full user info successfully by username.'
+            });
+      }
+    );
+  };   
   
 }
 module.exports = new User();

@@ -1,18 +1,22 @@
 
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
+const qCheckChoies = require('./../DTO/question_checkbox_choices');
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(qCheckChoies.DTO(data[i].id, data[i].questionid, 
+                  data[i].choice, data[i].textbox));
 
+    return object;
+
+}
 function CheckboxChoice() {
-  /* 
-    This allowes me to call myself with :
 
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-  this.myself = this;
 
   this.get = (callback) => {
     "use strict";
@@ -37,7 +41,7 @@ function CheckboxChoice() {
               status  : 200,
               Type    : 'Getting All choices.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all choices.'
             });
       }
@@ -69,7 +73,7 @@ function CheckboxChoice() {
               status  : 200,
               Type    : 'Getting question checkbox choices by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned question checkbox choices by id.'
             });
       }
@@ -102,7 +106,7 @@ function CheckboxChoice() {
               status  : 200,
               Type    : 'Create new Question checkbox choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Question checkbox choice created successfully.'
             });
       }
@@ -131,7 +135,7 @@ function CheckboxChoice() {
               status  : 200,
               Type    : 'Update question checkbox choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Question checkbox choice updated successfully.'
             });
 
@@ -164,7 +168,7 @@ function CheckboxChoice() {
               status  : 200,
               Type    : 'Delete question checkbox choice.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted question checkbox choice successfully.'
             });
       }

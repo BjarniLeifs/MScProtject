@@ -1,19 +1,24 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const ramesQuestions = require('./../DTO/rames_questions');
+
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(ramesQuestions.DTO(data[i].id, data[i].categoryid, data[i].question,
+                  data[i].suggestion, data[i].questionnr, data[i].type, 
+                  data[i].languageid, data[i].ramesinfoid));
+
+    return object;
+
+}
 
 
 function RamesQuestions() {
-  /* 
-    This allowes me to call myself with :
-
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-  this.myself = this;
 
   this.get = (callback) => {
     "use strict";
@@ -39,7 +44,7 @@ function RamesQuestions() {
               status  : 200,
               Type    : 'Getting All the rames questions.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the rames questions.'
             });
       }
@@ -72,7 +77,7 @@ function RamesQuestions() {
               status  : 200,
               Type    : 'Getting the rames question by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned rames question by id.'
             });
       }
@@ -105,7 +110,7 @@ function RamesQuestions() {
               status  : 200,
               Type    : 'Getting the rames question by category id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned rames question by category id.'
             });
       }
@@ -138,7 +143,7 @@ function RamesQuestions() {
               status  : 200,
               Type    : 'Getting the rames question by language id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned rames question by language id.'
             });
       }
@@ -171,7 +176,7 @@ function RamesQuestions() {
               status  : 200,
               Type    : 'Create new Rames question.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames question created successfully.'
             });
       }
@@ -201,7 +206,7 @@ function RamesQuestions() {
               status  : 200,
               Type    : 'Update Rames question.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames question updated successfully.'
             });
 
@@ -235,7 +240,7 @@ function RamesQuestions() {
               status  : 200,
               Type    : 'Delete rames question.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted rames question successfully.'
             });
       }

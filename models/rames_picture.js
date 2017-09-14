@@ -1,7 +1,20 @@
 
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const ramesPcture = require('./../DTO/rames_picture');
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(ramesCatgeroy.DTO(data[i].id, data[i].name, 
+                  data[i].url));
+
+    return object;
+
+}
 
 function RamesPicture() {
 
@@ -28,7 +41,7 @@ function RamesPicture() {
               status  : 200,
               Type    : 'Getting All the rames picture.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the rames picture.'
             });
       }
@@ -61,7 +74,7 @@ function RamesPicture() {
               status  : 200,
               Type    : 'Getting the rames picture by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned the rames picture by id.'
             });
       }
@@ -94,7 +107,7 @@ function RamesPicture() {
               status  : 200,
               Type    : 'Create new Rames picture.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames picture creation failed created successfully.'
             });
       }
@@ -124,7 +137,7 @@ function RamesPicture() {
               status  : 200,
               Type    : 'Update Rames picture update.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames picture updated successfully.'
             });
       }
@@ -157,7 +170,7 @@ function RamesPicture() {
               status  : 200,
               Type    : 'Delete rames picture.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted rames picture successfully.'
             });
       }

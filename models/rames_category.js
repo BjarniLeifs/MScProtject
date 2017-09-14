@@ -1,19 +1,22 @@
 
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
-// READY BUT NEEDS TO TEST BETTER
+const ramesCatgeroy = require('./../DTO/rames_category');
+function DTO(data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(ramesCatgeroy.DTO(data[i].id, data[i].category, 
+                  data[i].info, data[i].languageid, data[i].sequencenumber));
+
+    return object;
+
+}
 
 function ReportsCategory() {
-  /* 
-    This allowes me to call myself with :
-
-      myself.get(
-        (err, result) => { 
-          code comes here ... 
-        }
-      ); 
-  */
-  this.myself = this;
 
   this.get = (callback) => {
     "use strict";
@@ -38,7 +41,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Getting All the rames categories.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the rames categories.'
             });
       }
@@ -70,7 +73,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Getting All the rames categories by sequence number.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned all the rames categories by sequence number.'
             });
       }
@@ -103,7 +106,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Getting the rames category by id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned rames category by id.'
             });
       }
@@ -136,7 +139,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Getting the rames category by language id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned rames category by language id.'
             });
       }
@@ -168,7 +171,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Getting rames category by category id and language id.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Returned rames category by category id and language id.'
             });
       }
@@ -201,7 +204,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Create new Rames category.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames category created successfully.'
             });
       }
@@ -231,7 +234,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Update Rames category update.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Rames category updated successfully.'
             });
 
@@ -265,7 +268,7 @@ function ReportsCategory() {
               status  : 200,
               Type    : 'Delete rames category.',
               err     : err,
-              data    : result,
+              data    : DTO(result),
               Message : 'Deleted rames category successfully.'
             });
       }
