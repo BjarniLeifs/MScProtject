@@ -97,8 +97,9 @@ function Querybuilder () {
 			err 	 : error, 
 			string   : buildString,
 			value    : dataBuilt
-			});
+		});
 	};
+
 
 }
 

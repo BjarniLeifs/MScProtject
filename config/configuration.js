@@ -7,14 +7,28 @@ const db_local_username   = 'postgres';
 const db_product_username = 'postgres';
 const db_test_username    = 'postgres';
 /* Passowrd for databse */
+/* Comment in for local host password
+
+const db_local_password   = '1234';
+const db_product_password = '1234';
+const db_test_password 	  = '1234';
+*/
 const db_local_password   = 'pinkman1234';
 const db_product_password = 'pinkman1234';
 const db_test_password 	  = 'pinkman1234';
+
 /* Starting link of connection */
 const db_local_link   = 'postgres://';
 const db_product_link = 'postgres://';
 const db_test_link 	  = 'postgres://';
 /* Host address of the database */
+/*  Comment in for local host data. 
+const db_local_host   = 'localhost';
+const db_product_host = 'localhost';
+const db_test_host 	  = 'localhost';
+*/
+
+/* Comment in if you want external host data.*/
 const db_local_host   = 'ramesdb.apiserver.link';
 const db_product_host = 'ramesdb.apiserver.link';
 const db_test_host 	  = 'ramesdb.apiserver.link';
@@ -31,15 +45,15 @@ function config () {
 	switch(process.env.NODE_ENV) {
 		case 'development':
 			return {
-				secret 			: secret_key,
-				payload 		: payload,
-				database		: db_local_name,
-				port			: db_local_port,
-				host			: db_local_host,
-				user			: db_local_username,
-				username 		: db_local_username,
-				pass			: db_local_password,
-				connectionUrl 	: '' + db_local_link + db_local_username + ':' + db_local_password + '@' + db_local_host + ':' + db_local_port + '/' + db_local_name,
+				'secret' 		: secret_key,
+				'payload' 		: payload,
+				'database'		: db_local_name,
+				'port'			: db_local_port,
+				'host'			: db_local_host,
+				'user'			: db_local_username,
+				'username' 		: db_local_username,
+				'pass'			: db_local_password,
+				'connectionUrl' 	: '' + db_local_link + db_local_username + ':' + db_local_password + '@' + db_local_host + ':' + db_local_port + '/' + db_local_name,
 			};
 
 		case 'production':

@@ -71,6 +71,7 @@ module.exports = {
 	/* Validating the password of user. */
 	validPassword: (password, hash, callback) => {
 		bcrypt.compare(password, hash, (err, res) => {
+			console.log(res);
 	    	callback(res);
 		});
 	},

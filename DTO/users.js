@@ -1,5 +1,5 @@
 module.exports = {
-	AdminDTO : (id, rTok, tokExp, name, email, username, hash) => { 
+	AdminDTO : (id, rTok, tokExp, name, email, username, isadmin, ismod, hash) => { 
 		return {
 			ID 			 : id,
 			ResetToken 	 : rTok,
@@ -7,6 +7,8 @@ module.exports = {
 			Name 		 : name,
 			Email 		 : email,
 			Username 	 : username,
+			IsAdmin	 	 : isadmin,
+			IsModerator  : ismod,
 			Hash 		 : hash
 		};
 	},
@@ -15,9 +17,18 @@ module.exports = {
 			ID 			 : id,
 			Name 		 : name,
 			Email 		 : email,
+			Username 	 : username
+		};
+	},
+	RightsDTO : (id, name, email, username, isadmin, ismod) => { 
+		return {
+			ID 			 : id,
+			Name 		 : name,
+			Email 		 : email,
 			Username 	 : username,
+			IsAdmin	 	 : isadmin,
+			IsModerator  : ismod
 		};
 	}
 /* exports ends */
 };
-

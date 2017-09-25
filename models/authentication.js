@@ -67,11 +67,12 @@ function Authentication() {
 						data    : null,
 						message : null
 					});
-
 				/* If the result comes back not undefined the user was found */
 				if (result.data.length > 0) {
+					console.log(result.data[0]);
 					authLibrary.validPassword(req.body.password, result.data[0].Hash, 
 						(valid) => {
+							console.log(valid);
 							if (valid) 
 								callback(err, {
 									found   : true,

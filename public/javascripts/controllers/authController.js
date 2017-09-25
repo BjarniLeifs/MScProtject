@@ -16,10 +16,18 @@ app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$ti
 					name 			: $scope.newUser.firstName + ' ' + $scope.newUser.lastName,
 					email 			: $scope.newUser.email
 				};
-				var test = authFactory.register(registerObject);
-
+				authFactory
+					.register(registerObject)
+						.error(function (error) {
+							$scope.error = error;
+						})
+						.then(function () {
+							$state.go('main', {}, {reload: true});
+						});
+				
 			} else {
 				$scope.error = "The passwords did not match!";
+
 			}
 			$scope.newUser = {};
 		};

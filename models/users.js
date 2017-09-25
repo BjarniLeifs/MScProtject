@@ -20,13 +20,27 @@ function authDTO (data) {
     */
     let object = [];
     for (var i = 0; i < data.length; i++)
-      object.push(users.AdminDTO(data[i].id, data[i].resettoken, data[i].tokenexpired, data[i].name, 
-        data[i].email, data[i].username, data[i].hash));
+      object.push(users.AdminDTO(data[i].id, 
+        data[i].resettoken, data[i].tokenexpired,data[i].name, data[i].email, data[i].username, data[i].isadmin, data[i].ismodeerator, data[i].hash));
 
     return object;
 
 }
 
+function RightsDTO (data) {
+    /* 
+    * Populating array with object by calling data transfer object 
+    * such as it is correctly sent to caller.
+    */
+    let object = [];
+    for (var i = 0; i < data.length; i++)
+      object.push(users.AdminDTO(data[i].id, data[i].name, data[i].email, data[i].username, data[i].isadmin, data[i].ismodeerator, data[i].hash));
+
+    return object;
+
+}
+
+ /* Eyddi óvart út update í þessum shiti :(*/
 function User() {
 
   this.get = (callback) => {
@@ -94,34 +108,6 @@ function User() {
   };
 
 
-  this.update = (user, callback) => {
-    "use strict";
-    let update = stringBuilder.update("users", "id" , user);
-    dbService.queryStringValue(update.string, update.value, 
-      (err, result) => {
-        if (err)
-          callback(err, 
-            { 
-              valid   : false,
-              status  : 412,
-              Type    : 'Update user.',
-              err     : err,
-              data    : null,
-              Message : 'User update failed.'
-            });
-        else
-          callback(err,
-            { 
-              valid   : true,
-              status  : 200,
-              Type    : 'Update User.',
-              err     : err,
-              data    : DTO(result),
-              Message : 'User updated successfully.'
-            });
-      }
-    );
-  };
 
   this.delete = (id, callback) => {
     "use strict";
