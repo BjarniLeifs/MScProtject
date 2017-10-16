@@ -1,5 +1,5 @@
 'use strict';
-app.controller('PlanCtrl', ['$scope', '$state', '$stateParams', '$location',
+app.controller('ReportCtrl', ['$scope', '$state', '$stateParams', '$location',
 	'$timeout', 'aboutFactory', 'reportTypeFactory', 'reportFactory',
 
 	function ($scope, $state, $stateParams, $location, 
@@ -11,8 +11,8 @@ app.controller('PlanCtrl', ['$scope', '$state', '$stateParams', '$location',
 					$scope.projectId = $stateParams.id;
 				}
 				
-				if ($stateParams.planid != undefined) {
-					$scope.plan = reportFactory.getById($stateParams.planid); // Get report info
+				if ($stateParams.reportid != undefined) {
+					$scope.report = reportFactory.getById($stateParams.reportid); // Get report info
 				}
 				// $scope.infos = aboutFactory.getRamesInfoByCategoryId(2); ?????
 				$scope.reportypes = reportTypeFactory.getAll();
@@ -28,21 +28,20 @@ app.controller('PlanCtrl', ['$scope', '$state', '$stateParams', '$location',
 
    		$scope.makeNewReport = function () {
    			var data = {
-   				Name : $scope.planName,
+   				Name : $scope.reportName,
    				ReportTypeID : $scope.data.typeSelect,
    				ProjectID : $stateParams.id
    			};
    			reportFactory.add(data);
    			$timeout(function () {
-        		//$state.go('main.management.reporttype');
+        		$state.go('main.project.overview',{'id' : $stateParams.id });
         	}, 110);
    		};
 
    		$scope.deleteReport = function () {
-   			
-   			reportFactory.delete($stateParams.planid);
+   			reportFactory.delete($stateParams.reportid);
    			$timeout(function () {
-        		$state.go('main.project.overview',{'id' : $stateParams.planid });
+        		$state.go('main.project.overview',{'id' : $stateParams.id });
         	}, 110);
    		};
 

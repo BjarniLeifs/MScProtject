@@ -1,7 +1,8 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
 const reports = require('./../DTO/reports');
-
+const reportsinfo = require('./reports_info');
+const userService = require('./users');
 function DTO(data) {
     /* 
     * Populating array with object by calling data transfer object 
@@ -167,7 +168,20 @@ function Report() {
               data    : null,
               Message : 'report creation failed.'
             });
-        else
+        else {
+          reportsinfo.create(result[0].id, 
+            (err, results) => {
+              if (err)
+                callback(err, 
+                {
+                  valid   : false,
+                  status  : 412,
+                  Type    : 'Create new report info for report.',
+                  err     : err,
+                  data    : null,
+                  Message : 'report info creation failed for report.'
+                });
+            });
           callback(err,
             { 
               valid   : true,
@@ -177,6 +191,7 @@ function Report() {
               data    : DTO(result),
               Message : 'Report created successfully.'
             });
+        }
       }
     );  
   };
@@ -211,38 +226,68 @@ function Report() {
     );
   };
 
-  this.delete = (id, callback) => {
+  this.delete = (req, id, callback) => {
     "use strict";
     let table  = 'reports';
     let string = 'DELETE FROM '+ table + ' WHERE id = $1';
-    let value  = [id];   
-    
-    dbService.queryStringValue(string, value, 
-      (err, result) => {
+    let value  = [id];  
+
+    userService.userOwnsReportWithId(req, id,
+      (err, valid) => {
         if (err)
           callback(err, 
-            { 
+            {
               valid   : false,
               status  : 404,
-              Type    : 'Delete report.',
+              Type    : 'Delete report faild on authentication.',
               err     : err,
               data    : null,
-              Message : 'Failed to delete report.'
+              Message : 'Failed to delete report id by userid. Authentication faild.'            
             });
+        // Need to implament what to do with error. 
         else
-          callback(err,
-            { 
-              valid   : true,
-              status  : 200,
-              Type    : 'Delete report.',
-              err     : err,
-              data    : DTO(result),
-              Message : 'Deleted report successfully.'
-            });
+          dbService.queryStringValue(string, value, 
+            (err, result) => {
+              if (err)
+                callback(err, 
+                  { 
+                    valid   : false,
+                    status  : 404,
+                    Type    : 'Delete report.',
+                    err     : err,
+                    data    : null,
+                    Message : 'Failed to delete report.'
+                  });
+              else  {
+                reportsinfo.deleteReportInfoInReport(id, 
+                  (err, reports) => {
+                    if (err)
+                      callback (err,
+                      {
+                        valid   : false,
+                        status  : 404,
+                        Type    : 'Delete report infos by report id.',
+                        err     : err,
+                        data    : null,
+                        Message : 'Failed to delete reports info by report id.'
+                      })
+                    else
+                     callback(err,
+                      { 
+                        valid   : true,
+                        status  : 200,
+                        Type    : 'Delete report.',
+                        err     : err,
+                        data    : DTO(result),
+                        Message : 'Deleted report successfully.'
+                      });                 
+                });
+              }
+            }
+          );
       }
     );
   };
-
 
 }
 module.exports = new Report();

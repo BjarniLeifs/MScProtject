@@ -89,17 +89,17 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 		.state('main.project.overview', {
 			url: '/overview',
 			templateUrl: 'views/projectoverview/overview.html',
-			controller: 'PlanCtrl',
+			controller: 'ReportCtrl',
 		})
-		.state('main.project.newplan', {
-			url: '/newplan',
-			templateUrl: 'views/projectoverview/newplan.html',
-			controller: 'PlanCtrl',
+		.state('main.project.newreport', {
+			url: '/newreport',
+			templateUrl: 'views/projectoverview/newreport.html',
+			controller: 'ReportCtrl',
 		})
-		.state('main.project.deleteplan', {
-			url: '/delete/Project/plan/:planid',
-			templateUrl: 'views/projectoverview/deleteplan.html',
-			controller: 'PlanCtrl',
+		.state('main.project.deletereport', {
+			url: '/delete/Project/report/:reportid',
+			templateUrl: 'views/projectoverview/deletereport.html',
+			controller: 'ReportCtrl',
 		})
 	/* Single page purpose starts */
 		.state('main.contactus', {

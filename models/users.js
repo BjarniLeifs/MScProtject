@@ -1,6 +1,8 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
 const users = require('./../DTO/users');
+const authService = require('./../library/authentication');
+
 function DTO (data) {
     /* 
     * Populating array with object by calling data transfer object 
@@ -40,7 +42,6 @@ function RightsDTO (data) {
 
 }
 
- /* Eyddi óvart út update í þessum shiti :(*/
 function User() {
 
   this.get = (callback) => {
@@ -244,7 +245,7 @@ function User() {
       }
     );
   };     
-    this.getAuthenticationByUsername = (username, callback) => {
+  this.getAuthenticationByUsername = (username, callback) => {
     "use strict";
 
     let table  = 'Users';
@@ -275,7 +276,28 @@ function User() {
             });
       }
     );
-  };   
+  }; 
+
+  this.userOwnsReportWithId = (req, pid, callback) => {
+    "use strict";
+
+    let token = authService.decodeJWT(req);
+    let table  = 'reports';
+    let string = 'SELECT * FROM '+ table + ' WHERE userid = $1 and id = $2';
+    let value  = [token.userid, pid]; // Vantar að setja inn project id
+
+    dbService.queryStringValue(string, value,
+      (err, result) => {
+        if (err)
+          callback(err, false);
+        else 
+          if (result)
+            callback(err, true);
+          else
+            callback(err, false);
+      }
+    );
+  }  
   
 }
 module.exports = new User();

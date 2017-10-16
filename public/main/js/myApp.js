@@ -1,4 +1,4 @@
-/*! Made on 14-09-2017 */
+/*! Made on 16-10-2017 */
 /* Angular routing and app declatation */
 
 var app = angular.module('ramesApp', ['ui.router']);
@@ -90,17 +90,17 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 		.state('main.project.overview', {
 			url: '/overview',
 			templateUrl: 'views/projectoverview/overview.html',
-			controller: 'PlanCtrl',
+			controller: 'ReportCtrl',
 		})
-		.state('main.project.newplan', {
-			url: '/newplan',
-			templateUrl: 'views/projectoverview/newplan.html',
-			controller: 'PlanCtrl',
+		.state('main.project.newreport', {
+			url: '/newreport',
+			templateUrl: 'views/projectoverview/newreport.html',
+			controller: 'ReportCtrl',
 		})
-		.state('main.project.deleteplan', {
-			url: '/delete/Project/plan/:planid',
-			templateUrl: 'views/projectoverview/deleteplan.html',
-			controller: 'PlanCtrl',
+		.state('main.project.deletereport', {
+			url: '/delete/Project/report/:reportid',
+			templateUrl: 'views/projectoverview/deletereport.html',
+			controller: 'ReportCtrl',
 		})
 	/* Single page purpose starts */
 		.state('main.contactus', {
@@ -219,10 +219,18 @@ app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$ti
 					name 			: $scope.newUser.firstName + ' ' + $scope.newUser.lastName,
 					email 			: $scope.newUser.email
 				};
-				var test = authFactory.register(registerObject);
-
+				authFactory
+					.register(registerObject)
+						.error(function (error) {
+							$scope.error = error;
+						})
+						.then(function () {
+							$state.go('main', {}, {reload: true});
+						});
+				
 			} else {
 				$scope.error = "The passwords did not match!";
+
 			}
 			$scope.newUser = {};
 		};
@@ -357,74 +365,6 @@ app.controller('ManagementCtrl', ['$scope', '$state', '$stateParams', '$location
 	}
 ]);
 'use strict';
-app.controller('PlanCtrl', ['$scope', '$state', '$stateParams', '$location',
-	'$timeout', 'aboutFactory', 'reportTypeFactory', 'reportFactory',
-
-	function ($scope, $state, $stateParams, $location, 
-	 $timeout, aboutFactory, reportTypeFactory, reportFactory) {
-
-		$timeout(
-			function() {
-				if ($stateParams.id != undefined) {
-					$scope.projectId = $stateParams.id;
-				}
-				
-				if ($stateParams.planid != undefined) {
-					$scope.plan = reportFactory.getById($stateParams.planid); // Get report info
-				}
-				// $scope.infos = aboutFactory.getRamesInfoByCategoryId(2); ?????
-				$scope.reportypes = reportTypeFactory.getAll();
-				$scope.reports = reportFactory.getAll();
-			}, 110
-		);
-
-		$scope.data = {
-    		typeSelect: null, // This one is the id of the selected 
-    		multipleSelect: [],
-    		option1: 'option-1'
-   		};
-
-   		$scope.makeNewReport = function () {
-   			var data = {
-   				Name : $scope.planName,
-   				ReportTypeID : $scope.data.typeSelect,
-   				ProjectID : $stateParams.id
-   			};
-   			reportFactory.add(data);
-   			$timeout(function () {
-        		//$state.go('main.management.reporttype');
-        	}, 110);
-   		};
-
-   		$scope.deleteReport = function () {
-   			
-   			reportFactory.delete($stateParams.planid);
-   			$timeout(function () {
-        		$state.go('main.project.overview',{'id' : $stateParams.planid });
-        	}, 110);
-   		};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	}
-]);
-'use strict';
 
 
 app.controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'projectFactory', 
@@ -533,6 +473,73 @@ app.controller('RamesSoftwareCtrl', ['$scope', '$state', '$stateParams', '$locat
 				$scope.infos = aboutFactory.getRamesInfoByCategoryId(5);
 			}, 200
 		);
+	}
+]);
+'use strict';
+app.controller('ReportCtrl', ['$scope', '$state', '$stateParams', '$location',
+	'$timeout', 'aboutFactory', 'reportTypeFactory', 'reportFactory',
+
+	function ($scope, $state, $stateParams, $location, 
+	 $timeout, aboutFactory, reportTypeFactory, reportFactory) {
+
+		$timeout(
+			function() {
+				if ($stateParams.id != undefined) {
+					$scope.projectId = $stateParams.id;
+				}
+				
+				if ($stateParams.reportid != undefined) {
+					$scope.report = reportFactory.getById($stateParams.reportid); // Get report info
+				}
+				// $scope.infos = aboutFactory.getRamesInfoByCategoryId(2); ?????
+				$scope.reportypes = reportTypeFactory.getAll();
+				$scope.reports = reportFactory.getAll();
+			}, 110
+		);
+
+		$scope.data = {
+    		typeSelect: null, // This one is the id of the selected 
+    		multipleSelect: [],
+    		option1: 'option-1'
+   		};
+
+   		$scope.makeNewReport = function () {
+   			var data = {
+   				Name : $scope.reportName,
+   				ReportTypeID : $scope.data.typeSelect,
+   				ProjectID : $stateParams.id
+   			};
+   			reportFactory.add(data);
+   			$timeout(function () {
+        		$state.go('main.project.overview',{'id' : $stateParams.id });
+        	}, 110);
+   		};
+
+   		$scope.deleteReport = function () {
+   			reportFactory.delete($stateParams.reportid);
+   			$timeout(function () {
+        		$state.go('main.project.overview',{'id' : $stateParams.id });
+        	}, 110);
+   		};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 ]);
 'use strict';
