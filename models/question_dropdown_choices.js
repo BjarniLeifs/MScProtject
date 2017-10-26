@@ -80,6 +80,38 @@ function DropdownChoice() {
     );
   };
 
+  this.getDropdownChoiceByQuestionID = (qid, callback) => {
+    "use strict";
+    
+    let table  = 'question_dropdown_choices';
+    let string = 'SELECT * FROM '+ table + ' WHERE questionid = $1';
+    let value  = [qid]
+
+    dbService.queryStringValue(string, value, 
+      (err, result) => {
+        if (err)
+          callback(err, 
+            { 
+              valid   : false,
+              status  : 400,
+              Type    : 'Getting question radio choices by questionid.',
+              err     : err,
+              data    : null,
+              Message : 'Failed to get question radio choices by questionid'
+            }); 
+        else
+          callback(err, 
+            { 
+              valid   : true,
+              status  : 200,
+              Type    : 'Getting question radio choices by questionid.',
+              err     : err,
+              data    : DTO(result),
+              Message : 'Returned question radio choices by questionid.'
+            });
+      }
+    );
+  };
 
   this.create = function(choice, callback) {
     "use strict";

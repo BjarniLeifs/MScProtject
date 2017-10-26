@@ -1,0 +1,171 @@
+<br>
+<h5>{{category[0].Info}}</h5>
+<button class="btn btn-info btn-xs " ng-click="isCollapsed = !isCollapsed">
+	<span class="glyphicon glyphicon-info-sign">
+	</span>
+</button>
+<br>
+<br>
+<hr>
+
+<div ng-repeat="info in ramesInfo">
+<!-- Name of info and explain information -->
+	<div class="media">
+		<div class="media-body">
+			<h4 class="media-heading">
+				<br>
+				{{info.Name}}  
+
+			</h4>
+			    <div ng-show="isCollapsed">
+        			{{info.QuestionExplanation}}
+    			</div>
+		
+			<br>
+			<br>
+		</div>
+	</div>
+
+	<div ng-repeat="question in questions">
+		
+		<div ng-if="question.RamesInfoID == info.ID "> 
+
+<!-- Info on each question -->
+			<div class="media">
+				<div class="media-body">
+					<div class="media-heading">
+					<br>
+					{{question.QuestionNr}}. {{question.Question}} 
+				</div>
+<!-- Number Checked and works.  -->
+				<div ng-if="question.Type == 'num'">
+					<div ng-repeat="ans in answers">
+						<div ng-if="question.ID == ans.QuestionID">
+							<div class="form-group">
+								<input ng-model="reportInfo['Answer'][question.ID]" type="number" class="form-control" ng-init="reportInfo.Answer[question.ID] = answerValue(ans, 'num')" >
+					        </div>
+						</div>
+					</div>
+				</div>
+<!-- Text Checked and works -->
+				<div ng-if="question.Type == 'text'">
+					<div ng-repeat="ans in answers">
+						<div ng-if="question.ID == ans.QuestionID">
+							<div class="form-group">
+								<textarea ng-model="reportInfo.Answer[question.ID]" class="form-control" rows="5" ng-init="reportInfo.Answer[question.ID] = answerValue(ans, 'text')"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+<!-- YES NO Radio Checked and works -->
+				<div ng-if="question.Type == 'yesno'">
+					<div ng-repeat="ans in answers">
+						<div ng-if="question.ID == ans.QuestionID">
+							<label class="radio-inline">
+								<input ng-hide=true ng-model="reportInfo.Answer[question.ID]" type="radio" value=''> 
+							</label>
+							<label class="radio-inline">
+								<input ng-model="reportInfo.Answer[question.ID]" type="radio" value='y' ng-init="reportInfo.Answer[question.ID] = answerValue(ans,'yesno')"> Yes
+							</label>
+							<label class="radio-inline">
+								<input ng-model="reportInfo.Answer[question.ID]" type="radio" value='n' ng-init="reportInfo.Answer[question.ID] = answerValue(ans,'yesno')"> No
+							</label> 
+
+						</div>
+					</div>
+				</div>
+<!-- Radio Checked and work -->
+				<div ng-if="question.Type == 'radio'">
+					<div ng-repeat="ans in answers">
+						<div ng-if="question.ID == ans.QuestionID">
+							<div ng-repeat="ch in radio">
+                                <div ng-if="ch.QuestionID == question.ID">
+                                	<label class="radio-inline">
+                                    	<input name="reportInfo.Answer[question.ID]" type="radio" value="{{ch.Choice}}" ng-init="reportInfo.Answer[question.ID] = answerValue(ans,'radio')" ng-model="reportInfo.Answer[question.ID]" >  {{ch.Choice}}
+                                	</label>
+                                </div>
+            	            </div>
+						</div>
+					</div>
+                </div>
+<!-- Checkbox Checked and work-->
+
+
+
+                <div ng-if="question.Type == 'checkbox'">
+					<div ng-repeat="ans in answers">
+						<div ng-if="question.ID == ans.QuestionID">
+								<div ng-repeat="ch in checkbox">
+									<ul ng-if="ch.QuestionID == question.ID">
+										<div ng-if="ch.Textbox == 'n'">	
+											<label class="checkbox-inline">
+									    		<input ng-model="reportInfo.Answer[question.ID][$index]" type="checkbox" ng-true-value="'{{ch.Choice}}'" ng-false-value="''">  {{ch.Choice}}
+											</label>
+										</div>
+										<div ng-if="ch.Textbox == 'y'">
+											<label class="checkbox-inline">	
+									    		<input ng-model="reportInfo.Answer[question.ID][$index]" type="checkbox" ng-true-value="'{{ch.Choice}}'" ng-false-value="''">  {{ch.Choice}}
+									   		</label>
+										    <textarea style="width:100% !important;" ng-model="reportInfo.Answer[question.ID]['Text'][$index]" class="form-control" rows="5" columns="10" ng-init="reportInfo.Answer[question.ID]['Text'][$index] = answerValue(ans, 'checkbox')"></textarea>                                
+										</div>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+                </div>
+<!-- Dropdown Checked and works -->
+                <div ng-if="question.Type == 'dropdown'">
+					<div ng-repeat="ans in answers">
+						<div ng-if="question.ID == ans.QuestionID">
+							<select ng-model="reportInfo.Answer[question.ID][$index]" ng-init="reportInfo.Answer[question.ID] = ''">
+							<option value=""> --- Choose --- </option>
+							<option ng-show="ch.QuestionID == question.ID" ng-repeat="ch in dropdown"> {{ch.Choice}} </option>
+							</select>
+							<textarea style="width:100% !important;" ng-model="reportInfo.Answer[question.ID]['Textbox'][$index]" rows="5" columns="10" ng-init="reportInfo.Answer[question.ID]['Textbox'][$index] = answerValue(ans, 'dropdown')"></textarea>
+						</div>
+					</div>
+                </div>
+<!-- Conditinal yes or no text Checked and works -->
+                <div ng-if="question.Type == 'conditionalyesnotext'">
+					<div ng-repeat="ans in answers">
+						<div ng-if="question.ID == ans.QuestionID">
+							<label class="radio-inline">
+								<input ng-hide=true ng-model="reportInfo.Answer[question.ID]" type="radio" value=''> 
+							</label>
+							<label class="radio-inline">
+								<input ng-model="reportInfo.Answer[question.ID][$index]" type="radio" value='y' ng-init="reportInfo.Answer[question.ID] = answerValue(ans,'radio')"> Yes
+							</label>
+							<label class="radio-inline">
+								<input ng-model="reportInfo.Answer[question.ID][$index]" ng-click="resetValue(question.ID)" type="radio" value='n' ng-init="reportInfo.Answer[question.ID] = answerValue(ans,'radio')"> No
+							</label>
+								<select ng-show="reportInfo.Answer[question.ID][$index] == 'y'" ng-model="reportInfo.Answer[question.ID]['Text'][$index]">
+									<option value=""> --- Choose --- </option>
+									<option ng-show="ch.QuestionID == question.ID" ng-repeat="ch in dropdown"> {{ch.Choice}} </option>
+								</select>
+								<textarea ng-show="reportInfo.Answer[question.ID][$index] == 'y'" style="width:100% !important;" ng-model="reportInfo.Answer[question.ID]['Textbox'][$index]" rows="5" columns="10"></textarea>
+						</div>
+					</div>
+                </div>
+<!-- Suggestion for each question -->
+                <div>
+					<div ng-if="question.Type != 'none'">
+               		    <br>
+                	</div>
+                		<div ng-show="isCollapsed">
+        					{{question.Suggestion}}
+    					</div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+<br>
+<hr>
+
+
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-2">
+            <a class="btn btn-default pull-right" ng-click="saveInfo(reportInfo)">Save</a><br>
+            <a class="btn btn-default pull-right" href="/#">Cancel</a><br>
+          </div>
+

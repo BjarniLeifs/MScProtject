@@ -114,7 +114,38 @@ function ReportsInfo() {
       }
     );
   };
+  // Get all report information by report id and category id
+  this.getReportsInfoByCategoryIdAndReportId = (categoryID, reportID, callback) => {
+    "use strict";
+    let table  = 'reports_info';
+    let string = 'SELECT * FROM '+ table + ' WHERE reportid = $1 and categoryid = $2' ;
+    let value  = [reportID, categoryID]
 
+    dbService.queryStringValue(string, value, 
+      (err, result) => {
+        if (err)
+          callback(err, 
+            { 
+              valid   : false,
+              status  : 404,
+              Type    : 'Getting report information by report id.',
+              err     : err,
+              data    : null,
+              Message : 'Failed to get the report information by report id'
+            }); 
+        else
+          callback(err, 
+            { 
+              valid   : true,
+              status  : 200,
+              Type    : 'Getting the report information by report id.',
+              err     : err,
+              data    : DTO(result),
+              Message : 'Returned report information by report id.'
+            });
+      }
+    );
+  };
   // Get all report information for specific question by question id
   this.getReportsInfoByQuestionID = (questionID, callback) => {
     "use strict";
@@ -287,7 +318,7 @@ function ReportsInfo() {
   // Delete the reports information with the given id
   this.delete = (id, callback) => {
     "use strict";
-    let table  = 'reports';
+    let table  = 'reports_info';
     let string = 'DELETE FROM '+ table + ' WHERE id = $1';
     let value  = [id];   
     
@@ -319,7 +350,7 @@ function ReportsInfo() {
 
   this.deleteReportInfoInReport = (reportID, callback) => {
     "use strict";
-    let table  = 'reports';
+    let table  = 'reports_info';
     let string = 'DELETE FROM '+ table + ' WHERE reportID = $1';
     let value  = [reportID];   
     

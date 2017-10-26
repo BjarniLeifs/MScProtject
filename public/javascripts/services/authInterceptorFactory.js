@@ -7,7 +7,7 @@ app.factory('authInterceptor',
 			request: function (config) {
 				config.headers = config.headers || {};
 				if ($window.localStorage['appToken']) {
-					console.log($window.localStorage['appToken']);
+					//console.log($window.localStorage['appToken']);
 					config.headers.Authorization = 'Bearer ' +  $window.localStorage['appToken'];
 				}
 				return config;

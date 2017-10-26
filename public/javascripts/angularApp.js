@@ -81,6 +81,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			controller: 'ProjectCtrl',
 		})
 	/* Project conent starts */
+	/*
+	*
+	*
+	*
+	*/
 		.state('main.project', {
 			url: '/project/:id',
 			templateUrl: 'views/projectoverview/project.html',
@@ -94,13 +99,50 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 		.state('main.project.newreport', {
 			url: '/newreport',
 			templateUrl: 'views/projectoverview/newreport.html',
-			controller: 'ReportCtrl',
+			controller: 'NewReportCtrl',
 		})
 		.state('main.project.deletereport', {
-			url: '/delete/Project/report/:reportid',
+			url: '/delete/report/:reportid',
 			templateUrl: 'views/projectoverview/deletereport.html',
-			controller: 'ReportCtrl',
+			controller: 'DeleteReportCtrl',
 		})
+		.state('main.editreport', {
+			url: '/edit/project/:id/report/:reportid',
+			templateUrl: 'views/projectoverview/editreport.html',
+			controller: 'EditReportCtrl',
+		})
+		.state('main.editreport.editroles', {
+			url: '/roles',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditRolesCtrl'
+		})
+		.state('main.editreport.editactivity', {
+			url: '/activities',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditActivityCtrl'
+		})
+		.state('main.editreport.editmaterial', {
+			url: '/material',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditMaterialCtrl'
+		})
+		.state('main.editreport.editenvironment', {
+			url: '/environment',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditEnvironmentCtrl'
+		})
+		.state('main.editreport.editsoftware', {
+			url: '/software',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditSoftwareCtrl'
+		})
+
+	/*
+	*
+	*
+	*
+	*
+	*/
 	/* Single page purpose starts */
 		.state('main.contactus', {
 			url: '/contactus',

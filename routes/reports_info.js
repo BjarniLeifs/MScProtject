@@ -47,6 +47,20 @@ router.get('/report/:reportID', (req, res) => {
     ); 
 });
 
+// Returns the info of a report information with the given report id
+router.get('/category/:categoryID/report/:reportID', (req, res) => {
+  "user strict";
+  riService.getReportsInfoByCategoryIdAndReportId(req.params.categoryID, req.params.reportID,
+    (err, result) => {
+      if (err)
+        return res.status(result.status)
+            .json({ message: result.message });
+      else 
+        return res.status(result.status)
+            .json( result.data );
+      }
+    ); 
+});
 // Returns the info of a report information with the given question id
 router.get('/question/:questionID', (req, res) => {
   "user strict";

@@ -1,0 +1,55 @@
+<div id="wrapper">
+  <div id="sidebar-wrapper" class="col-md-2">
+    <div id="sidebar">
+        <ul class="nav list-group">
+        	<li>
+          		<a class="list-group-item" ui-sref="main.project.overview({id: projectId})">
+          			<i class="icon-home icon-1x"></i>
+          			Reports
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="main.editreport.editroles">
+          			<i class="icon-home icon-1x"></i>
+          			Roles
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="main.editreport.editactivity">
+          			<i class="icon-home icon-1x"></i>
+          			Activities
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="main.editreport.editmaterial">
+          			<i class="icon-home icon-1x"></i>
+          			Material
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="main.editreport.editenvironment">
+          			<i class="icon-home icon-1x"></i>
+          			Environment
+          		</a>
+        	</li>
+        	<li>
+          		<a class="list-group-item" ui-sref="main.editreport.editsoftware">
+          			<i class="icon-home icon-1x"></i>
+          			Software
+          		</a>
+        	</li>
+      	</ul>
+
+
+
+    </div>
+  </div>
+  <div id="main-wrapper" class="col-md-10">
+    <div id="main">
+      <div class="container ">
+<!-- Injecting to this view here !! -->
+        <div ui-view></div>
+      </div>
+    </div>
+  </div>
+</div>

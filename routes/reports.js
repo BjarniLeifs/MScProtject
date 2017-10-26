@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rService = require('./../models/reports');
+const riService = require('./../models/reports_info');
 const jwttoken = require('./../library/authentication');
 
 // Returns a list of all reports
@@ -114,10 +115,21 @@ router.delete('/:id', (req, res) => {
       if (err)
         return res.status(result.status)
             .json({ message: result.message });
-      else 
+      else {
+          riService.deleteReportInfoInReport(req.params.reportID,
+            (err, result) => {
+              if (err)
+                return res.status(result.status)
+                          .json({ message: result.message });
+              else 
+                return res.status(result.status)
+                          .json( result.data );
+            }
+    ); 
         return res.status(result.status)
             .json( result.data );
       }
+    }
     ); 
 });
 module.exports = router;

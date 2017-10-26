@@ -18,6 +18,7 @@
                     <div ng-show="showDiv" class="panel-body ">
                         <div ng-repeat="info in ramesinfo">
                             <div ng-if="info.categoryid == category.id">
+
                                 <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-info" aria-hidden="true"></i></a>
                                 <label>{{info.name}}</label>
                                 <div class="questionSuggestion" ng-show="showInfo">
@@ -28,28 +29,22 @@
                                 <div ng-repeat="question in questions">
                                     <ul ng-if="question.ramesinfoid == info.id">
                                         <label>{{question.QuestionNr}}. {{question.question}}</label>
+                                        
                                         <ul ng-if="question.type == 'num'">
                                             <div class="form-group">
-                                                <input ng-model="reportInfo['answer'][question.id]" type="number" class="form-control" ng-init="reportInfo.answer[question.id] = ''">
+                                                <input ng-model="reportInfo['Answer'][question.ID]" type="number" class="form-control" ng-init="reportInfo.Answer[question.ID] = ''">
                                             </div>
                                         </ul>
+                                        
                                         <ul ng-if="question.type == 'text'">
-                                            <div class="form-group">
-                                                <textarea ng-model="reportInfo.answer[question.id]" class="form-control" rows="5" ng-init="reportInfo.answer[question.id] = ''"></textarea>
-                                            </div>
+
                                         </ul>
                                         <ul ng-if="question.type == 'yesno'">
                                             <input ng-model="reportInfo.answer[question.id]" type="radio" value='y' ng-init="reportInfo.Answer[question.id] = ''"> Yes
                                             <input ng-model="reportInfo.answer[question.id]" type="radio" value='n'> No
                                         </ul>
                                         <ul ng-if="question.type == 'radio'">
-                                            <div ng-repeat="ch in radioChoices">
-                                                <div ng-if="ch.questionid == question.id">
-                                                    <input name="reportInfo.answer[question.id]" type="radio" 
-                                                        value="{{ch.choice}}" ng-init="reportInfo.answer[question.id] = ''" 
-                                                        ng-model="reportInfo.answer[question.id]" >  {{ch.choice}}
-                                                </div>
-                                            </div>
+                                           
                                         </ul>
                                         <div ng-if="question.type == 'checkbox'">
                                             <div ng-repeat="ch in checkboxChoices">

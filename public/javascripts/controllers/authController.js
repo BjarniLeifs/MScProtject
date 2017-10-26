@@ -1,6 +1,6 @@
 /* AuthController */
 
-app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$timeout', 'authFactory', 
+app.controller('AuthCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'authFactory', 
 	function ($scope, $state, $stateParams, $location, $timeout, authFactory) {
         $scope.newUser = {};
 		$scope.loginUser = {};
@@ -16,14 +16,12 @@ app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$ti
 					name 			: $scope.newUser.firstName + ' ' + $scope.newUser.lastName,
 					email 			: $scope.newUser.email
 				};
-				authFactory
-					.register(registerObject)
-						.error(function (error) {
-							$scope.error = error;
-						})
-						.then(function () {
-							$state.go('main', {}, {reload: true});
-						});
+				$timeout(
+					function() {
+						authFactory.register(registerObject)
+						$state.go('main', {}, {reload: true});		
+					}, 110
+				);
 				
 			} else {
 				$scope.error = "The passwords did not match!";
@@ -38,15 +36,13 @@ app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$ti
 					username : $scope.loginUser.username,
 					password : $scope.loginUser.password
 				};
-				authFactory
-					.logIn(loginObject)
-				  		.error(function (error) {
-							$scope.error = error;
-						})
-				  		.then(function () {
-				  			$scope.isLoggedIn = authFactory.isLoggedIn();		 
-							$state.go('main', {}, {reload: true});
-				  		});
+				$timeout(
+					function() {
+						authFactory.logIn(loginObject)
+						$scope.isLoggedIn = authFactory.isLoggedIn();	
+						$state.go('main', {}, {reload: true});		
+					}, 110
+				);
 				
 				$scope.loginUser = {};
 

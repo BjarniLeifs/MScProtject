@@ -7,7 +7,7 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
 
     auth.saveToken = function (token) {
         $window.localStorage['appToken'] = token;
-        console.log(token);
+        //console.log(token);
     };
 
     auth.getToken = function () {

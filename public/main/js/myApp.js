@@ -1,4 +1,4 @@
-/*! Made on 16-10-2017 */
+/*! Made on 26-10-2017 */
 /* Angular routing and app declatation */
 
 var app = angular.module('ramesApp', ['ui.router']);
@@ -82,6 +82,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			controller: 'ProjectCtrl',
 		})
 	/* Project conent starts */
+	/*
+	*
+	*
+	*
+	*/
 		.state('main.project', {
 			url: '/project/:id',
 			templateUrl: 'views/projectoverview/project.html',
@@ -95,13 +100,50 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 		.state('main.project.newreport', {
 			url: '/newreport',
 			templateUrl: 'views/projectoverview/newreport.html',
-			controller: 'ReportCtrl',
+			controller: 'NewReportCtrl',
 		})
 		.state('main.project.deletereport', {
-			url: '/delete/Project/report/:reportid',
+			url: '/delete/report/:reportid',
 			templateUrl: 'views/projectoverview/deletereport.html',
-			controller: 'ReportCtrl',
+			controller: 'DeleteReportCtrl',
 		})
+		.state('main.editreport', {
+			url: '/edit/project/:id/report/:reportid',
+			templateUrl: 'views/projectoverview/editreport.html',
+			controller: 'EditReportCtrl',
+		})
+		.state('main.editreport.editroles', {
+			url: '/roles',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditRolesCtrl'
+		})
+		.state('main.editreport.editactivity', {
+			url: '/activities',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditActivityCtrl'
+		})
+		.state('main.editreport.editmaterial', {
+			url: '/material',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditMaterialCtrl'
+		})
+		.state('main.editreport.editenvironment', {
+			url: '/environment',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditEnvironmentCtrl'
+		})
+		.state('main.editreport.editsoftware', {
+			url: '/software',
+			templateUrl: 'views/projectoverview/editreportattribute.html',
+			controller: 'EditSoftwareCtrl'
+		})
+
+	/*
+	*
+	*
+	*
+	*
+	*/
 	/* Single page purpose starts */
 		.state('main.contactus', {
 			url: '/contactus',
@@ -203,7 +245,7 @@ app.controller('AboutCreatorCtrl', ['$scope', '$state', '$stateParams', '$locati
 
 /* AuthController */
 
-app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$timeout', 'authFactory', 
+app.controller('AuthCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'authFactory', 
 	function ($scope, $state, $stateParams, $location, $timeout, authFactory) {
         $scope.newUser = {};
 		$scope.loginUser = {};
@@ -219,14 +261,12 @@ app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$ti
 					name 			: $scope.newUser.firstName + ' ' + $scope.newUser.lastName,
 					email 			: $scope.newUser.email
 				};
-				authFactory
-					.register(registerObject)
-						.error(function (error) {
-							$scope.error = error;
-						})
-						.then(function () {
-							$state.go('main', {}, {reload: true});
-						});
+				$timeout(
+					function() {
+						authFactory.register(registerObject)
+						$state.go('main', {}, {reload: true});		
+					}, 110
+				);
 				
 			} else {
 				$scope.error = "The passwords did not match!";
@@ -241,15 +281,13 @@ app.controller('AuthCtrl', ['$scope','$state', '$stateParams', '$location', '$ti
 					username : $scope.loginUser.username,
 					password : $scope.loginUser.password
 				};
-				authFactory
-					.logIn(loginObject)
-				  		.error(function (error) {
-							$scope.error = error;
-						})
-				  		.then(function () {
-				  			$scope.isLoggedIn = authFactory.isLoggedIn();		 
-							$state.go('main', {}, {reload: true});
-				  		});
+				$timeout(
+					function() {
+						authFactory.logIn(loginObject)
+						$scope.isLoggedIn = authFactory.isLoggedIn();	
+						$state.go('main', {}, {reload: true});		
+					}, 110
+				);
 				
 				$scope.loginUser = {};
 
@@ -343,6 +381,636 @@ app.controller('DashboardCtrl', ['$scope', '$state', '$stateParams', '$location'
 ]);
 
 'use strict';
+app.controller('DeleteReportCtrl', ['$scope', '$state', '$stateParams', '$location',
+	'$timeout', 'reportTypeFactory', 'reportFactory',
+
+	function ($scope, $state, $stateParams, $location, 
+	 $timeout, reportTypeFactory, reportFactory) {
+
+		$timeout(
+			function() {
+				if ($stateParams.id != undefined) {
+					$scope.projectId = $stateParams.id;
+				}
+				
+				if ($stateParams.reportid != undefined) {
+					$scope.report = reportFactory.getById($stateParams.reportid); // Get report info
+				}
+				$scope.reportypes = reportTypeFactory.getAll();
+			}, 110
+		);
+
+ 		$scope.deleteReport = function () {
+ 			reportFactory.delete($stateParams.reportid);
+ 			$timeout(function () {
+      		$state.go('main.project.overview',{'id' : $stateParams.id });
+      	}, 110);
+ 		};
+
+	}
+]);
+'use strict';
+app.controller('EditReportCtrl', ['$scope', '$state', '$stateParams', '$location',
+	'$timeout', 'questionFactory', 'categoryFactory', 'ramesInfoFactory', 'questionFactory',
+	'choicesFactory', 'categoryFactory', 'reportInfoFactory',
+
+	function ($scope, $state, $stateParams, $location, 
+	 $timeout, questionFactory, categoryFactory, ramesInfoFactory,
+	 questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
+		
+		$timeout(
+			function() {
+				if ($stateParams.id != undefined)
+					$scope.projectId = $stateParams.id;
+				if ($stateParams.reportid != undefined)
+					$scope.reportId = $stateParams.reportid
+
+				//$scope.questions 		  	= questionFactory.getQuestions();
+				//$scope.categoryordSEg 	  	= categoryFactory.getCategoryOrdSeq();
+				/* Getting the Answers */
+			//	$scope.reportypes = reportTypeFactory.getAll();
+			//	$scope.reports = reportFactory.getAll();
+			}, 110
+		);
+	}
+]);
+
+'use strict';
+app.controller('EditRolesCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory',
+				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 
+				 'reportInfoFactory',
+	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, 
+		questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
+
+		$timeout(
+			function() {
+				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(1);
+				$scope.answers   = reportInfoFactory.getByCategoryIdAndReportId(1, $stateParams.reportid);
+				$scope.questions = questionFactory.getQuestionsByCategoryId(1);
+				$scope.category  = categoryFactory.getCategorybyID(1);
+				$scope.dropdown  = choicesFactory.getDrowpdown();
+				$scope.checkbox  = choicesFactory.getCheckbox();
+				$scope.radio 	 = choicesFactory.getRadio();
+				/* Getting the radio button choices */
+				/*
+				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
+				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
+				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
+				*/
+				/* Getting the dropdown choices */
+				/*
+				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
+				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
+				*/
+				/* Getting the checkbox choices */
+				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
+				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
+				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
+				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
+				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
+				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
+
+
+			}, 100
+		);
+
+	$scope.answerValue = function (data, type) {
+		//console.log(data)
+		
+		//console.log(data.Answer)
+		if (data.Answer == 'null' || 
+			data.Answer == '' || 
+			data.Answer == undefined) {
+				if (type == 'num')
+					return 0;
+				else if (type == 'text')
+					return '';
+				else if (type == 'yesno')
+					return ''; 
+				else
+					return 'n';
+		}
+		else
+			return data.Answer;
+	}
+
+
+    $scope.reportInfo = {
+      "ReportID": $stateParams.reportid,
+    };
+
+
+    $scope.resetValue = function(questionID) {
+      $scope.reportInfo.Answer[questionID]['Text'] = '';
+      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
+    };
+    
+    $scope.saveInfo = function(reportInfo) {
+          var length = Object.keys(reportInfo['Answer']).length;
+          var keys = Object.keys(reportInfo['Answer']);
+          var reportid = $stateParams.reportid;
+          for(var i = 0; i < length; i++) {
+            //console.log(typeof(reportInfo['Answer'][keys[i]]));
+            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
+              var newData = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+            //  console.log(reportInfo['Answer'][keys[i]]);
+             // console.log(keys[i]);
+            } else {
+              var answer = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+              //console.log(reportInfo['Answer']);
+                           // console.log(reportInfo['Answer'][keys[i]]);
+             
+            };
+            console.log(reportInfo)
+            //console.log("answer " + angular.toJson(newData));
+
+            //reportInfoFactory.post(newData);
+          }
+
+  //        window.location.href = "#/reports/" + $scope.reportID;
+        };
+      
+
+	}
+]);
+'use strict';
+
+
+app.controller('EditActivityCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory',
+				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 'reportInfoFactory',
+	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, 
+		questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
+
+		$timeout(
+			function() {
+				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(2);
+				$scope.answers   = reportInfoFactory.getByCategoryIdAndReportId(2, $stateParams.reportid);
+				$scope.questions = questionFactory.getQuestionsByCategoryId(2);
+				$scope.category  = categoryFactory.getCategorybyID(2);
+				$scope.dropdown  = choicesFactory.getDrowpdown();
+				$scope.checkbox  = choicesFactory.getCheckbox();
+				$scope.radio 	 = choicesFactory.getRadio();
+				$scope.isCollapsed = false;				
+				/* Getting the radio button choices */
+				/*
+				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
+				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
+				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
+				*/
+				/* Getting the dropdown choices */
+				/*
+				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
+				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
+				*/
+				/* Getting the checkbox choices */
+				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
+				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
+				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
+				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
+				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
+				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
+
+
+			}, 100
+		);
+      $scope.color = {
+        name: 'blue'
+      };
+      $scope.specialValue = {
+        "id": "12345",
+        "value": "green"
+      }; 
+
+	$scope.answerValue = function (data, type) {
+		//console.log(data)
+		
+		//console.log(data.Answer)
+		if (data.Answer == 'null' || 
+			data.Answer == '' || 
+			data.Answer == undefined) {
+				if (type == 'num')
+					return 0;
+				else if (type == 'text')
+					return '';
+				else if (type == 'yesno' || type == 'radio')
+					return ''; 
+				else
+					return 'n';
+		}
+		else
+			return data.Answer;
+	}
+
+    $scope.reportInfo = {
+      "ReportID": $stateParams.reportid,
+    };
+
+
+    $scope.resetValue = function(questionID) {
+   		try {
+   	 	 	$scope.reportInfo.Answer[questionID]['Text'] = '';
+      		$scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
+    	
+   		} catch (err) {
+   			
+   		}
+    };
+    
+    $scope.saveInfo = function(reportInfo) {
+          var length = Object.keys(reportInfo['Answer']).length;
+          var keys = Object.keys(reportInfo['Answer']);
+          var reportid = $stateParams.reportid;
+          for(var i = 0; i < length; i++) {
+            //console.log(typeof(reportInfo['Answer'][keys[i]]));
+            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
+              var newData = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+            //  console.log(reportInfo['Answer'][keys[i]]);
+             // console.log(keys[i]);
+            } else {
+              var answer = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+              console.log(reportInfo['Answer']);
+                           // console.log(reportInfo['Answer'][keys[i]]);
+             
+            };
+            //console.log(reportInfo)
+            //console.log("answer " + angular.toJson(newData));
+
+            //reportInfoFactory.post(newData);
+          }
+
+  //        window.location.href = "#/reports/" + $scope.reportID;
+        };
+      
+
+	}
+]);
+'use strict';
+
+
+app.controller('EditEnvironmentCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory', 
+	 			'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory','reportInfoFactory',
+	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, 
+		ramesInfoFactory, questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
+
+		$timeout(
+			function() {
+				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(4);
+				$scope.answers   = reportInfoFactory.getByCategoryIdAndReportId(4, $stateParams.reportid);
+				$scope.questions = questionFactory.getQuestionsByCategoryId(4);
+				$scope.category  = categoryFactory.getCategorybyID(4);
+				$scope.dropdown  = choicesFactory.getDrowpdown();
+				$scope.checkbox  = choicesFactory.getCheckbox();
+				$scope.radio 	 = choicesFactory.getRadio();
+				/* Getting the radio button choices */
+				/*
+				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
+				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
+				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
+				*/
+				/* Getting the dropdown choices */
+				/*
+				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
+				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
+				*/
+				/* Getting the checkbox choices */
+				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
+				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
+				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
+				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
+				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
+				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
+
+
+			}, 100
+		);
+
+
+      $scope.color = {
+        name: 'blue'
+      };
+      $scope.specialValue = {
+        "id": "12345",
+        "value": "green"
+      }; 
+
+	$scope.answerValue = function (data, type) {
+		//console.log(data)
+		
+		//console.log(data.Answer)
+		if (data.Answer == 'null' || 
+			data.Answer == '' || 
+			data.Answer == undefined) {
+				if (type == 'num')
+					return 0;
+				else if (type == 'text')
+					return '';
+				else if (type == 'yesno' || type == 'radio')
+					return ''; 
+				else
+					return '';
+		}
+		else
+			return data.Answer;
+	}
+
+
+    $scope.reportInfo = {
+      "ReportID": $stateParams.reportid,
+    };
+
+
+    $scope.resetValue = function(questionID) {
+      $scope.reportInfo.Answer[questionID]['Text'] = '';
+      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
+    };
+    
+    $scope.saveInfo = function(reportInfo) {
+          var length = Object.keys(reportInfo['Answer']).length;
+          var keys = Object.keys(reportInfo['Answer']);
+          var reportid = $stateParams.reportid;
+          for(var i = 0; i < length; i++) {
+            //console.log(typeof(reportInfo['Answer'][keys[i]]));
+            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
+              var newData = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+            //  console.log(reportInfo['Answer'][keys[i]]);
+             // console.log(keys[i]);
+            } else {
+              var answer = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+              console.log(reportInfo['Answer']);
+                           // console.log(reportInfo['Answer'][keys[i]]);
+             
+            };
+            //console.log(reportInfo)
+            //console.log("answer " + angular.toJson(newData));
+
+            //reportInfoFactory.post(newData);
+          }
+
+  //        window.location.href = "#/reports/" + $scope.reportID;
+        };
+      
+
+	}
+]);
+'use strict';
+
+
+app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory', 
+				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 'reportInfoFactory',
+	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, questionFactory, 
+		choicesFactory, categoryFactory, reportInfoFactory) {
+
+		$timeout(
+			function() {
+				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(3);
+				$scope.answers   	= reportInfoFactory.getByCategoryIdAndReportId(3, $stateParams.reportid);
+				$scope.questions  	= questionFactory.getQuestionsByCategoryId(3);
+				$scope.category  = categoryFactory.getCategorybyID(3);
+				$scope.dropdown  = choicesFactory.getDrowpdown();
+				$scope.checkbox  = choicesFactory.getCheckbox();
+				$scope.radio 	 = choicesFactory.getRadio();
+				/* Getting the radio button choices */
+				/*
+				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
+				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
+				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
+				*/
+				/* Getting the dropdown choices */
+				/*
+				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
+				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
+				*/
+				/* Getting the checkbox choices */
+				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
+				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
+				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
+				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
+				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
+				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
+
+
+			}, 100
+		);
+
+      $scope.color = {
+        name: 'blue'
+      };
+      $scope.specialValue = {
+        "id": "12345",
+        "value": "green"
+      }; 
+
+	$scope.answerValue = function (data, type) {
+		//console.log(data)
+		
+		//console.log(data.Answer)
+		if (data.Answer == 'null' || 
+			data.Answer == '' || 
+			data.Answer == undefined) {
+				if (type == 'num')
+					return 0;
+				else if (type == 'text')
+					return '';
+				else if (type == 'yesno' || type == 'radio')
+					return ''; 
+				else
+					return 'User tasks';
+		}
+		else
+			return data.Answer;
+	}
+
+
+    $scope.reportInfo = {
+      "ReportID": $stateParams.reportid,
+    };
+
+
+    $scope.resetValue = function(questionID) {
+      $scope.reportInfo.Answer[questionID]['Text'] = '';
+      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
+    };
+    
+    $scope.saveInfo = function(reportInfo) {
+          var length = Object.keys(reportInfo['Answer']).length;
+          var keys = Object.keys(reportInfo['Answer']);
+          var reportid = $stateParams.reportid;
+          for(var i = 0; i < length; i++) {
+            //console.log(typeof(reportInfo['Answer'][keys[i]]));
+            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
+              var newData = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+            //  console.log(reportInfo['Answer'][keys[i]]);
+             // console.log(keys[i]);
+            } else {
+              var answer = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+              console.log(reportInfo['Answer']);
+                           // console.log(reportInfo['Answer'][keys[i]]);
+             
+            };
+            //console.log(reportInfo)
+            //console.log("answer " + angular.toJson(newData));
+
+            //reportInfoFactory.post(newData);
+          }
+
+  //        window.location.href = "#/reports/" + $scope.reportID;
+        };
+      
+
+	}
+]);
+'use strict';
+
+
+app.controller('EditSoftwareCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory', 
+	 			'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory','reportInfoFactory',
+
+	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, 
+		ramesInfoFactory, questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
+
+
+		$timeout(
+			function() {
+				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(5);
+				$scope.answers   = reportInfoFactory.getByCategoryIdAndReportId(5, $stateParams.reportid);
+				$scope.questions = questionFactory.getQuestionsByCategoryId(5);
+				$scope.category  = categoryFactory.getCategorybyID(5);
+				$scope.dropdown  = choicesFactory.getDrowpdown();
+				$scope.checkbox  = choicesFactory.getCheckbox();
+				$scope.radio 	 = choicesFactory.getRadio();
+				/* Getting the radio button choices */
+				/*
+				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
+				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
+				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
+				*/
+				/* Getting the dropdown choices */
+				/*
+				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
+				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
+				*/
+				/* Getting the checkbox choices */
+				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
+				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
+				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
+				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
+				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
+				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
+
+
+			}, 100
+
+
+	)
+
+
+      $scope.color = {
+        name: 'blue'
+      };
+      $scope.specialValue = {
+        "id": "12345",
+        "value": "green"
+      }; 
+
+	$scope.answerValue = function (data, type) {
+		//console.log(data)
+		
+		//console.log(data.Answer)
+		if (data.Answer == 'null' || 
+			data.Answer == '' || 
+			data.Answer == undefined) {
+				if (type == 'num')
+					return 0;
+				else if (type == 'text')
+					return '';
+				else if (type == 'yesno' || type == 'radio')
+					return ''; 
+				else
+					return 'User tasks';
+		}
+		else
+			return data.Answer;
+	}
+
+    $scope.reportInfo = {
+      "ReportID": $stateParams.reportid,
+    };
+
+
+    $scope.resetValue = function(questionID) {
+      $scope.reportInfo.Answer[questionID]['Text'] = '';
+      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
+    };
+    
+    $scope.saveInfo = function(reportInfo) {
+          var length = Object.keys(reportInfo['Answer']).length;
+          var keys = Object.keys(reportInfo['Answer']);
+          var reportid = $stateParams.reportid;
+          for(var i = 0; i < length; i++) {
+            //console.log(typeof(reportInfo['Answer'][keys[i]]));
+            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
+              var newData = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+            //  console.log(reportInfo['Answer'][keys[i]]);
+             // console.log(keys[i]);
+            } else {
+              var answer = {
+                "ReportID": reportid,
+                "QuestionID": keys[i],
+                "Answer": reportInfo['Answer'][keys[i]]
+              }
+              console.log(reportInfo['Answer']);
+                           // console.log(reportInfo['Answer'][keys[i]]);
+             
+            };
+            //console.log(reportInfo)
+            //console.log("answer " + angular.toJson(newData));
+
+            //reportInfoFactory.post(newData);
+          }
+
+  //        window.location.href = "#/reports/" + $scope.reportID;
+        };
+      
+
+	}
+]);
+'use strict';
 
 
 app.controller('ErrorCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 
@@ -362,6 +1030,41 @@ app.controller('ManagementCtrl', ['$scope', '$state', '$stateParams', '$location
 		);
 
 		
+	}
+]);
+'use strict';
+app.controller('NewReportCtrl', ['$scope', '$state', '$stateParams', '$location',
+	'$timeout', 'reportTypeFactory', 'reportFactory',
+
+	function ($scope, $state, $stateParams, $location, 
+	 $timeout, reportTypeFactory, reportFactory) {
+
+		$timeout(
+			function() {
+				if ($stateParams.id != undefined) {
+					$scope.projectId = $stateParams.id;
+				}
+				$scope.reportypes = reportTypeFactory.getAll();
+			}, 110
+		);
+
+		$scope.data = {
+    		typeSelect: null, // This one is the id of the selected 
+    		multipleSelect: [],
+    		option1: 'option-1'
+   		};
+
+ 	  	$scope.makeNewReport = function () {
+ 			var data = {
+ 				Name : $scope.reportName,
+ 				ReportTypeID : $scope.data.typeSelect,
+ 				ProjectID : $stateParams.id
+ 			};
+ 			reportFactory.add(data);
+ 			$timeout(function () {
+      			$state.go('main.project.overview',{'id' : $stateParams.id });
+      		}, 110);
+ 		};
 	}
 ]);
 'use strict';
@@ -477,71 +1180,22 @@ app.controller('RamesSoftwareCtrl', ['$scope', '$state', '$stateParams', '$locat
 ]);
 'use strict';
 app.controller('ReportCtrl', ['$scope', '$state', '$stateParams', '$location',
-	'$timeout', 'aboutFactory', 'reportTypeFactory', 'reportFactory',
+	'$timeout', 'reportTypeFactory', 'reportFactory',
 
 	function ($scope, $state, $stateParams, $location, 
-	 $timeout, aboutFactory, reportTypeFactory, reportFactory) {
+	 $timeout, reportTypeFactory, reportFactory) {
 
 		$timeout(
 			function() {
-				if ($stateParams.id != undefined) {
-					$scope.projectId = $stateParams.id;
-				}
-				
-				if ($stateParams.reportid != undefined) {
-					$scope.report = reportFactory.getById($stateParams.reportid); // Get report info
-				}
 				// $scope.infos = aboutFactory.getRamesInfoByCategoryId(2); ?????
-				$scope.reportypes = reportTypeFactory.getAll();
 				$scope.reports = reportFactory.getAll();
+				$scope.projectid = $stateParams.id;
+				console.log($stateParams.id);
 			}, 110
 		);
-
-		$scope.data = {
-    		typeSelect: null, // This one is the id of the selected 
-    		multipleSelect: [],
-    		option1: 'option-1'
-   		};
-
-   		$scope.makeNewReport = function () {
-   			var data = {
-   				Name : $scope.reportName,
-   				ReportTypeID : $scope.data.typeSelect,
-   				ProjectID : $stateParams.id
-   			};
-   			reportFactory.add(data);
-   			$timeout(function () {
-        		$state.go('main.project.overview',{'id' : $stateParams.id });
-        	}, 110);
-   		};
-
-   		$scope.deleteReport = function () {
-   			reportFactory.delete($stateParams.reportid);
-   			$timeout(function () {
-        		$state.go('main.project.overview',{'id' : $stateParams.id });
-        	}, 110);
-   		};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 ]);
+
 'use strict';
 
 app.controller('ReportTypeCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'reportTypeFactory', 
@@ -617,7 +1271,7 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
 
     auth.saveToken = function (token) {
         $window.localStorage['appToken'] = token;
-        console.log(token);
+        //console.log(token);
     };
 
     auth.getToken = function () {
@@ -720,7 +1374,7 @@ app.factory('authInterceptor',
 			request: function (config) {
 				config.headers = config.headers || {};
 				if ($window.localStorage['appToken']) {
-					console.log($window.localStorage['appToken']);
+					//console.log($window.localStorage['appToken']);
 					config.headers.Authorization = 'Bearer ' +  $window.localStorage['appToken'];
 				}
 				return config;
@@ -734,6 +1388,71 @@ app.factory('authInterceptor',
 		};
 	}
 );
+/* About rames info factory */
+app.factory('choicesFactory', ['$http', '$window', 'configFactory', 
+	function ($http, $window, configFactory) {
+    
+		var choice = {};
+		var baseUrl = configFactory.getHttpUrl();
+
+		choice.getRadioByQuestionId = function (qid) {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/questionradiochoices/question/"+qid)
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
+		choice.getRadio = function () {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/questionradiochoices")
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
+		
+		choice.getDrowpdownByQuestionId = function (qid) {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/questiondropdownchoices/question/"+qid)
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
+		choice.getDrowpdown = function () {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/questiondropdownchoices")
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
+		choice.getCheckboxByQuestionId = function (qid) {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/questioncheckboxchoices/question/"+qid)
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
+		choice.getCheckbox = function () {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/questioncheckboxchoices")
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
+		return choice;
+	}
+]);
 /* About rames info factory */
 app.factory('configFactory', ['$http', '$window', function ($http, $window) {
     
@@ -843,6 +1562,50 @@ app.factory('categoryFactory', ['$http', '$window', 'configFactory',
     return category;
 }]);
 /* About rames info factory */
+app.factory('ramesInfoFactory', ['$http', '$window', 'configFactory', 
+	function ($http, $window, configFactory) {
+    
+    var info = {};
+    var baseUrl = configFactory.getHttpUrl();
+
+    info.getAll = function () {
+	 	var returnMe = [];
+	    $http.get(baseUrl + "/api/ramesinfo")
+	      .success(function (data) {
+			angular.copy(data, returnMe);
+		});
+		return returnMe;
+    }
+    info.getByCategoryId = function (id) {
+	 	var returnMe = [];
+	    $http.get(baseUrl + "/api/ramesinfo/category/"+id)
+	      .success(function (data) {
+			angular.copy(data, returnMe);
+		});
+		return returnMe;
+    }
+    return info;
+}]);
+/* About rames info factory */
+app.factory('questionFactory', ['$http', '$window', 'configFactory', 
+	function ($http, $window, configFactory) {
+    
+		var question = {};
+		var baseUrl = configFactory.getHttpUrl();
+
+		question.getQuestionsByCategoryId = function (qid) {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/ramesquestion/category/"+qid)
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
+		return question;
+	}
+]);
+/* About rames info factory */
 app.factory('reportFactory', ['$http', '$window', 'configFactory', 
 	function ($http, $window, configFactory) {
     
@@ -906,6 +1669,44 @@ app.factory('reportFactory', ['$http', '$window', 'configFactory',
 
     return report;
 }]);
+/* About rames info factory */
+app.factory('reportInfoFactory', ['$http', '$window', 'configFactory', 
+	function ($http, $window, configFactory) {
+    
+    var info = {};
+    var baseUrl = configFactory.getHttpUrl();
+
+    info.getByReportId = function (id) {
+		var returnMe = [];
+		$http
+		 .get(baseUrl + "/api/reportsinfo/report/"+id)
+		  .success(function (data) {
+			angular.copy(data, returnMe);
+		});
+		return returnMe;
+	}
+
+	info.getByCategoryIdAndReportId = function (cid, rid) {
+		var returnMe = [];
+		$http
+		 .get(baseUrl + "/api/reportsinfo/category/"+cid+"/report/"+rid)
+		  .success(function (data) {
+			angular.copy(data, returnMe);
+		});
+		return returnMe;
+	}
+
+	info.post = function (data) {
+		var returnMe;
+		$http.post(baseUrl + '/api/reportsinfo', data).success(function (data) {
+			angular.copy(data, returnMe);
+		})
+		return returnMe;
+	}
+    return info;
+}]);
+
+
 /* About rames info factory */
 app.factory('reportTypeFactory', ['$http', '$window', 'configFactory', 
 	function ($http, $window, configFactory) {

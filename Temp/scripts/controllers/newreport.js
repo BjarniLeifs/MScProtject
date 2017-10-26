@@ -75,6 +75,7 @@ angular.module('ramesApp')
       
       $http.post(baseUrl + "/api/reports", reportName)
         .then(function(response) {
+            
           $scope.reportID = response.data;
 
           var length = Object.keys(reportInfo['Answer']).length;

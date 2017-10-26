@@ -84,6 +84,25 @@ router.get('/:id', (req, res) => {
   		}
   	);
 });
+
+router.get('/question/:id', (req, res) => {
+	"user strict";
+
+	if (!req.params.id)
+		return res.status(400)
+				.json({ message: "Please provide id." });
+
+	qdcService.getDropdownChoiceByQuestionID(req.params.id,
+		(err, result) => {
+			if (err)
+				return res.status(result.status)
+						.json({ message: result.message });
+			else 
+				return res.status(result.status)
+						.json( result.data );
+  		}
+  	);
+});
 /**
  * @api {post} /api/questiondropdownchoices Adds Question dropdown choices.
  * @apiVersion 1.0.0
