@@ -1,4 +1,4 @@
-/*! Made on 26-10-2017 */
+/*! Made on 28-10-2017 */
 /* Angular routing and app declatation */
 
 var app = angular.module('ramesApp', ['ui.router']);
@@ -456,42 +456,57 @@ app.controller('EditRolesCtrl', ['$scope', '$state', '$stateParams', '$location'
 				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
 				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
 				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
-				*/
-				/* Getting the dropdown choices */
-				/*
+		
 				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
 				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
-				*/
-				/* Getting the checkbox choices */
+				
+				
 				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
 				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
 				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
 				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
 				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
 				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
-
+*/
 
 			}, 100
 		);
 
-	$scope.answerValue = function (data, type) {
-		//console.log(data)
-		
-		//console.log(data.Answer)
-		if (data.Answer == 'null' || 
-			data.Answer == '' || 
-			data.Answer == undefined) {
-				if (type == 'num')
-					return 0;
-				else if (type == 'text')
-					return '';
-				else if (type == 'yesno')
-					return ''; 
-				else
-					return 'n';
+	$scope.answerValue = function (data, type, attribute, id) {
+		if (angular.equals({}, data.Answer)) {
+			if (type == 'num')
+				return 0; 
+			else
+				return '';
 		}
-		else
-			return data.Answer;
+		else {
+			if (type == 'num')
+				return data.Answer.number;
+			else if (type == 'text')
+				return data.Answer.text;
+			else if (type == 'yesno')
+				return data.Answer.yesno;
+			else if (type == 'radio')
+				return data.Answer.radio;
+			else if (type == 'conditionalyesnotext') {
+				if (attribute == 'radio')
+					return data.Answer.conditionalyesnotext;
+				else if (attribute == 'Text') {
+					if (angular.equals({}, data.Answer.Text))
+						return '';
+					else 
+						return data.Answer.Text.conditionalyesnotext;
+				}
+				else if (attribute == 'Textbox') {
+					if (angular.equals({}, data.Answer.Textbox))
+						return '';
+					else 
+						return data.Answer.Textbox.conditionalyesnotext;
+				}
+			}
+			else
+				return {};
+		}
 	}
 
 
@@ -512,7 +527,7 @@ app.controller('EditRolesCtrl', ['$scope', '$state', '$stateParams', '$location'
           for(var i = 0; i < length; i++) {
             //console.log(typeof(reportInfo['Answer'][keys[i]]));
             if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var newData = {
+              var answer = {
                 "ReportID": reportid,
                 "QuestionID": keys[i],
                 "Answer": reportInfo['Answer'][keys[i]]
@@ -529,7 +544,7 @@ app.controller('EditRolesCtrl', ['$scope', '$state', '$stateParams', '$location'
                            // console.log(reportInfo['Answer'][keys[i]]);
              
             };
-            console.log(reportInfo)
+            console.log(answer)
             //console.log("answer " + angular.toJson(newData));
 
             //reportInfoFactory.post(newData);
@@ -548,7 +563,7 @@ app.controller('EditActivityCtrl', ['$scope', '$state', '$stateParams', '$locati
 				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 'reportInfoFactory',
 	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, 
 		questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
-
+console.log($stateParams);
 		$timeout(
 			function() {
 				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(2);
@@ -564,50 +579,57 @@ app.controller('EditActivityCtrl', ['$scope', '$state', '$stateParams', '$locati
 				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
 				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
 				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
-				*/
-				/* Getting the dropdown choices */
-				/*
 				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
 				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
-				*/
-				/* Getting the checkbox choices */
+
 				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
 				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
 				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
 				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
 				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
 				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
-
+*/
 
 			}, 100
 		);
-      $scope.color = {
-        name: 'blue'
-      };
-      $scope.specialValue = {
-        "id": "12345",
-        "value": "green"
-      }; 
 
-	$scope.answerValue = function (data, type) {
-		//console.log(data)
-		
-		//console.log(data.Answer)
-		if (data.Answer == 'null' || 
-			data.Answer == '' || 
-			data.Answer == undefined) {
-				if (type == 'num')
-					return 0;
-				else if (type == 'text')
-					return '';
-				else if (type == 'yesno' || type == 'radio')
-					return ''; 
-				else
-					return 'n';
+	$scope.answerValue = function (data, type, attribute, id) {
+		if (angular.equals({}, data.Answer)) {
+			if (type == 'num')
+				return 0; 
+			else
+				return '';
 		}
-		else
-			return data.Answer;
+		else {
+			if (type == 'num')
+				return data.Answer.number;
+			else if (type == 'text')
+				return data.Answer.text;
+			else if (type == 'yesno')
+				return data.Answer.yesno;
+			else if (type == 'radio')
+				return data.Answer.radio;
+			else if (type == 'conditionalyesnotext') {
+				if (attribute == 'radio')
+					return data.Answer.conditionalyesnotext;
+				else if (attribute == 'Text') {
+					if (angular.equals({}, data.Answer.Text))
+						return '';
+					else 
+						return data.Answer.Text.conditionalyesnotext;
+				}
+				else if (attribute == 'Textbox') {
+					if (angular.equals({}, data.Answer.Textbox))
+						return '';
+					else 
+						return data.Answer.Textbox.conditionalyesnotext;
+				}
+			}
+			else
+				return {};
+		}
 	}
+
 
     $scope.reportInfo = {
       "ReportID": $stateParams.reportid,
@@ -631,12 +653,12 @@ app.controller('EditActivityCtrl', ['$scope', '$state', '$stateParams', '$locati
           for(var i = 0; i < length; i++) {
             //console.log(typeof(reportInfo['Answer'][keys[i]]));
             if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var newData = {
+              var answer = {
                 "ReportID": reportid,
                 "QuestionID": keys[i],
                 "Answer": reportInfo['Answer'][keys[i]]
               }
-            //  console.log(reportInfo['Answer'][keys[i]]);
+            //console.log(reportInfo['Answer'][keys[i]]);
              // console.log(keys[i]);
             } else {
               var answer = {
@@ -644,10 +666,11 @@ app.controller('EditActivityCtrl', ['$scope', '$state', '$stateParams', '$locati
                 "QuestionID": keys[i],
                 "Answer": reportInfo['Answer'][keys[i]]
               }
-              console.log(reportInfo['Answer']);
+             // console.log(reportInfo['Answer']);
                            // console.log(reportInfo['Answer'][keys[i]]);
              
             };
+            //console.log(answer)
             //console.log(reportInfo)
             //console.log("answer " + angular.toJson(newData));
 
@@ -815,33 +838,61 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
 
 			}, 100
 		);
-
-      $scope.color = {
-        name: 'blue'
-      };
-      $scope.specialValue = {
-        "id": "12345",
-        "value": "green"
-      }; 
-
-	$scope.answerValue = function (data, type) {
-		//console.log(data)
-		
-		//console.log(data.Answer)
-		if (data.Answer == 'null' || 
-			data.Answer == '' || 
-			data.Answer == undefined) {
-				if (type == 'num')
-					return 0;
-				else if (type == 'text')
-					return '';
-				else if (type == 'yesno' || type == 'radio')
-					return ''; 
-				else
-					return 'User tasks';
+	$scope.answerValue = function (data, type, attribute, choice) {
+		if (angular.equals({}, data.Answer)) {
+			if (type == 'num')
+				return 0; 
+			else
+				return '';
 		}
-		else
-			return data.Answer;
+		else {
+			if (type == 'num')
+				return data.Answer.number;
+			else if (type == 'text')
+				return data.Answer.text;
+			else if (type == 'yesno')
+				return data.Answer.yesno;
+			else if (type == 'radio')
+				return data.Answer.radio;
+			else if (type == 'conditionalyesnotext') {
+				if (attribute == 'radio')
+					return data.Answer.conditionalyesnotext;
+				else if (attribute == 'Text') {
+					if (angular.equals({}, data.Answer.Text))
+						return '';
+					else 
+						return data.Answer.Text.conditionalyesnotext;
+				}
+				else if (attribute == 'Textbox') {
+					if (angular.equals({}, data.Answer.Textbox))
+						return '';
+					else 
+						return data.Answer.Textbox.conditionalyesnotext;
+				}
+			}
+			else if (type == 'checkbox') {
+				if (attribute == 'data') {
+					if (angular.equals({}, data.Answer.checkbox.data))
+						return '';
+					else {
+						angular.forEach(data.Answer.checkbox.data, function(value, key) {
+						  
+						  if ( value == choice) {
+						  	console.log(data.Answer.checkbox.data)
+						  console.log(key + ': ' + value +' : ' + choice);
+						  	return true;
+						  }
+						});
+					}
+				}
+				else if (attribute == 'Text') 
+					return data.Answer.checkbox.Text;
+				else 
+					return '';
+			}
+			else
+				return  '';
+		}
 	}
 
 
@@ -862,12 +913,12 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
           for(var i = 0; i < length; i++) {
             //console.log(typeof(reportInfo['Answer'][keys[i]]));
             if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var newData = {
+              var answer = {
                 "ReportID": reportid,
                 "QuestionID": keys[i],
                 "Answer": reportInfo['Answer'][keys[i]]
               }
-            //  console.log(reportInfo['Answer'][keys[i]]);
+            console.log(reportInfo['Answer'][keys[i]]);
              // console.log(keys[i]);
             } else {
               var answer = {
@@ -875,11 +926,11 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
                 "QuestionID": keys[i],
                 "Answer": reportInfo['Answer'][keys[i]]
               }
-              console.log(reportInfo['Answer']);
+              //console.log(reportInfo['Answer']);
                            // console.log(reportInfo['Answer'][keys[i]]);
              
             };
-            //console.log(reportInfo)
+            console.log(answer)
             //console.log("answer " + angular.toJson(newData));
 
             //reportInfoFactory.post(newData);
@@ -1693,7 +1744,44 @@ app.factory('reportInfoFactory', ['$http', '$window', 'configFactory',
 		  .success(function (data) {
 			angular.copy(data, returnMe);
 		});
-		return returnMe;
+
+		//return returnMe;
+/*		return [ 
+				{ ID: 1, ReportID: 1, CategoryID: 1, QuestionID: 1, Answer: { number: 2 } },
+				{ ID: 2, ReportID: 1, CategoryID: 1, QuestionID: 2, Answer: {} },
+				{ ID: 3, ReportID: 1, CategoryID: 1, QuestionID: 3, Answer: { text: "test 1"} },
+				{ ID: 4, ReportID: 1, CategoryID: 1, QuestionID: 4, Answer: { yesno: "No"} },
+				{ ID: 5, ReportID: 1, CategoryID: 1, QuestionID: 6, Answer: { number: 5 } },
+				{ ID: 6, ReportID: 1, CategoryID: 1, QuestionID: 8, Answer: { text: "test 3"} },
+				{ ID: 7, ReportID: 1, CategoryID: 1, QuestionID: 10, Answer: {} },
+				{ ID: 8, ReportID: 1, CategoryID: 1, QuestionID: 14, Answer: { text: "test 4"} },
+				{ ID: 9, ReportID: 1, CategoryID: 1, QuestionID: 12, Answer: {} },
+				{ ID: 10, ReportID: 1, CategoryID: 1, QuestionID: 13, Answer: { text: "test 5"} },
+				{ ID: 12, ReportID: 1, CategoryID: 1, QuestionID: 11, Answer: {number: 6 } },
+				{ ID: 14, ReportID: 1, CategoryID: 1, QuestionID: 5, Answer: { text: "test 2"} },
+				{ ID: 15, ReportID: 1, CategoryID: 1, QuestionID: 7, Answer: {} },
+				{ ID: 16, ReportID: 1, CategoryID: 1, QuestionID: 9, Answer: { yesno: "Yes"} } 
+				]
+
+	return [ 
+				{ ID: 11, ReportID: 1, CategoryID: 2, QuestionID: 16, Answer: { text: "Text 1" } },
+				{ ID: 13, ReportID: 1, CategoryID: 2, QuestionID: 15, Answer: { radio: "Both"} },
+				{ ID: 17, ReportID: 1, CategoryID: 2, QuestionID: 21, Answer: { text: "Text 3"} },
+				{ ID: 24, ReportID: 1, CategoryID: 2, QuestionID: 17, Answer: { text: "Text 2"} },
+				{ ID: 25, ReportID: 1, CategoryID: 2, QuestionID: 19, Answer: {} },
+				{ ID: 29, ReportID: 1, CategoryID: 2, QuestionID: 22, Answer: { text: "Text 4"} },
+				{ ID: 34, ReportID: 1, CategoryID: 2, QuestionID: 18, Answer: { number: 3} },
+				{ ID: 35, ReportID: 1, CategoryID: 2, QuestionID: 20, Answer: { conditionalyesnotext: "Yes", Text: {conditionalyesnotext: " Peer review "}, Textbox: {conditionalyesnotext: " Tókst !!"}} }
+			]*/
+	return [ 
+				{ ID: 18, ReportID: 1, CategoryID: 3, QuestionID: 25, Answer: {} },
+				{ ID: 19, ReportID: 1, CategoryID: 3, QuestionID: 27, Answer: {} },
+				{ ID: 23, ReportID: 1, CategoryID: 3, QuestionID: 29, Answer: {text: "test 3"} },
+				{ ID: 27, ReportID: 1, CategoryID: 3, QuestionID: 23, Answer: {checkbox: {Text: "Tókst jeyj!", data: {0: "User tasks", 1: "Scenarios"}}} },
+				{ ID: 28, ReportID: 1, CategoryID: 3, QuestionID: 26, Answer: {radio: "Qualitative"} },
+				{ ID: 30, ReportID: 1, CategoryID: 3, QuestionID: 28, Answer: {text: "Test 2"} },
+				{ ID: 36, ReportID: 1, CategoryID: 3, QuestionID: 24, Answer: {text: "test 1"} } 
+				]
 	}
 
 	info.post = function (data) {

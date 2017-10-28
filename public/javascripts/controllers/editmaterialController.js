@@ -37,33 +37,61 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
 
 			}, 100
 		);
-
-      $scope.color = {
-        name: 'blue'
-      };
-      $scope.specialValue = {
-        "id": "12345",
-        "value": "green"
-      }; 
-
-	$scope.answerValue = function (data, type) {
-		//console.log(data)
-		
-		//console.log(data.Answer)
-		if (data.Answer == 'null' || 
-			data.Answer == '' || 
-			data.Answer == undefined) {
-				if (type == 'num')
-					return 0;
-				else if (type == 'text')
-					return '';
-				else if (type == 'yesno' || type == 'radio')
-					return ''; 
-				else
-					return 'User tasks';
+	$scope.answerValue = function (data, type, attribute, choice) {
+		if (angular.equals({}, data.Answer)) {
+			if (type == 'num')
+				return 0; 
+			else
+				return '';
 		}
-		else
-			return data.Answer;
+		else {
+			if (type == 'num')
+				return data.Answer.number;
+			else if (type == 'text')
+				return data.Answer.text;
+			else if (type == 'yesno')
+				return data.Answer.yesno;
+			else if (type == 'radio')
+				return data.Answer.radio;
+			else if (type == 'conditionalyesnotext') {
+				if (attribute == 'radio')
+					return data.Answer.conditionalyesnotext;
+				else if (attribute == 'Text') {
+					if (angular.equals({}, data.Answer.Text))
+						return '';
+					else 
+						return data.Answer.Text.conditionalyesnotext;
+				}
+				else if (attribute == 'Textbox') {
+					if (angular.equals({}, data.Answer.Textbox))
+						return '';
+					else 
+						return data.Answer.Textbox.conditionalyesnotext;
+				}
+			}
+			else if (type == 'checkbox') {
+				if (attribute == 'data') {
+					if (angular.equals({}, data.Answer.checkbox.data))
+						return '';
+					else {
+						angular.forEach(data.Answer.checkbox.data, function(value, key) {
+						  
+						  if ( value == choice) {
+						  	console.log(data.Answer.checkbox.data)
+						  console.log(key + ': ' + value +' : ' + choice);
+						  	return true;
+						  }
+						});
+					}
+				}
+				else if (attribute == 'Text') 
+					return data.Answer.checkbox.Text;
+				else 
+					return '';
+			}
+			else
+				return  '';
+		}
 	}
 
 
@@ -84,12 +112,12 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
           for(var i = 0; i < length; i++) {
             //console.log(typeof(reportInfo['Answer'][keys[i]]));
             if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var newData = {
+              var answer = {
                 "ReportID": reportid,
                 "QuestionID": keys[i],
                 "Answer": reportInfo['Answer'][keys[i]]
               }
-            //  console.log(reportInfo['Answer'][keys[i]]);
+            console.log(reportInfo['Answer'][keys[i]]);
              // console.log(keys[i]);
             } else {
               var answer = {
@@ -97,11 +125,11 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
                 "QuestionID": keys[i],
                 "Answer": reportInfo['Answer'][keys[i]]
               }
-              console.log(reportInfo['Answer']);
+              //console.log(reportInfo['Answer']);
                            // console.log(reportInfo['Answer'][keys[i]]);
              
             };
-            //console.log(reportInfo)
+            console.log(answer)
             //console.log("answer " + angular.toJson(newData));
 
             //reportInfoFactory.post(newData);

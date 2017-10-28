@@ -247,8 +247,9 @@ function ReportsInfo() {
             */
             let table  = 'reports_info';
             let string = 'INSERT INTO '+ table + '(reportid, questionid, categoryid, answer) VALUES ($1, $2, $3, $4) ';
+            let emptyJson = {};
             dbService.queryStringValue(string, 
-              [rid, result[i].id, result[i].categoryid, 'null'], 
+              [rid, result[i].id, result[i].categoryid, emptyJson], 
               (err, result) => {
                 if (err) {
                   error = err;

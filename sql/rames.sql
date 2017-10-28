@@ -95,7 +95,7 @@ CREATE TABLE reports_info (
   ReportID int NOT NULL,
   QuestionID int NOT NULL,
   CategoryID int NOT NULL,
-  Answer text NOT NULL,
+  Answer json,
   PRIMARY KEY(ID)
 );
 

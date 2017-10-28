@@ -52,6 +52,7 @@ router.get('/category/:categoryID/report/:reportID', (req, res) => {
   "user strict";
   riService.getReportsInfoByCategoryIdAndReportId(req.params.categoryID, req.params.reportID,
     (err, result) => {
+      console.log(result.data);
       if (err)
         return res.status(result.status)
             .json({ message: result.message });
@@ -97,6 +98,13 @@ router.get('/report/:reportID/question/:questionID', (req, res) => {
 // Adds a new report information to the database
 router.post('/', (req, res) => {
   "user strict";
+/*
+  if (typeof req.body.Answer === 'string' || req.body.Answer instanceof String)
+    console.log(req.body.Answer);
+  else
+    console.log("what the fuck ... no it is not a string");
+*/
+
   riService.create(req.body.ProjectID,
     (err, result) => {
       if (err)
@@ -106,7 +114,8 @@ router.post('/', (req, res) => {
         return res.status(result.status)
             .json( result.data );
       }
-    ); 
+    );
+
 });
 
 // Updates the report information
@@ -114,6 +123,7 @@ router.put('/', (req, res) => {
   "user strict";
   riService.update(req.body,
     (err, result) => {
+      
       if (err)
         return res.status(result.status)
             .json({ message: result.message });
