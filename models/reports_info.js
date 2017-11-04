@@ -48,6 +48,43 @@ function ReportsInfo() {
       }
     );
   };
+/*SADFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFf*/
+  this.getreportsinfoResultById = (id, callback) => {
+    "use strict";
+    let string = "SELCT rc.category, ri.Name, rc.id  ";
+    string += "FROM ";
+    string += "rames_category rc INNER JOIN rames_info ri ";
+    string += "ON rc.ID = ri.CategoryID ";
+    string += "INNER JOIN rames_questions rq ";
+    string += "ON ri.ID = rq.RamesInfoID";
+
+
+    dbService.queryStringValue(string, value, 
+      (err, result) => {
+        if (err)
+          callback(err, 
+            { 
+              valid   : false,
+              status  : 404,
+              Type    : 'Getting report information by id.',
+              err     : err,
+              data    : null,
+              Message : 'Failed to get the report information by id'
+            }); 
+        else
+          callback(err, 
+            { 
+              valid   : true,
+              status  : 200,
+              Type    : 'Getting the report by information id.',
+              err     : err,
+              data    : result,
+              Message : 'Returned report by information id.'
+            });
+      }
+    );
+  }
+
 
   // Get all report information by id
   this.getReportsInfoByID = (id, callback) => {
@@ -288,8 +325,10 @@ function ReportsInfo() {
   // Update specific report information
   this.update = (info, callback) => {
     "use strict";
-    let update = stringBuilder.update("reports_info", "id" , info);
-    dbService.queryStringValue(update.string, update.value, 
+    let table = 'reports_info';
+    let string = "UPDATE " + table + " SET Answer = $1 WHERE ID = $2 and ReportID = $3 and QuestionID = $4 returning *";
+    let value = [info.Answer, info.ID, info.ReportID, info.QuestionID];
+    dbService.queryStringValue(string, value, 
       (err, result) => {
         if (err)
           callback(err, 

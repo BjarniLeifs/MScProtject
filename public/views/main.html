@@ -18,7 +18,7 @@
         <li><a ui-sref="main.aboutcreator">About us</a></li>
         <li><a ui-sref="main.contactus">Contact us</a></li>
         <li ng-show="isLoggedIn" ><a ui-sref="main.dashboard.overview">Dashboard</a></li>
-        <li ng-show="isLoggedIn" ><a ui-sref="main.management">Management</a></li>
+        <li ng-show="false" ><a ui-sref="main.management">Management</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li ng-hide="isLoggedIn"><a ui-sref="main.login">Login</a></li>
@@ -37,10 +37,10 @@
   </div><!-- /.container-fluid -->
 </nav>
 <!--main content start-->
-<section ng-style="myStyle" >
-<div ui-view>
-
-  </div>
+<section ng-style="myStyle" > 
+  <div growl> </div> 
+  <div ui-view> </div>   
+ 
 
 
 </section>

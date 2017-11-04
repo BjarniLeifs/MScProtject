@@ -52,7 +52,6 @@ router.get('/category/:categoryID/report/:reportID', (req, res) => {
   "user strict";
   riService.getReportsInfoByCategoryIdAndReportId(req.params.categoryID, req.params.reportID,
     (err, result) => {
-      console.log(result.data);
       if (err)
         return res.status(result.status)
             .json({ message: result.message });

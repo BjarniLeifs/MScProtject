@@ -89,7 +89,6 @@ CREATE TABLE reports (
   PRIMARY KEY(ID)
 );
 
-
 CREATE TABLE reports_info (
   ID SERIAL,
   ReportID int NOT NULL,
@@ -99,13 +98,57 @@ CREATE TABLE reports_info (
   PRIMARY KEY(ID)
 );
 
-
 CREATE TABLE reports_type (
   ID SERIAL,
   Name varchar(255) NOT NULL,
   Info text NOT NULL,
   PRIMARY KEY(ID)
 );
+
+CREATE TABLE feedback_reports (
+  ID SERIAL,
+  UserID int NOT NULL,
+  Name varchar(255) NOT NULL,
+  ReportTypeID int NOT NULL,
+  ProjectID int NOT NULL,
+  CreatedAt timestamp with time zone,
+  LastUpdate timestamp with time zone,
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE feedback_reports_info (
+  ID SERIAL,
+  FeedbackReportID int NOT NULL,
+  FeedbackQuestionID int NOT NULL,
+  FeedbackCategoryID int NOT NULL,
+  Answer json,
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE rames_feedback_questions (
+  ID SERIAL,
+  CategoryID int NOT NULL,
+  Question varchar(255) NOT NULL,
+  QuestionNr varchar(10) NOT NULL,
+  Type varchar(255) NOT NULL,
+  LanguageID int NOT NULL,
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE question_feedback_checkbox_choices (
+  ID SERIAL,
+  QuestionID int NOT NULL,
+  Choice varchar(255) NOT NULL,
+  PRIMARY KEY(ID)
+);
+
+CREATE TABLE question_feedback_radio_choices (
+  ID SERIAL,
+  QuestionID int NOT NULL,
+  Choice varchar(255) NOT NULL,
+  PRIMARY KEY(ID)
+);
+
 
 CREATE TABLE contactus (
   ID SERIAL,

@@ -1,8 +1,9 @@
 'use strict';
 
 
-app.controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'projectFactory', 
-	function ($scope, $state, $stateParams, $location, $timeout, projectFactory) {
+app.controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'projectFactory',
+    'growl', 
+	function ($scope, $state, $stateParams, $location, $timeout, projectFactory, growl) {
 		$timeout(function() {
 			$scope.projects = projectFactory.getProjectByUserId();
 			if ($stateParams.id != undefined) {
@@ -16,27 +17,49 @@ app.controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$location', 
 
 
         $scope.makeNewProject = function () {
-            
-            projectFactory.createProject($scope.project);
-      
-            $timeout(function () {
-                $state.go('main.dashboard.overview');
-            }, 110);
+            var config = {};
+            projectFactory.createProject($scope.project)
+            .then(function (response) {
+                if (response.status == 200) {
+                    growl.success("Project successfully created.", config);
+                    $state.go('main.dashboard.overview');    
+                }
+            }, function (error) {
+                if (error.status == 400)
+                    growl.error("Something went wrong.",config);
+            });
         };
 
         $scope.updateProject = function () {
-        	projectFactory.updateProject($scope.projectUpdate[0]);
+        	var config = {};
+            projectFactory.updateProject($scope.projectUpdate[0])
+            .then(function (response) {
+                if (response.status == 200) {
+                    growl.success("Project updated.", config);
+                    $state.go('main.dashboard.overview');    
+                }
+            }, function (error) {
+                if (error.status == 400)
+                    growl.error("Something went wrong.", config);
+            });
         	
-        	$timeout(function () {
-        		$state.go('main.dashboard.overview');
-        	}, 110);
         };
 
         $scope.deleteProject = function() {
-        	projectFactory.deleteProject($stateParams.id);
-        	$timeout(function () {
-        		$state.go('main.dashboard.overview');
-        	}, 110);
+            var config = {};
+        	projectFactory.deleteProject($stateParams.id)
+            .then(function (response) {
+                if (response.status == 200) {
+                    growl.success("Successfully deleted project", config);
+                    $state.go('main.dashboard.overview');
+                }
+            }, function (error) {
+                if (error.status == 403)
+                    growl.warning("This project is not yours.", config);
+                else 
+                    growl.error("Something went wrong.", config);
+            });
+
         }
 	}
 ]);

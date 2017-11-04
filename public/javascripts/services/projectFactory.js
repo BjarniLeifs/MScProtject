@@ -27,37 +27,15 @@ app.factory('projectFactory', ['$http', '$window', 'configFactory',
 	};
 
 	project.createProject = function (project) {
-		var returnMe;
-		$http
-		 .post(baseUrl+'/api/project', project)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-
-		return returnMe;
+		return $http.post(baseUrl+'/api/project', project);
 	};
 
 	project.updateProject = function (update) {
-		var returnMe;
-		
-		$http
-		 .put(baseUrl+'/api/project', update)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-
-		return returnMe;
+		return $http.put(baseUrl+'/api/project', update);
 	};
 
 	project.deleteProject = function (id) {
-		var returnMe;
-
-		$http
-		 .delete(baseUrl+'/api/project/'+id)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-		return returnMe;
+		return $http.delete(baseUrl+'/api/project/'+id);
 	};
 
     return project;

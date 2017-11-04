@@ -59,10 +59,11 @@ app.use(express.static(path.join(__dirname, 'public')));
   This is token security to ensure permission in the app 
   when someone calls for /api/.... 
  */
-app.use('/api/closed',jwtCheck({
+app.use('/api',jwtCheck({
   secret: config.secret,
   userProperty: config.payload
 }));
+
 
 
 /* 
@@ -83,9 +84,9 @@ app.use('/api/closed',jwtCheck({
 */
 
 /* Route for the api documentation*/
-app.use('/apidoc', express.static('apidoc'));
+//app.use('/apidoc', express.static('apidoc'));
 /* Routes for the api */
-app.use('/api/auth',require('./routes/authentication'));
+app.use('/auth',require('./routes/authentication'));
 app.use('/api/language',require('./routes/languages'));
 app.use('/api/questioncheckboxchoices',require('./routes/question_checkbox_choices'));
 app.use('/api/questiondropdownchoices',require('./routes/question_dropdown_choices'));
@@ -100,6 +101,9 @@ app.use('/api/reportsinfo',require('./routes/reports_info'));
 app.use('/api/user',require('./routes/users'));
 app.use('/api/project', require('./routes/project'));
 app.use('/', require('./routes/index'));
+app.use('/frc', require('./routes/question_feedback_radio_choices'));
+app.use('/fcc', require('./routes/question_feedback_checkbox_choices'));
+app.use('/api/rfq', require('./routes/rames_feedback_questions'));
 
 /* Exports the app. */
 

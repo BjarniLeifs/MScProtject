@@ -1,9 +1,9 @@
 'use strict';
 app.controller('DeleteReportCtrl', ['$scope', '$state', '$stateParams', '$location',
-	'$timeout', 'reportTypeFactory', 'reportFactory',
+	'$timeout', 'reportTypeFactory', 'reportFactory', 'growl',
 
 	function ($scope, $state, $stateParams, $location, 
-	 $timeout, reportTypeFactory, reportFactory) {
+	 $timeout, reportTypeFactory, reportFactory, growl) {
 
 		$timeout(
 			function() {
@@ -19,10 +19,19 @@ app.controller('DeleteReportCtrl', ['$scope', '$state', '$stateParams', '$locati
 		);
 
  		$scope.deleteReport = function () {
- 			reportFactory.delete($stateParams.reportid);
- 			$timeout(function () {
-      		$state.go('main.project.overview',{'id' : $stateParams.id });
-      	}, 110);
+ 			var config = {};
+ 			reportFactory.delete($stateParams.reportid)
+ 			.then(function (response) {
+ 				if (response.status == 200) {
+ 					growl.success("Successfully deleted plan.", config);
+ 					$state.go('main.project.overview',{'id' : $stateParams.id });		
+ 				} else 
+ 					growl.warning("Something went wrong.", config);
+ 			}, function (error) {
+ 				if (error.status == 404)
+ 					growl.error("Something went wrong.", config);
+ 			});
+ 		
  		};
 
 	}

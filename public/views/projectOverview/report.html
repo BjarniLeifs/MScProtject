@@ -1,0 +1,21 @@
+<br>
+<br>
+	<table ng-repeat="item in viewReport">
+		<col width="30%">
+  		<col width="">
+		<tr>
+			<th colspan="2">{{item.Category}}  </th>
+		</tr>
+		<tr ng-repeat="info in item.Info" >
+
+			<td > {{info.Name}}	</td>	
+			<td>{{info.Value}}</td>
+		</tr>
+
+	</table>
+
+
+<br>
+<br>
+<br>
+<br>

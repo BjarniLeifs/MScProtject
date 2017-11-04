@@ -90,7 +90,7 @@ router.post('/register', (req, res, next) => {
 				});
 			} else {
 				// User was found, returning to user for his knowladge
-				return res.status(400).json({
+				return res.status(409).json({
 					message: 'Username already exists.'
 				});	
 			}
@@ -149,7 +149,7 @@ router.post('/login', (req, res, next) => {
 					return res.status(200)
 							.json( { token : authLibrary.generateJWT(result.data.data[0]) });
 				else
-					return res.status(422)
+					return res.status(401)
 							.json({ message: 'Incorrect password' });				
 			} else {
 				return res.status(404).json({

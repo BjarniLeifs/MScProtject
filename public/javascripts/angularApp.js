@@ -1,10 +1,12 @@
 /* Angular routing and app declatation */
 
-var app = angular.module('ramesApp', ['ui.router']);
+var app = angular.module('ramesApp', ['ui.router', 'angular-growl']);
 
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider',
-	function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+	'growlProvider',
+	function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 		$httpProvider.interceptors.push('authInterceptor');
+		growlProvider.globalTimeToLive(3000);
 		$stateProvider
 /* Main content starts*/
 		.state('main', {
@@ -92,10 +94,10 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			controller: 'ProjectCtrl',
 		})
 		.state('main.project.overview', {
-			url: '/overview',
-			templateUrl: 'views/projectoverview/overview.html',
-			controller: 'ReportCtrl',
-		})
+				url: '/overview',
+				templateUrl: 'views/projectoverview/overview.html',
+				controller: 'ReportCtrl',
+			})
 		.state('main.project.newreport', {
 			url: '/newreport',
 			templateUrl: 'views/projectoverview/newreport.html',
@@ -105,6 +107,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			url: '/delete/report/:reportid',
 			templateUrl: 'views/projectoverview/deletereport.html',
 			controller: 'DeleteReportCtrl',
+		})
+		.state('main.project.viewreport', {
+			url: '/report/:reportid/view',
+			templateUrl: 'views/projectoverview/report.html',
+			controller: 'ViewReportCtrl',
 		})
 		.state('main.editreport', {
 			url: '/edit/project/:id/report/:reportid',
@@ -196,19 +203,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			controller: 'ReportTypeCtrl',
 		});
 
-
-
-
-
-
-
-
-
-
-
-
-
 		$urlRouterProvider.otherwise('main');
 
 	}
 ]);
+

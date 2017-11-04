@@ -107,7 +107,7 @@ router.delete('/:id', (req, res) => {
             .json({message: result.message});
       else {
         if (result.data[0].UserID === token.userid)
-          pService.delete(req.params.id,
+          pService.delete(pid, req, 
             (err, result) => {
               if (err)
                 return res.status(result.status)

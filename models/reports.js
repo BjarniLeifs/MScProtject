@@ -25,7 +25,7 @@ function Report() {
     let string = 'SELECT * FROM '+ table + ' WHERE userid = $1';
     let value  = [uid]
     dbService.queryStringValue(string, value,
-      (err, result) => {
+      (err, result) => {    
         if (err)
           callback(err, 
             { 
@@ -82,7 +82,37 @@ function Report() {
       }
     );
   };
+  this.getReportByProjectId = (pid, uid, callback) => {
+    "use strict";
+    let table  = 'reports';
+    let string = 'SELECT * FROM '+ table + ' WHERE projectid = $1 and userid = $2';
+    let value  = [pid, uid]
 
+    dbService.queryStringValue(string, value, 
+      (err, result) => {
+        if (err)
+          callback(err, 
+            { 
+              valid   : false,
+              status  : 404,
+              Type    : 'Getting report by projectid.',
+              err     : err,
+              data    : null,
+              Message : 'Failed to get the report by projectid'
+            }); 
+        else
+          callback(err, 
+            { 
+              valid   : true,
+              status  : 200,
+              Type    : 'Getting report by projectid.',
+              err     : err,
+              data    : DTO(result),
+              Message : 'Returned reports by projectid.'
+            });
+      }
+    );
+  }
   // Return all reports that the user with the given ID has
   this.getReportsByUserID = (userID, callback) => {
     "use strict";

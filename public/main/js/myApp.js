@@ -1,11 +1,13 @@
-/*! Made on 28-10-2017 */
+/*! Made on 04-11-2017 */
 /* Angular routing and app declatation */
 
-var app = angular.module('ramesApp', ['ui.router']);
+var app = angular.module('ramesApp', ['ui.router', 'angular-growl']);
 
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider',
-	function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+	'growlProvider',
+	function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, growlProvider) {
 		$httpProvider.interceptors.push('authInterceptor');
+		growlProvider.globalTimeToLive(3000);
 		$stateProvider
 /* Main content starts*/
 		.state('main', {
@@ -93,10 +95,10 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			controller: 'ProjectCtrl',
 		})
 		.state('main.project.overview', {
-			url: '/overview',
-			templateUrl: 'views/projectoverview/overview.html',
-			controller: 'ReportCtrl',
-		})
+				url: '/overview',
+				templateUrl: 'views/projectoverview/overview.html',
+				controller: 'ReportCtrl',
+			})
 		.state('main.project.newreport', {
 			url: '/newreport',
 			templateUrl: 'views/projectoverview/newreport.html',
@@ -106,6 +108,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			url: '/delete/report/:reportid',
 			templateUrl: 'views/projectoverview/deletereport.html',
 			controller: 'DeleteReportCtrl',
+		})
+		.state('main.project.viewreport', {
+			url: '/report/:reportid/view',
+			templateUrl: 'views/projectoverview/report.html',
+			controller: 'ViewReportCtrl',
 		})
 		.state('main.editreport', {
 			url: '/edit/project/:id/report/:reportid',
@@ -197,22 +204,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 			controller: 'ReportTypeCtrl',
 		});
 
-
-
-
-
-
-
-
-
-
-
-
-
 		$urlRouterProvider.otherwise('main');
 
 	}
 ]);
+
+
 'use strict';
 
 app.controller('AboutCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory', 'categoryFactory', 
@@ -246,53 +243,90 @@ app.controller('AboutCreatorCtrl', ['$scope', '$state', '$stateParams', '$locati
 /* AuthController */
 
 app.controller('AuthCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'authFactory', 
-	function ($scope, $state, $stateParams, $location, $timeout, authFactory) {
+	'growl',
+	function ($scope, $state, $stateParams, $location, $timeout, authFactory, growl) {
         $scope.newUser = {};
 		$scope.loginUser = {};
 		$scope.isLoggedIn = authFactory.isLoggedIn();
-		$scope.user = {};
-		$scope.currentName = authFactory.currentName();
-		$scope.register = function () {
-			if ($scope.password === $scope.confirmPassword) {
-				var registerObject = {
-					username 		: $scope.newUser.username,
-					password 		: $scope.newUser.password,
-					confirmPassword : $scope.newUser.confirmPassword,
-					name 			: $scope.newUser.firstName + ' ' + $scope.newUser.lastName,
-					email 			: $scope.newUser.email
-				};
-				$timeout(
-					function() {
-						authFactory.register(registerObject)
-						$state.go('main', {}, {reload: true});		
-					}, 110
-				);
-				
-			} else {
-				$scope.error = "The passwords did not match!";
 
+		$scope.currentName = authFactory.currentName();
+		$scope.isLoggedIn = authFactory.isLoggedIn();
+
+		$scope.register = function () {
+			var config = {};
+			if ($scope.newUser.username == '' || $scope.newUser.firstName == ''
+				|| $scope.newUser.lastName == '' || $scope.newUser.email == '')
+				growl.warning("Please fill out all fields.", config);
+			else {	
+				if ($scope.password === $scope.confirmPassword) {
+					var registerObject = {
+						username 		: $scope.newUser.username,
+						password 		: $scope.newUser.password,
+						confirmPassword : $scope.newUser.confirmPassword,
+						name 			: $scope.newUser.firstName + ' ' + $scope.newUser.lastName,
+						email 			: $scope.newUser.email
+					};
+					authFactory.register(registerObject).then(function (response) {
+						if (response.status == 200) {
+							growl.success("Successfully registered.", config);
+							$state.go('main', {}, {reload: true});
+						}
+					}, function (error) {
+						if (error.status == 409)
+							growl.warning("Username already exists.", config);
+						if (error.status == 401)
+							growl.warning("Please fill out all information", config);
+						else if (error.status == 400)
+							growl.error("Something went wrong.", config);
+
+
+					});
+					
+				} else {
+					growl.warning("The passwords did not match!", config);
+				}
 			}
 			$scope.newUser = {};
 		};
 
 		$scope.login = function () {
+			var config = {};
 			if ($scope.loginUser.username && $scope.loginUser.password) {
 				var loginObject = {
 					username : $scope.loginUser.username,
 					password : $scope.loginUser.password
 				};
+				authFactory.logIn(loginObject).then(function (response) {
+				
+					if (response.status == 200) {
+						console.log(response.data.token)
+						authFactory.saveToken(response.data.token);
+						growl.success("Successfully loged in.", config);	
+					}            
+    
+				}, function (error) {
+					if (error.status == 404)
+						growl.warning("No such user found.", config);
+					else if (error.status == 401)
+						growl.warning("Inncorrect password.", config);
+					else
+						growl.error("Something went wrong.", config)
+				});
 				$timeout(
 					function() {
-						authFactory.logIn(loginObject)
 						$scope.isLoggedIn = authFactory.isLoggedIn();	
+					}, 130
+				);			
+							
+				$timeout(
+					function() {
 						$state.go('main', {}, {reload: true});		
-					}, 110
+					}, 350
 				);
-				
 				$scope.loginUser = {};
 
 			} else {
-				$scope.error = "You need to provide username and login!";
+				growl.warning("You need to provide username and login!", config);
 			}
 			
 	
@@ -382,10 +416,10 @@ app.controller('DashboardCtrl', ['$scope', '$state', '$stateParams', '$location'
 
 'use strict';
 app.controller('DeleteReportCtrl', ['$scope', '$state', '$stateParams', '$location',
-	'$timeout', 'reportTypeFactory', 'reportFactory',
+	'$timeout', 'reportTypeFactory', 'reportFactory', 'growl',
 
 	function ($scope, $state, $stateParams, $location, 
-	 $timeout, reportTypeFactory, reportFactory) {
+	 $timeout, reportTypeFactory, reportFactory, growl) {
 
 		$timeout(
 			function() {
@@ -401,10 +435,19 @@ app.controller('DeleteReportCtrl', ['$scope', '$state', '$stateParams', '$locati
 		);
 
  		$scope.deleteReport = function () {
- 			reportFactory.delete($stateParams.reportid);
- 			$timeout(function () {
-      		$state.go('main.project.overview',{'id' : $stateParams.id });
-      	}, 110);
+ 			var config = {};
+ 			reportFactory.delete($stateParams.reportid)
+ 			.then(function (response) {
+ 				if (response.status == 200) {
+ 					growl.success("Successfully deleted plan.", config);
+ 					$state.go('main.project.overview',{'id' : $stateParams.id });		
+ 				} else 
+ 					growl.warning("Something went wrong.", config);
+ 			}, function (error) {
+ 				if (error.status == 404)
+ 					growl.error("Something went wrong.", config);
+ 			});
+ 		
  		};
 
 	}
@@ -438,10 +481,11 @@ app.controller('EditReportCtrl', ['$scope', '$state', '$stateParams', '$location
 'use strict';
 app.controller('EditRolesCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory',
 				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 
-				 'reportInfoFactory',
+				 'reportInfoFactory', 'growl',
 	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, 
-		questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
-
+		questionFactory, choicesFactory, categoryFactory, reportInfoFactory, growl) {
+		$scope.buttonNext = "Save & Next";
+		$scope.buttonSave = "Save Information";
 		$timeout(
 			function() {
 				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(1);
@@ -451,109 +495,30 @@ app.controller('EditRolesCtrl', ['$scope', '$state', '$stateParams', '$location'
 				$scope.dropdown  = choicesFactory.getDrowpdown();
 				$scope.checkbox  = choicesFactory.getCheckbox();
 				$scope.radio 	 = choicesFactory.getRadio();
-				/* Getting the radio button choices */
-				/*
-				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
-				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
-				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
-		
-				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
-				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
-				
-				
-				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
-				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
-				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
-				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
-				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
-				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
-*/
 
 			}, 100
 		);
 
-	$scope.answerValue = function (data, type, attribute, id) {
-		if (angular.equals({}, data.Answer)) {
-			if (type == 'num')
-				return 0; 
-			else
-				return '';
-		}
-		else {
-			if (type == 'num')
-				return data.Answer.number;
-			else if (type == 'text')
-				return data.Answer.text;
-			else if (type == 'yesno')
-				return data.Answer.yesno;
-			else if (type == 'radio')
-				return data.Answer.radio;
-			else if (type == 'conditionalyesnotext') {
-				if (attribute == 'radio')
-					return data.Answer.conditionalyesnotext;
-				else if (attribute == 'Text') {
-					if (angular.equals({}, data.Answer.Text))
-						return '';
-					else 
-						return data.Answer.Text.conditionalyesnotext;
-				}
-				else if (attribute == 'Textbox') {
-					if (angular.equals({}, data.Answer.Textbox))
-						return '';
-					else 
-						return data.Answer.Textbox.conditionalyesnotext;
-				}
+		$scope.saveInfo = function(status) {
+			var config = {};
+			var error = false;
+
+			
+			angular.forEach($scope.answers, function(value, key) {
+				reportInfoFactory.post(value).then(function (data) {
+					if (data.status != 200)
+						error = true;
+				});
+			})
+			if (error)
+				growl.error("Something went wrong, please try again later.", config); // info warning error sucess
+			else {
+				if (status === 'next') 
+					$state.go('main.editreport.editactivity');
+				else
+					growl.success("Information successfully saved.", config);
 			}
-			else
-				return {};
-		}
-	}
-
-
-    $scope.reportInfo = {
-      "ReportID": $stateParams.reportid,
-    };
-
-
-    $scope.resetValue = function(questionID) {
-      $scope.reportInfo.Answer[questionID]['Text'] = '';
-      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
-    };
-    
-    $scope.saveInfo = function(reportInfo) {
-          var length = Object.keys(reportInfo['Answer']).length;
-          var keys = Object.keys(reportInfo['Answer']);
-          var reportid = $stateParams.reportid;
-          for(var i = 0; i < length; i++) {
-            //console.log(typeof(reportInfo['Answer'][keys[i]]));
-            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-            //  console.log(reportInfo['Answer'][keys[i]]);
-             // console.log(keys[i]);
-            } else {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-              //console.log(reportInfo['Answer']);
-                           // console.log(reportInfo['Answer'][keys[i]]);
-             
-            };
-            console.log(answer)
-            //console.log("answer " + angular.toJson(newData));
-
-            //reportInfoFactory.post(newData);
-          }
-
-  //        window.location.href = "#/reports/" + $scope.reportID;
-        };
-      
-
+		};
 	}
 ]);
 'use strict';
@@ -561,9 +526,11 @@ app.controller('EditRolesCtrl', ['$scope', '$state', '$stateParams', '$location'
 
 app.controller('EditActivityCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory',
 				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 'reportInfoFactory',
+				 'growl',
 	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, 
-		questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
-console.log($stateParams);
+		questionFactory, choicesFactory, categoryFactory, reportInfoFactory, growl) {
+		$scope.buttonNext = "Save & Next";
+		$scope.buttonSave = "Save Information";
 		$timeout(
 			function() {
 				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(2);
@@ -574,123 +541,46 @@ console.log($stateParams);
 				$scope.checkbox  = choicesFactory.getCheckbox();
 				$scope.radio 	 = choicesFactory.getRadio();
 				$scope.isCollapsed = false;				
-				/* Getting the radio button choices */
-				/*
-				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
-				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
-				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
-				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
-				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
 
-				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
-				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
-				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
-				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
-				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
-				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
-*/
 
 			}, 100
 		);
 
-	$scope.answerValue = function (data, type, attribute, id) {
-		if (angular.equals({}, data.Answer)) {
-			if (type == 'num')
-				return 0; 
-			else
-				return '';
-		}
-		else {
-			if (type == 'num')
-				return data.Answer.number;
-			else if (type == 'text')
-				return data.Answer.text;
-			else if (type == 'yesno')
-				return data.Answer.yesno;
-			else if (type == 'radio')
-				return data.Answer.radio;
-			else if (type == 'conditionalyesnotext') {
-				if (attribute == 'radio')
-					return data.Answer.conditionalyesnotext;
-				else if (attribute == 'Text') {
-					if (angular.equals({}, data.Answer.Text))
-						return '';
-					else 
-						return data.Answer.Text.conditionalyesnotext;
-				}
-				else if (attribute == 'Textbox') {
-					if (angular.equals({}, data.Answer.Textbox))
-						return '';
-					else 
-						return data.Answer.Textbox.conditionalyesnotext;
-				}
+		$scope.saveInfo = function(status) {
+			var config = {};
+			var error = false;
+			console.log(status)
+			
+			angular.forEach($scope.answers, function(value, key) {
+				reportInfoFactory.post(value).then(function (data) {
+					if (data.status != 200)
+						error = true;
+				});
+			})
+			if (error)
+				growl.error("Something went wrong, please try again later.", config); // info warning error sucess
+			else {
+				if (status === 'next')
+					$state.go('main.editreport.editmaterial');
+				else
+					growl.success("Information successfully saved.", config);
 			}
-			else
-				return {};
-		}
-	}
-
-
-    $scope.reportInfo = {
-      "ReportID": $stateParams.reportid,
-    };
-
-
-    $scope.resetValue = function(questionID) {
-   		try {
-   	 	 	$scope.reportInfo.Answer[questionID]['Text'] = '';
-      		$scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
-    	
-   		} catch (err) {
-   			
-   		}
-    };
-    
-    $scope.saveInfo = function(reportInfo) {
-          var length = Object.keys(reportInfo['Answer']).length;
-          var keys = Object.keys(reportInfo['Answer']);
-          var reportid = $stateParams.reportid;
-          for(var i = 0; i < length; i++) {
-            //console.log(typeof(reportInfo['Answer'][keys[i]]));
-            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-            //console.log(reportInfo['Answer'][keys[i]]);
-             // console.log(keys[i]);
-            } else {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-             // console.log(reportInfo['Answer']);
-                           // console.log(reportInfo['Answer'][keys[i]]);
-             
-            };
-            //console.log(answer)
-            //console.log(reportInfo)
-            //console.log("answer " + angular.toJson(newData));
-
-            //reportInfoFactory.post(newData);
-          }
-
-  //        window.location.href = "#/reports/" + $scope.reportID;
-        };
-      
-
+		};
 	}
 ]);
+
+
+
 'use strict';
 
 
 app.controller('EditEnvironmentCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory', 
 	 			'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory','reportInfoFactory',
+	 			'growl',
 	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, 
-		ramesInfoFactory, questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
-
+		ramesInfoFactory, questionFactory, choicesFactory, categoryFactory, reportInfoFactory, growl) {
+		$scope.buttonNext = "Save & Next";
+		$scope.buttonSave = "Save Information";
 		$timeout(
 			function() {
 				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(4);
@@ -700,103 +590,28 @@ app.controller('EditEnvironmentCtrl', ['$scope', '$state', '$stateParams', '$loc
 				$scope.dropdown  = choicesFactory.getDrowpdown();
 				$scope.checkbox  = choicesFactory.getCheckbox();
 				$scope.radio 	 = choicesFactory.getRadio();
-				/* Getting the radio button choices */
-				/*
-				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
-				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
-				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
-				*/
-				/* Getting the dropdown choices */
-				/*
-				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
-				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
-				*/
-				/* Getting the checkbox choices */
-				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
-				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
-				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
-				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
-				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
-				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
-
 
 			}, 100
 		);
-
-
-      $scope.color = {
-        name: 'blue'
-      };
-      $scope.specialValue = {
-        "id": "12345",
-        "value": "green"
-      }; 
-
-	$scope.answerValue = function (data, type) {
-		//console.log(data)
-		
-		//console.log(data.Answer)
-		if (data.Answer == 'null' || 
-			data.Answer == '' || 
-			data.Answer == undefined) {
-				if (type == 'num')
-					return 0;
-				else if (type == 'text')
-					return '';
-				else if (type == 'yesno' || type == 'radio')
-					return ''; 
+		$scope.saveInfo = function(status) {
+			var config = {};
+			var error = false;
+			
+			angular.forEach($scope.answers, function(value, key) {
+				reportInfoFactory.post(value).then(function (data) {
+					if (data.status != 200)
+						error = true;
+				});
+			})
+			if (error)
+				growl.error("Something went wrong, please try again later.", config); // info warning error sucess
+			else {
+				if (status === 'next')
+					$state.go('main.editreport.editsoftware');
 				else
-					return '';
-		}
-		else
-			return data.Answer;
-	}
-
-
-    $scope.reportInfo = {
-      "ReportID": $stateParams.reportid,
-    };
-
-
-    $scope.resetValue = function(questionID) {
-      $scope.reportInfo.Answer[questionID]['Text'] = '';
-      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
-    };
-    
-    $scope.saveInfo = function(reportInfo) {
-          var length = Object.keys(reportInfo['Answer']).length;
-          var keys = Object.keys(reportInfo['Answer']);
-          var reportid = $stateParams.reportid;
-          for(var i = 0; i < length; i++) {
-            //console.log(typeof(reportInfo['Answer'][keys[i]]));
-            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var newData = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-            //  console.log(reportInfo['Answer'][keys[i]]);
-             // console.log(keys[i]);
-            } else {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-              console.log(reportInfo['Answer']);
-                           // console.log(reportInfo['Answer'][keys[i]]);
-             
-            };
-            //console.log(reportInfo)
-            //console.log("answer " + angular.toJson(newData));
-
-            //reportInfoFactory.post(newData);
-          }
-
-  //        window.location.href = "#/reports/" + $scope.reportID;
-        };
-      
-
+					growl.success("Information successfully saved.", config);
+			}
+		};
 	}
 ]);
 'use strict';
@@ -804,9 +619,11 @@ app.controller('EditEnvironmentCtrl', ['$scope', '$state', '$stateParams', '$loc
 
 app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory', 
 				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 'reportInfoFactory',
+				 'growl',
 	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, questionFactory, 
-		choicesFactory, categoryFactory, reportInfoFactory) {
-
+		choicesFactory, categoryFactory, reportInfoFactory, growl) {
+		$scope.buttonNext = "Save & Next";
+		$scope.buttonSave = "Save Information";
 		$timeout(
 			function() {
 				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(3);
@@ -816,130 +633,28 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
 				$scope.dropdown  = choicesFactory.getDrowpdown();
 				$scope.checkbox  = choicesFactory.getCheckbox();
 				$scope.radio 	 = choicesFactory.getRadio();
-				/* Getting the radio button choices */
-				/*
-				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
-				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
-				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
-				*/
-				/* Getting the dropdown choices */
-				/*
-				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
-				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
-				*/
-				/* Getting the checkbox choices */
-				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
-				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
-				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
-				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
-				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
-				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
-
 
 			}, 100
 		);
-	$scope.answerValue = function (data, type, attribute, choice) {
-		if (angular.equals({}, data.Answer)) {
-			if (type == 'num')
-				return 0; 
-			else
-				return '';
-		}
-		else {
-			if (type == 'num')
-				return data.Answer.number;
-			else if (type == 'text')
-				return data.Answer.text;
-			else if (type == 'yesno')
-				return data.Answer.yesno;
-			else if (type == 'radio')
-				return data.Answer.radio;
-			else if (type == 'conditionalyesnotext') {
-				if (attribute == 'radio')
-					return data.Answer.conditionalyesnotext;
-				else if (attribute == 'Text') {
-					if (angular.equals({}, data.Answer.Text))
-						return '';
-					else 
-						return data.Answer.Text.conditionalyesnotext;
-				}
-				else if (attribute == 'Textbox') {
-					if (angular.equals({}, data.Answer.Textbox))
-						return '';
-					else 
-						return data.Answer.Textbox.conditionalyesnotext;
-				}
+		$scope.saveInfo = function(status) {
+			var config = {};
+			var error = false;
+			
+			angular.forEach($scope.answers, function(value, key) {
+				reportInfoFactory.post(value).then(function (data) {
+					if (data.status != 200)
+						error = true;
+				});
+			})
+			if (error)
+				growl.error("Something went wrong, please try again later.", config); // info warning error sucess
+			else {
+				if (status === 'next')
+					$state.go('main.editreport.editenvironment');
+				else
+					growl.success("Information successfully saved.", config);
 			}
-			else if (type == 'checkbox') {
-				if (attribute == 'data') {
-					if (angular.equals({}, data.Answer.checkbox.data))
-						return '';
-					else {
-						angular.forEach(data.Answer.checkbox.data, function(value, key) {
-						  
-						  if ( value == choice) {
-						  	console.log(data.Answer.checkbox.data)
-						  console.log(key + ': ' + value +' : ' + choice);
-						  	return true;
-						  }
-						});
-					}
-				}
-				else if (attribute == 'Text') 
-					return data.Answer.checkbox.Text;
-				else 
-					return '';
-			}
-			else
-				return  '';
-		}
-	}
-
-
-    $scope.reportInfo = {
-      "ReportID": $stateParams.reportid,
-    };
-
-
-    $scope.resetValue = function(questionID) {
-      $scope.reportInfo.Answer[questionID]['Text'] = '';
-      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
-    };
-    
-    $scope.saveInfo = function(reportInfo) {
-          var length = Object.keys(reportInfo['Answer']).length;
-          var keys = Object.keys(reportInfo['Answer']);
-          var reportid = $stateParams.reportid;
-          for(var i = 0; i < length; i++) {
-            //console.log(typeof(reportInfo['Answer'][keys[i]]));
-            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-            console.log(reportInfo['Answer'][keys[i]]);
-             // console.log(keys[i]);
-            } else {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-              //console.log(reportInfo['Answer']);
-                           // console.log(reportInfo['Answer'][keys[i]]);
-             
-            };
-            console.log(answer)
-            //console.log("answer " + angular.toJson(newData));
-
-            //reportInfoFactory.post(newData);
-          }
-
-  //        window.location.href = "#/reports/" + $scope.reportID;
-        };
-      
-
+		};
 	}
 ]);
 'use strict';
@@ -947,11 +662,14 @@ app.controller('EditMaterialCtrl', ['$scope', '$state', '$stateParams', '$locati
 
 app.controller('EditSoftwareCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory', 
 	 			'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory','reportInfoFactory',
+	 			'growl',
 
 	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, 
-		ramesInfoFactory, questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
+		ramesInfoFactory, questionFactory, choicesFactory, categoryFactory, reportInfoFactory,
+		growl) {
 
-
+		$scope.buttonNext = "Finish";
+		$scope.buttonSave = "Save Information";
 		$timeout(
 			function() {
 				$scope.ramesInfo = ramesInfoFactory.getByCategoryId(5);
@@ -961,105 +679,38 @@ app.controller('EditSoftwareCtrl', ['$scope', '$state', '$stateParams', '$locati
 				$scope.dropdown  = choicesFactory.getDrowpdown();
 				$scope.checkbox  = choicesFactory.getCheckbox();
 				$scope.radio 	 = choicesFactory.getRadio();
-				/* Getting the radio button choices */
-				/*
-				$scope.questionFifteen    	= choicesFactory.getRadioByQuestionId(15);
-				$scope.questionTwentySix  	= choicesFactory.getRadioByQuestionId(26);
-				$scope.questionThirty  	  	= choicesFactory.getRadioByQuestionId(30);
-				*/
-				/* Getting the dropdown choices */
-				/*
-				$scope.questionTwenty 		= choicesFactory.getDrowpdownByQuestionId(20);
-				$scope.questionThirtyEight	= choicesFactory.getDrowpdownByQuestionId(38);
-				*/
-				/* Getting the checkbox choices */
-				$scope.questionTwentyThree	= choicesFactory.getCheckboxByQuestionId(23);
-				$scope.questionTwentuFive	= choicesFactory.getCheckboxByQuestionId(25);
-				$scope.questionTwentySeven 	= choicesFactory.getCheckboxByQuestionId(27);
-				$scope.questionThirtyOne	= choicesFactory.getCheckboxByQuestionId(31);
-				$scope.questionThirtySix	= choicesFactory.getCheckboxByQuestionId(36);
-				$scope.questionThirtySeven	= choicesFactory.getCheckboxByQuestionId(37);
 
 
 			}, 100
 
 
-	)
+		);
 
+		$scope.saveInfo = function(status) {
+			var config = {};
+			var error = false;
 
-      $scope.color = {
-        name: 'blue'
-      };
-      $scope.specialValue = {
-        "id": "12345",
-        "value": "green"
-      }; 
-
-	$scope.answerValue = function (data, type) {
-		//console.log(data)
-		
-		//console.log(data.Answer)
-		if (data.Answer == 'null' || 
-			data.Answer == '' || 
-			data.Answer == undefined) {
-				if (type == 'num')
-					return 0;
-				else if (type == 'text')
-					return '';
-				else if (type == 'yesno' || type == 'radio')
-					return ''; 
+			
+			angular.forEach($scope.answers, function(value, key) {
+				reportInfoFactory.post(value).then(function (data) {
+					if (data.status != 200)
+						error = true;
+				});
+			})
+			if (error)
+				growl.error("Something went wrong, please try again later.", config); // info warning error sucess
+			else {
+				if (status === 'next') {
+					growl.success("Information successfully saved.", config);
+					$state.go('main.project.overview',{'id': $stateParams.id });
+				}
 				else
-					return 'User tasks';
-		}
-		else
-			return data.Answer;
-	}
-
-    $scope.reportInfo = {
-      "ReportID": $stateParams.reportid,
-    };
-
-
-    $scope.resetValue = function(questionID) {
-      $scope.reportInfo.Answer[questionID]['Text'] = '';
-      $scope.reportInfo.Answer[questionID]['Textbox'][Object.keys($scope.reportInfo.Answer[questionID]['Textbox'])] = '';
-    };
-    
-    $scope.saveInfo = function(reportInfo) {
-          var length = Object.keys(reportInfo['Answer']).length;
-          var keys = Object.keys(reportInfo['Answer']);
-          var reportid = $stateParams.reportid;
-          for(var i = 0; i < length; i++) {
-            //console.log(typeof(reportInfo['Answer'][keys[i]]));
-            if(typeof(reportInfo['Answer'][keys[i]]) == 'object') {
-              var newData = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-            //  console.log(reportInfo['Answer'][keys[i]]);
-             // console.log(keys[i]);
-            } else {
-              var answer = {
-                "ReportID": reportid,
-                "QuestionID": keys[i],
-                "Answer": reportInfo['Answer'][keys[i]]
-              }
-              console.log(reportInfo['Answer']);
-                           // console.log(reportInfo['Answer'][keys[i]]);
-             
-            };
-            //console.log(reportInfo)
-            //console.log("answer " + angular.toJson(newData));
-
-            //reportInfoFactory.post(newData);
-          }
-
-  //        window.location.href = "#/reports/" + $scope.reportID;
-        };
+					growl.success("Information successfully saved.", config);
+			}
+		};
+    }
       
 
-	}
 ]);
 'use strict';
 
@@ -1085,10 +736,10 @@ app.controller('ManagementCtrl', ['$scope', '$state', '$stateParams', '$location
 ]);
 'use strict';
 app.controller('NewReportCtrl', ['$scope', '$state', '$stateParams', '$location',
-	'$timeout', 'reportTypeFactory', 'reportFactory',
+	'$timeout', 'reportTypeFactory', 'reportFactory', 'growl',
 
 	function ($scope, $state, $stateParams, $location, 
-	 $timeout, reportTypeFactory, reportFactory) {
+	 $timeout, reportTypeFactory, reportFactory, growl) {
 
 		$timeout(
 			function() {
@@ -1106,23 +757,32 @@ app.controller('NewReportCtrl', ['$scope', '$state', '$stateParams', '$location'
    		};
 
  	  	$scope.makeNewReport = function () {
+ 			var config = {};
  			var data = {
  				Name : $scope.reportName,
  				ReportTypeID : $scope.data.typeSelect,
  				ProjectID : $stateParams.id
  			};
- 			reportFactory.add(data);
- 			$timeout(function () {
-      			$state.go('main.project.overview',{'id' : $stateParams.id });
-      		}, 110);
+ 			reportFactory.add(data)
+ 			.then(function (response) {
+ 				if (response.status == 200) {
+ 					growl.success("Successfully created plan.", config);
+ 					$state.go('main.editreport.editroles',{'reportid': response.data[0].ID, 'id' : $stateParams.id });	
+ 				}
+ 			}, function (error) {
+ 				if (error.status == 412 )
+ 					growl.error("Something went wrong.", config);
+ 			});
+
  		};
 	}
 ]);
 'use strict';
 
 
-app.controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'projectFactory', 
-	function ($scope, $state, $stateParams, $location, $timeout, projectFactory) {
+app.controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'projectFactory',
+    'growl', 
+	function ($scope, $state, $stateParams, $location, $timeout, projectFactory, growl) {
 		$timeout(function() {
 			$scope.projects = projectFactory.getProjectByUserId();
 			if ($stateParams.id != undefined) {
@@ -1136,27 +796,49 @@ app.controller('ProjectCtrl', ['$scope', '$state', '$stateParams', '$location', 
 
 
         $scope.makeNewProject = function () {
-            
-            projectFactory.createProject($scope.project);
-      
-            $timeout(function () {
-                $state.go('main.dashboard.overview');
-            }, 110);
+            var config = {};
+            projectFactory.createProject($scope.project)
+            .then(function (response) {
+                if (response.status == 200) {
+                    growl.success("Project successfully created.", config);
+                    $state.go('main.dashboard.overview');    
+                }
+            }, function (error) {
+                if (error.status == 400)
+                    growl.error("Something went wrong.",config);
+            });
         };
 
         $scope.updateProject = function () {
-        	projectFactory.updateProject($scope.projectUpdate[0]);
+        	var config = {};
+            projectFactory.updateProject($scope.projectUpdate[0])
+            .then(function (response) {
+                if (response.status == 200) {
+                    growl.success("Project updated.", config);
+                    $state.go('main.dashboard.overview');    
+                }
+            }, function (error) {
+                if (error.status == 400)
+                    growl.error("Something went wrong.", config);
+            });
         	
-        	$timeout(function () {
-        		$state.go('main.dashboard.overview');
-        	}, 110);
         };
 
         $scope.deleteProject = function() {
-        	projectFactory.deleteProject($stateParams.id);
-        	$timeout(function () {
-        		$state.go('main.dashboard.overview');
-        	}, 110);
+            var config = {};
+        	projectFactory.deleteProject($stateParams.id)
+            .then(function (response) {
+                if (response.status == 200) {
+                    growl.success("Successfully deleted project", config);
+                    $state.go('main.dashboard.overview');
+                }
+            }, function (error) {
+                if (error.status == 403)
+                    growl.warning("This project is not yours.", config);
+                else 
+                    growl.error("Something went wrong.", config);
+            });
+
         }
 	}
 ]);
@@ -1238,15 +920,18 @@ app.controller('ReportCtrl', ['$scope', '$state', '$stateParams', '$location',
 
 		$timeout(
 			function() {
-				// $scope.infos = aboutFactory.getRamesInfoByCategoryId(2); ?????
-				$scope.reports = reportFactory.getAll();
-				$scope.projectid = $stateParams.id;
 				console.log($stateParams.id);
+				// $scope.infos = aboutFactory.getRamesInfoByCategoryId(2); ?????
+				$scope.reports = reportFactory.getReportByProjectId($stateParams.id); // þetta á að vera get report by projectid
+				$scope.projectid = $stateParams.id;
+				$scope.reportypes = reportTypeFactory.getAll();
+
 			}, 110
 		);
+
 	}
 ]);
-
+// Byrja á að eyða öllum reports í prjoect ef það er eytt... svo laga þetta.
 'use strict';
 
 app.controller('ReportTypeCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'reportTypeFactory', 
@@ -1285,6 +970,153 @@ app.controller('ReportTypeCtrl', ['$scope', '$state', '$stateParams', '$location
 	}
 ]);
 
+'use strict';
+app.controller('ViewReportCtrl', ['$scope', '$state', '$stateParams', '$location', '$timeout', 'aboutFactory',
+				 'ramesInfoFactory', 'questionFactory', 'choicesFactory', 'categoryFactory', 
+				 'reportInfoFactory',
+	function ($scope, $state, $stateParams, $location, $timeout, aboutFactory, ramesInfoFactory, 
+		questionFactory, choicesFactory, categoryFactory, reportInfoFactory) {
+
+				$scope.ramesInfo = ramesInfoFactory.getAll();
+				$scope.answers   = reportInfoFactory.getByReportId($stateParams.reportid);
+				$scope.questions = questionFactory.getAll(1);
+				$scope.category  = categoryFactory.getCategoryOrdSeq(1);
+				$scope.dropdown  = choicesFactory.getDrowpdown();
+				$scope.checkbox  = choicesFactory.getCheckbox();
+				$scope.radio 	 = choicesFactory.getRadio();
+
+
+		$timeout(
+			function() {
+				$scope.viewReport = [];
+/* Populating viewReport above to build table of information */
+				angular.forEach($scope.category, 
+					function (cat, cKey) {
+/* First we need to make object to push information in to use. here we extract category name*/
+						var addMe = {
+								Category: cat.Category,
+								Info : []					
+							};
+/* Next we need to look for information on what is each subsection R1, R2..., S1 ...*/
+						angular.forEach($scope.ramesInfo,
+							function (info, iKey) {
+								if(info.CategoryID == cat.ID) {
+/* Here we are going to make sure that category and info is in same subsections */
+									var text = '';	
+									angular.forEach($scope.questions,
+										function (que, qKey) {
+											if (info.ID == que.RamesInfoID) {
+/* Here we are making sure that the information is consisting with rames info */
+												angular.forEach($scope.answers,
+													function (ans, aKey) {
+														if (ans.QuestionID == que.ID) {
+/* Here we are building up the information text to give out to the table. */
+/* We also need to be sure that the information is not undefined or other things 
+by checking what it is and so an after what we get in json object. */
+															
+															if (ans.Answer.number){
+																if (text == '')
+																	text += ans.Answer.number;
+																else 
+																	text += ' ,'+ans.Answer.number;
+															}
+															else if (ans.Answer.Text) {
+																if (ans.Answer.Text.conditionalyesnotext) {
+																	if (text == '')
+																		text += ans.Answer.Text.conditionalyesnotext;
+																	else
+																		text += ans.Answer.Text.conditionalyesnotext;
+																}
+																else {
+																	if (text == '')
+																		text += ans.Answer.Text;
+																	else
+																		text += ' ,'+ans.Answer.Text;
+																}
+																if (ans.Answer.Textbox) {
+																	if (ans.Answer.Textbox.conditionalyesnotext) {
+																		if (text == '')
+																			text += ans.Answer.Textbox.conditionalyesnotext;
+																		else
+																			text += ans.Answer.Textbox.conditionalyesnotext;
+																	}
+																	else {
+																		if (text == '')
+																			text += ans.Answer.Textbox;
+																		else
+																			text += ', '+ans.Answer.Textbox;
+																	}
+																}
+															}
+															else if (ans.Answer.checkbox) {
+																if (ans.Answer.checkbox.data) {
+																	angular.forEach(ans.Answer.checkbox.data,
+																		function(value, key) {
+																			if (text == '')
+																				text += value;
+																			else
+																				text += ', '+value;		
+																		})
+																	if (ans.Answer.checkbox.Text) {
+																		if (text == '')
+																			text += ans.Answer.checkbox.Text;
+																		else
+																			text += ', '+ ans.Answer.checkbox.Text;
+																	}
+
+																}
+															}
+															else if (ans.Answer.text) {
+																if (text == '')
+																	text += ans.Answer.text;
+																else
+																	text += ', '+ ans.Answer.text;
+															}
+															else if (ans.Answer.radio) {
+																if (text == '')
+																	text += ans.Answer.radio;
+																else 
+																	text += ', '+ ans.Answer.radio;
+															}
+															else if (ans.Answer.yesno) {
+																if (text == '')
+																	text += ans.Answer.yesno;
+																else 
+																	text += ', '+ ans.Answer.yesno;
+															}
+															else if (ans.Answer.conditionalyesnotext) {
+																if( text == '')
+																	text += ans.Answer.conditionalyesnotext;
+																else
+																	text += ', '+ ans.Answer.conditionalyesnotext;
+															}
+														}
+													}
+												)
+
+											}
+										}
+									)
+/* Now we have extrated all information we need and built up the string to use it. */
+									addMe.Info.push(
+									{
+										Name : info.Name,
+										Value : text
+									});
+									text = '';
+								}				
+							}
+						)
+/* Now we add it to report object and clear all information to ensure it wont get currupted. */
+						$scope.viewReport.push(addMe);
+						addMe = [];
+					}
+				)
+			}, 150
+		);
+
+	}
+]);
 /* About rames info factory */
 app.factory('aboutFactory', ['$http', '$window', 'configFactory', 
 	function ($http, $window, configFactory) {
@@ -1315,8 +1147,8 @@ app.factory('aboutFactory', ['$http', '$window', 'configFactory',
 }]);
 //* AuthenticationFactory */
 
-app.factory('authFactory', ['$http', '$window', '$location', 'configFactory', 
-    function ($http, $window, $location, configFactory) {
+app.factory('authFactory', ['$http', '$window', '$location', 'configFactory', 'growl',
+    function ($http, $window, $location, configFactory, growl) {
     var auth = {};
     var baseUrl = configFactory.getHttpUrl();
 
@@ -1333,7 +1165,7 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
         var token = auth.getToken();
 
         if(token){
-            var payload = JSON.parse($window.atob( token.split('.')[1]) );
+            var payload = JSON.parse($window.atob(token.split('.')[1]));
 
             return payload.exp > Date.now() / 1000;
         } else {
@@ -1358,7 +1190,6 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
         if(auth.isLoggedIn()){
             var token = auth.getToken();
             var payload = JSON.parse($window.atob(token.split('.')[1]));
-
             return payload.username;
         }
     };
@@ -1379,18 +1210,14 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
 
 
     auth.register = function (user) {
-        var returnMe;
-        $http.post(baseUrl+'/api/auth/register', user).success(function (data) {
-            angular.copy(data, returnMe);
-        });
-        return returnMe;
+        return $http.post(baseUrl+'/auth/register', user);
     };
 
     auth.logIn = function (user) {
-        var object = $http.post(baseUrl+'/api/auth/login', user).success(function (data) {
-            auth.saveToken(data.token);
-        });
-        return object;
+        
+        var user =  $http.post(baseUrl+'/auth/login', user);
+        console.log(user);
+        return user;
     };
 
 
@@ -1399,21 +1226,6 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
         $location.path('/main');
     };
 
-    auth.resetPassword = function (email) {
-        var returnMe;
-
-        $http.post(baseUrl+'/api/auth/forgotPassword', {  email: email }).success(function (data) {
-            angular.copy(data, returnMe);
-        });
-        return returnMe;
-    };
-    auth.newPassword = function (object) {
-        var returnMe;
-        $http.post(baseUrl+'/api/auth/reset/'+object.token, object).success(function (data) {
-            angular.copy(data, returnMe);
-        });
-        return returnMe;
-    };
     return auth;
 }]);
 /* AuthInterceptorFactory */
@@ -1548,37 +1360,15 @@ app.factory('projectFactory', ['$http', '$window', 'configFactory',
 	};
 
 	project.createProject = function (project) {
-		var returnMe;
-		$http
-		 .post(baseUrl+'/api/project', project)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-
-		return returnMe;
+		return $http.post(baseUrl+'/api/project', project);
 	};
 
 	project.updateProject = function (update) {
-		var returnMe;
-		
-		$http
-		 .put(baseUrl+'/api/project', update)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-
-		return returnMe;
+		return $http.put(baseUrl+'/api/project', update);
 	};
 
 	project.deleteProject = function (id) {
-		var returnMe;
-
-		$http
-		 .delete(baseUrl+'/api/project/'+id)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-		return returnMe;
+		return $http.delete(baseUrl+'/api/project/'+id);
 	};
 
     return project;
@@ -1643,6 +1433,15 @@ app.factory('questionFactory', ['$http', '$window', 'configFactory',
     
 		var question = {};
 		var baseUrl = configFactory.getHttpUrl();
+		question.getAll = function () {
+			var returnMe = [];
+			$http
+			 .get(baseUrl + "/api/ramesquestion/")
+			  .success(function (data) {
+				angular.copy(data, returnMe);
+			});
+			return returnMe;
+		}
 
 		question.getQuestionsByCategoryId = function (qid) {
 			var returnMe = [];
@@ -1663,10 +1462,10 @@ app.factory('reportFactory', ['$http', '$window', 'configFactory',
     var report = {};
     var baseUrl = configFactory.getHttpUrl();
 
-    report.getAll = function () {
+    report.getReportByProjectId = function (pid) {
 		var returnMe = [];
 		$http
-		 .get(baseUrl + "/api/reports")
+		 .get(baseUrl + "/api/reports/project/"+pid)
 		  .success(function (data) {
 			angular.copy(data, returnMe);
 		});
@@ -1684,14 +1483,7 @@ app.factory('reportFactory', ['$http', '$window', 'configFactory',
 	}
 
 	report.add = function (toAdd) {
-		console.log(toAdd);
-		var returnMe;
-		$http
-		 .post(baseUrl+'/api/reports', toAdd)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-		return returnMe;
+		return $http.post(baseUrl+'/api/reports', toAdd);
 	};
 
 	report.update = function (object) {
@@ -1705,13 +1497,7 @@ app.factory('reportFactory', ['$http', '$window', 'configFactory',
 	};
 
 	report.delete = function (id) {
-		var returnMe;
-		$http
-		 .delete(baseUrl+'/api/reports/'+id)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-		return returnMe;
+		return $http.delete(baseUrl+'/api/reports/'+id);
 	};
 
 
@@ -1733,6 +1519,7 @@ app.factory('reportInfoFactory', ['$http', '$window', 'configFactory',
 		 .get(baseUrl + "/api/reportsinfo/report/"+id)
 		  .success(function (data) {
 			angular.copy(data, returnMe);
+			console.log(data);
 		});
 		return returnMe;
 	}
@@ -1745,51 +1532,14 @@ app.factory('reportInfoFactory', ['$http', '$window', 'configFactory',
 			angular.copy(data, returnMe);
 		});
 
-		//return returnMe;
-/*		return [ 
-				{ ID: 1, ReportID: 1, CategoryID: 1, QuestionID: 1, Answer: { number: 2 } },
-				{ ID: 2, ReportID: 1, CategoryID: 1, QuestionID: 2, Answer: {} },
-				{ ID: 3, ReportID: 1, CategoryID: 1, QuestionID: 3, Answer: { text: "test 1"} },
-				{ ID: 4, ReportID: 1, CategoryID: 1, QuestionID: 4, Answer: { yesno: "No"} },
-				{ ID: 5, ReportID: 1, CategoryID: 1, QuestionID: 6, Answer: { number: 5 } },
-				{ ID: 6, ReportID: 1, CategoryID: 1, QuestionID: 8, Answer: { text: "test 3"} },
-				{ ID: 7, ReportID: 1, CategoryID: 1, QuestionID: 10, Answer: {} },
-				{ ID: 8, ReportID: 1, CategoryID: 1, QuestionID: 14, Answer: { text: "test 4"} },
-				{ ID: 9, ReportID: 1, CategoryID: 1, QuestionID: 12, Answer: {} },
-				{ ID: 10, ReportID: 1, CategoryID: 1, QuestionID: 13, Answer: { text: "test 5"} },
-				{ ID: 12, ReportID: 1, CategoryID: 1, QuestionID: 11, Answer: {number: 6 } },
-				{ ID: 14, ReportID: 1, CategoryID: 1, QuestionID: 5, Answer: { text: "test 2"} },
-				{ ID: 15, ReportID: 1, CategoryID: 1, QuestionID: 7, Answer: {} },
-				{ ID: 16, ReportID: 1, CategoryID: 1, QuestionID: 9, Answer: { yesno: "Yes"} } 
-				]
+		return returnMe;
 
-	return [ 
-				{ ID: 11, ReportID: 1, CategoryID: 2, QuestionID: 16, Answer: { text: "Text 1" } },
-				{ ID: 13, ReportID: 1, CategoryID: 2, QuestionID: 15, Answer: { radio: "Both"} },
-				{ ID: 17, ReportID: 1, CategoryID: 2, QuestionID: 21, Answer: { text: "Text 3"} },
-				{ ID: 24, ReportID: 1, CategoryID: 2, QuestionID: 17, Answer: { text: "Text 2"} },
-				{ ID: 25, ReportID: 1, CategoryID: 2, QuestionID: 19, Answer: {} },
-				{ ID: 29, ReportID: 1, CategoryID: 2, QuestionID: 22, Answer: { text: "Text 4"} },
-				{ ID: 34, ReportID: 1, CategoryID: 2, QuestionID: 18, Answer: { number: 3} },
-				{ ID: 35, ReportID: 1, CategoryID: 2, QuestionID: 20, Answer: { conditionalyesnotext: "Yes", Text: {conditionalyesnotext: " Peer review "}, Textbox: {conditionalyesnotext: " Tókst !!"}} }
-			]*/
-	return [ 
-				{ ID: 18, ReportID: 1, CategoryID: 3, QuestionID: 25, Answer: {} },
-				{ ID: 19, ReportID: 1, CategoryID: 3, QuestionID: 27, Answer: {} },
-				{ ID: 23, ReportID: 1, CategoryID: 3, QuestionID: 29, Answer: {text: "test 3"} },
-				{ ID: 27, ReportID: 1, CategoryID: 3, QuestionID: 23, Answer: {checkbox: {Text: "Tókst jeyj!", data: {0: "User tasks", 1: "Scenarios"}}} },
-				{ ID: 28, ReportID: 1, CategoryID: 3, QuestionID: 26, Answer: {radio: "Qualitative"} },
-				{ ID: 30, ReportID: 1, CategoryID: 3, QuestionID: 28, Answer: {text: "Test 2"} },
-				{ ID: 36, ReportID: 1, CategoryID: 3, QuestionID: 24, Answer: {text: "test 1"} } 
-				]
 	}
 
 	info.post = function (data) {
-		var returnMe;
-		$http.post(baseUrl + '/api/reportsinfo', data).success(function (data) {
-			angular.copy(data, returnMe);
-		})
-		return returnMe;
+		
+		return $http.put(baseUrl + '/api/reportsinfo', data);//.success(function (data) {
+		
 	}
     return info;
 }]);

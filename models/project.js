@@ -2,6 +2,7 @@
 const dbService = require('./../library/dbLibrary');
 const stringBuilder = require('./../library/queryBuilder');
 const project = require('./../DTO/project');
+const reportsModel = require('./reports');
 function DTO(data) {
     /* 
     * Populating array with object by calling data transfer object 
@@ -181,10 +182,11 @@ function Project(){
 	};
 
 	  // Delete the rames project with the given id
-	  this.delete = (id, callback) => {
+	  this.delete = (id, req, callback) => {
 	    "use strict";
 	    let table  = 'project';
 	    let string = 'DELETE FROM '+ table + ' WHERE id = $1';
+	    let reportString = "SELECT * from reports where projectid = $1";
 	    let value  = [id];   
 	    
 	    dbService.queryStringValue(string, value, 
@@ -194,21 +196,55 @@ function Project(){
 	            { 
 	              valid   : false,
 	              status  : 404,
-	              Type    : 'Delete rames information.',
+	              Type    : 'Delete project.',
 	              err     : err,
 	              data    : null,
-	              Message : 'Failed to delete rames information.'
+	              Message : 'Failed to delete project.'
 	            });
-	        else
-	          callback(err,
+	        else {
+	        	dbService.queryStringValue(reportString, value,
+	        		(errs, results) => {
+	        			if (errs)
+	        				callback(err,
+	        				{
+	        					valid : false,
+	        					status: 404,
+	        					Type : 'Did not find any reports by project id.',
+	        					err : errs,
+	        					data: null,
+	        					Message: 'Failed failed to find reports by project id, when deleting proejct.'
+	        				});
+	        			else {
+	        				var length = results.length;
+	        				var i;
+	        				for (i = 0; i < length; i++) {
+								reportsModel.delete(req, results[i].id,
+									(errrs, reports) => {
+										if (errrs) 
+											callback(errrs,
+	        								{
+					        					valid : false,
+					        					status: 404,
+					        					Type : 'Deleting reports, when deleting project faild..',
+					        					err : errs,
+					        					data: null,
+					        					Message: 'Failed failed to delete reports by project id, when deleting proejct.'
+					        				});
+									}
+								);	        					
+	        				}
+	        			}
+	        		})
+				callback(err,
 	            { 
 	              valid   : true,
 	              status  : 200,
-	              Type    : 'Delete rames information.',
+	              Type    : 'Delete project.',
 	              err     : err,
 	              data    : DTO(result),
-	              Message : 'Deleted rames information successfully.'
+	              Message : 'Deleted project successfully.'
 	            });
+	        }
 	      }
 	    );
   	};

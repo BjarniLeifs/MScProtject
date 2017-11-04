@@ -1,7 +1,7 @@
 //* AuthenticationFactory */
 
-app.factory('authFactory', ['$http', '$window', '$location', 'configFactory', 
-    function ($http, $window, $location, configFactory) {
+app.factory('authFactory', ['$http', '$window', '$location', 'configFactory', 'growl',
+    function ($http, $window, $location, configFactory, growl) {
     var auth = {};
     var baseUrl = configFactory.getHttpUrl();
 
@@ -18,7 +18,7 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
         var token = auth.getToken();
 
         if(token){
-            var payload = JSON.parse($window.atob( token.split('.')[1]) );
+            var payload = JSON.parse($window.atob(token.split('.')[1]));
 
             return payload.exp > Date.now() / 1000;
         } else {
@@ -43,7 +43,6 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
         if(auth.isLoggedIn()){
             var token = auth.getToken();
             var payload = JSON.parse($window.atob(token.split('.')[1]));
-
             return payload.username;
         }
     };
@@ -64,18 +63,14 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
 
 
     auth.register = function (user) {
-        var returnMe;
-        $http.post(baseUrl+'/api/auth/register', user).success(function (data) {
-            angular.copy(data, returnMe);
-        });
-        return returnMe;
+        return $http.post(baseUrl+'/auth/register', user);
     };
 
     auth.logIn = function (user) {
-        var object = $http.post(baseUrl+'/api/auth/login', user).success(function (data) {
-            auth.saveToken(data.token);
-        });
-        return object;
+        
+        var user =  $http.post(baseUrl+'/auth/login', user);
+        console.log(user);
+        return user;
     };
 
 
@@ -84,20 +79,5 @@ app.factory('authFactory', ['$http', '$window', '$location', 'configFactory',
         $location.path('/main');
     };
 
-    auth.resetPassword = function (email) {
-        var returnMe;
-
-        $http.post(baseUrl+'/api/auth/forgotPassword', {  email: email }).success(function (data) {
-            angular.copy(data, returnMe);
-        });
-        return returnMe;
-    };
-    auth.newPassword = function (object) {
-        var returnMe;
-        $http.post(baseUrl+'/api/auth/reset/'+object.token, object).success(function (data) {
-            angular.copy(data, returnMe);
-        });
-        return returnMe;
-    };
     return auth;
 }]);

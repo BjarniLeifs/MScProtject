@@ -8,7 +8,7 @@
                 <div class="panel-body">
                     <form role="form" ng-submit="makeNewProject()">
                         <div class="form-group">
-                            <input type="text" name="text" id="email" class="form-control input-sm" placeholder="Name of the project" ng-model="project.name">
+                            <input type="text" name="text" id="email" class="form-control input-sm" placeholder="Name of the project" ng-model="project.name" required>
                         </div>
                         <div class="form-group">
                             <textarea name="message" id="message" class="form-control" rows="9" cols="25" placeholder="Type project description here." ng-model="project.description"></textarea>

@@ -5,10 +5,10 @@ app.factory('reportFactory', ['$http', '$window', 'configFactory',
     var report = {};
     var baseUrl = configFactory.getHttpUrl();
 
-    report.getAll = function () {
+    report.getReportByProjectId = function (pid) {
 		var returnMe = [];
 		$http
-		 .get(baseUrl + "/api/reports")
+		 .get(baseUrl + "/api/reports/project/"+pid)
 		  .success(function (data) {
 			angular.copy(data, returnMe);
 		});
@@ -26,14 +26,7 @@ app.factory('reportFactory', ['$http', '$window', 'configFactory',
 	}
 
 	report.add = function (toAdd) {
-		console.log(toAdd);
-		var returnMe;
-		$http
-		 .post(baseUrl+'/api/reports', toAdd)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-		return returnMe;
+		return $http.post(baseUrl+'/api/reports', toAdd);
 	};
 
 	report.update = function (object) {
@@ -47,13 +40,7 @@ app.factory('reportFactory', ['$http', '$window', 'configFactory',
 	};
 
 	report.delete = function (id) {
-		var returnMe;
-		$http
-		 .delete(baseUrl+'/api/reports/'+id)
-		  .success(function (data) {
-		  	angular.copy(data, returnMe);
-		  });
-		return returnMe;
+		return $http.delete(baseUrl+'/api/reports/'+id);
 	};
 
 
