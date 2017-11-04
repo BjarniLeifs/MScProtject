@@ -111,6 +111,7 @@ CREATE TABLE feedback_reports (
   Name varchar(255) NOT NULL,
   ReportTypeID int NOT NULL,
   ProjectID int NOT NULL,
+  Finished boolean NOT NULL,
   CreatedAt timestamp with time zone,
   LastUpdate timestamp with time zone,
   PRIMARY KEY(ID)
@@ -120,7 +121,7 @@ CREATE TABLE feedback_reports_info (
   ID SERIAL,
   FeedbackReportID int NOT NULL,
   FeedbackQuestionID int NOT NULL,
-  FeedbackCategoryID int NOT NULL,
+  CategoryID int NOT NULL,
   Answer json,
   PRIMARY KEY(ID)
 );

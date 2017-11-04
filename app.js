@@ -87,24 +87,33 @@ app.use('/api',jwtCheck({
 //app.use('/apidoc', express.static('apidoc'));
 /* Routes for the api */
 app.use('/auth',require('./routes/authentication'));
+app.use('/api/user',require('./routes/users'));
+
 app.use('/api/language',require('./routes/languages'));
+
+app.use('/api/reports',require('./routes/reports'));
+app.use('/api/reportsinfo',require('./routes/reports_info'));
+app.use('/api/reporttype',require('./routes/reports_types'));
+
 app.use('/api/questioncheckboxchoices',require('./routes/question_checkbox_choices'));
 app.use('/api/questiondropdownchoices',require('./routes/question_dropdown_choices'));
 app.use('/api/questionradiochoices',require('./routes/question_radio_choices'));
+
 app.use('/api/ramescategory',require('./routes/rames_categories'));
 app.use('/api/ramesinfo',require('./routes/rames_infos'));
 app.use('/api/ramespicture',require('./routes/rames_pictures'));
 app.use('/api/ramesquestion',require('./routes/rames_questions'));
-app.use('/api/reporttype',require('./routes/reports_types'));
-app.use('/api/reports',require('./routes/reports'));
-app.use('/api/reportsinfo',require('./routes/reports_info'));
-app.use('/api/user',require('./routes/users'));
-app.use('/api/project', require('./routes/project'));
-app.use('/', require('./routes/index'));
-app.use('/frc', require('./routes/question_feedback_radio_choices'));
-app.use('/fcc', require('./routes/question_feedback_checkbox_choices'));
-app.use('/api/rfq', require('./routes/rames_feedback_questions'));
 
+app.use('/api/project', require('./routes/project'));
+
+
+
+
+app.use('/api/feedback/questionradiochoices', require('./routes/question_feedback_radio_choices'));
+app.use('/api/feedback/questioncheckboxchoices', require('./routes/question_feedback_checkbox_choices'));
+app.use('/api/feedback/ramesquestion', require('./routes/rames_feedback_questions'));
+app.use('/api/feedback/reports', require('./routes/feedback_reports'));
+app.use('/api/feedback/ramesinfo', require('./routes/feedback_reports_info'));
 /* Exports the app. */
 
 app.use(function (err, req, res, next) {
