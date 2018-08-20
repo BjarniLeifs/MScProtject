@@ -1,4 +1,4 @@
-# rames
+# RAMES
 
 ## Getting started.
 
@@ -27,3 +27,5 @@ When npm install has finished we need to type in console
 Now the project should be up and running. 
 
 In the folder Readings you can find all information that is needed for this project, I suggest that you update it as needed. 
+
+Remember to change the links for the database to your path or where it is. 
