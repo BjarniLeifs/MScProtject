@@ -26,10 +26,4 @@ When npm install has finished we need to type in console
 
 Now the project should be up and running. 
 
-## Structure of code.
-
-The routes are intented for the api calls, such as they act as controllers, the models are SQL based logic's that service the controllers. Then we have the library, they do not depend on any of them but surve them as they need. 
-
-We want to keep the structure this way such as if we need to build our own code that we want to re-use and has less value in controller or in models we make library file and build it up. 
-
-:)
+In the folder Readings you can find all information that is needed for this project, I suggest that you update it as needed. 
