@@ -15,9 +15,7 @@ function DTO(data) {
     let object = [];
     for (var i = 0; i < data.length; i++)
       object.push(collaborators.DTO(data[i].id, data[i].name, data[i].email, data[i].degree, data[i].year, data[i].role, data[i].info, data[i].image));
-
     return object;
-
 }
 
 This is used when returning data in callback e.g. DTO(results) where results represent the response from the database. 
