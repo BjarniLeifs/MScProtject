@@ -6,7 +6,7 @@ This is done to filter out anything that we feel is not needed to be transfered 
 Build this DTO for each table within the database such as you control what the user gets. Example of this can be found in models folder in each of the *.js files. 
 
 e.g. 
-
+```
 function DTO(data) {
     /* 
     * Populating array with object by calling data transfer object 
@@ -17,16 +17,15 @@ function DTO(data) {
       object.push(collaborators.DTO(data[i].id, data[i].name, data[i].email, data[i].degree, data[i].year, data[i].role, data[i].info, data[i].image));
     return object;
 }
-
+```
 This is used when returning data in callback e.g. DTO(results) where results represent the response from the database. 
 
 e.g. 
-
+```
 this.get = (callback) => {
 	"use strict";
 	let table  = 'collaborators';
 	let string = 'SELECT * FROM ' + table;
-	
 	dbService.queryString(string, 
 		(err, result) => {
 			if (err)
@@ -52,3 +51,4 @@ this.get = (callback) => {
 		}
 	);
 };
+```
